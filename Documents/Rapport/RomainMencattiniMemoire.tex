@@ -35,7 +35,50 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{État de l'art}
 \subsection{Introduction}
+\paragraph{}
+Avant la démocratisation de l'informatique et de son utilisation, toutes les opérations financières étaient réalisées par des humains. Ce système pouvait avoir des inconvénients :
+\begin{itemize}
+\item L'émotionnel pouvait influer les transactions. En effet, ces dernières étant effectuées par des humains, il y avait une risque non négligeable que l'état de la personne agisse sur sa décision.
+\item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à ce plan afin de ne pas ce laisser influencer par des paramètres extérieurs. Cela pouvait être très difficile.
+\item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. $[$ \ref{backtesting investopedia} $]$} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
+\end{itemize}
+
+\paragraph{}
+Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux USA, 84\% des transactions étaient accomplies par des algorithmes.\footnote{Financial Times : $[$ \ref{real investors} $]$} Ce qui représente environ 100000 réalisations, ou \textit{ticks}, par secondes. \footnote{Financial Times : $[$ \ref{real investors} $]$}
+De part l'utilisation intensive de cet outil informatique, le monde de la finance a suivi l'évolution de ce domaine. Afin de perfectionner leurs algorithmes.
+On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. Des propositions de plus en poussées dans les deux domaines voient le jour. L'algorithme qui sera au coeur de ce projet en fait partie. Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
+
+\paragraph{}Afin d'approcher aux mieux ces notions, nous allons discuter des éléments nécessaires à la compréhension.
+Nous allons en premier lieu introduire le domaine financier ainsi que ces outils. Puis nous parlerons de plusieurs méthodes de \textit{ML}.
+Voici celles vont être développées dans cet état de l'art :
+\begin{itemize}
+\item Les réseaux de neurones.
+\item Les arbres de décision.
+\item Les algorithmes \textit{SVM}\footnote{ Article \textit{SVM}: $[$ \ref{wikipedia svm} $]$}.
+\item \textit{Logistic Regression}.
+\item \textit{Naive Bayes}.
+\item Descente du Gradient\footnote{Article Wikipedia : $[$ \ref{wikipedia descente du gradient} $]$} ainsi que sa version dite stochastique\footnote{Article parlant du gradient stochastique : $[$ \ref{descente du gradient stochastique} $]$}.
+\end{itemize}
+
+Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}.
+
+
 \subsection{Finance}
+\subsubsection{Introduction}
+\paragraph{}
+Dans la partie Finance, nous allons traiter deux points :
+\begin{enumerate}
+\item Les différents types de marchés utilisés dans les articles.
+\item Les outils relatifs à la finance.
+\end{enumerate}
+
+\subsubsection{Marchés}
+\paragraph{}Les deux principaux marchés présents dans les articles utilisés sont :
+\begin{itemize}
+\item \textit{FOREX}
+\item \textit{Stock Market}
+\end{itemize}
+
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
 \subsection{Conclusion}
@@ -51,19 +94,20 @@
 \section{Bibliographie}
 
 \begin{enumerate}
-\item Financial Times : "\textit{Real investors eclipsed by fast trading}", 2012 \url{https://www.ft.com/content/da5d033c-8e1c-11e1-bf8f-00144feab49a?mhq5j=e1}
+\item Financial Times : "\textit{Real investors eclipsed by fast trading}", 2012 \url{https://www.ft.com/content/da5d033c-8e1c-11e1-bf8f-00144feab49a?mhq5j=e1} \label{real investors}
 \item "\textit{A Machine Learning Approach to Automated Trading}", 09.05.2016, Ning Lu
 \item "\textit{An efficient implementation of the backtesting of trading strategies.}" Ni, Jiarui, et Chegqi Zhang, \textit{Parallel and Distributed Processing and Applications} (2005): 126-131.
 \item "\textit{Algorithmic Trading: Winning Strategies and Their Rationale ( Wiley Trading Series)}", John Wiley and Sons, 2013
 \item "\textit{Machine Learning}", Mitchell, Tom M. New York, 1997.
-\item Article Wikipédia sur SVM : \url{https://fr.wikipedia.org/wiki/Machine_\%C3\%A0_vecteurs_de_support}
-\item "\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}", Eleftherios Soulas et Dennis Shasha de NYU, Courant Department.
-\item  Article Wikipédia sur Algorithme du gradient : \url{https://fr.wikipedia.org/wiki/Algorithme_du_gradient}
+\item Article Wikipédia sur SVM : \url{https://fr.wikipedia.org/wiki/Machine_\%C3\%A0_vecteurs_de_support} \label{wikipedia svm}
+\item "\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}", Eleftherios Soulas et Dennis Shasha de NYU, Courant Department. \label{descente du gradient stochastique}
+\item  Article Wikipédia sur Algorithme du gradient : \url{https://fr.wikipedia.org/wiki/Algorithme_du_gradient} \label{wikipedia descente du gradient}
 \item "\textit{Descision Tree Learning}", Tom M. Mitchell
 \item Article Investopedia sur les Options \url{http://www.investopedia.com/terms/o/option.asp}
 \item "\textit{Support Vector Machine (and Statistical Learning Theory) Tutorial}", de Jason Weston, NEC Labs America. \url{http://www.cs.columbia.edu/~kathy/cs4701/documents/jason_svm_tutorial.pdf}
 \item  "\textit{An Introduction to Neural Networks}" Vincent Cheung et Kevin Cannons : \url{http://www2.econ.iastate.edu/tesfatsi/NeuralNetworks.CheungCannonNotes.pdf}
 \item Exemple de réseaux de neurones\url{http://csc.lsu.edu/~jianhua/nn.pdf} p.5
+\item \textit{Backtesting} Investopedia \url{http://www.investopedia.com/terms/b/backtesting.asp} \label{backtesting investopedia}
 \end{enumerate}
 
 
