@@ -10,7 +10,7 @@
 \usepackage{color} % pour les couleurs
 \usepackage{graphicx} % pour les graphiques (images)
 \usepackage{fancyhdr} % pour utiliser le pagestyle fancy
-\usepackage[headheight=14pt]{geometry} % pour les marges
+\usepackage[headheight=10pt]{geometry} % pour les marges
 \usepackage{hyperref}
 
 \geometry{hmargin=3cm}
@@ -40,11 +40,11 @@ Avant la démocratisation de l'informatique et de son utilisation, toutes les op
 \begin{itemize}
 \item L'émotionnel pouvait influer les transactions. En effet, ces dernières étant effectuées par des humains, il y avait une risque non négligeable que l'état de la personne agisse sur sa décision.
 \item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à ce plan afin de ne pas ce laisser influencer par des paramètres extérieurs. Cela pouvait être très difficile.
-\item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. $[$ \ref{backtesting investopedia} $]$} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
+\item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. \ref{backtesting investopedia}} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
 \end{itemize}
 
 \paragraph{}
-Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux USA, 84\% des transactions étaient accomplies par des algorithmes.\footnote{Financial Times : $[$ \ref{real investors} $]$} Ce qui représente environ 100000 réalisations, ou \textit{ticks}, par secondes. \footnote{Financial Times : $[$ \ref{real investors} $]$}
+Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux USA, 84\% des transactions étaient accomplies par des algorithmes \ref{real investors}. Ce qui représente environ 100000 réalisations, ou \textit{ticks}, par secondes \ref{real investors}.
 De part l'utilisation intensive de cet outil informatique, le monde de la finance a suivi l'évolution de ce domaine. Afin de perfectionner leurs algorithmes.
 On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. Des propositions de plus en poussées dans les deux domaines voient le jour. L'algorithme qui sera au coeur de ce projet en fait partie. Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
 
@@ -54,58 +54,84 @@ Voici celles vont être développées dans cet état de l'art :
 \begin{itemize}
 \item Les réseaux de neurones.
 \item Les arbres de décision.
-\item Les algorithmes \textit{SVM}\footnote{ Article \textit{SVM}: $[$ \ref{wikipedia svm} $]$}.
+\item Les algorithmes \textit{SVM} \ref{wikipedia svm}.
 \item \textit{Logistic Regression}.
 \item \textit{Naive Bayes}.
-\item Descente du Gradient\footnote{Article Wikipedia : $[$ \ref{wikipedia descente du gradient} $]$} ainsi que sa version dite stochastique\footnote{Article parlant du gradient stochastique : $[$ \ref{descente du gradient stochastique} $]$}.
+\item Descente du Gradient \ref{wikipedia descente du gradient} ainsi que sa version dite stochastique \ref{descente du gradient stochastique} .
 \end{itemize}
 
 Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}.
 
 
 \subsection{Finance}
-\subsubsection{Introduction}
-\paragraph{}
-Dans la partie Finance, nous allons traiter deux points :
-\begin{enumerate}
-\item Les différents types de marchés utilisés dans les articles.
-\item Les outils relatifs à la finance.
-\end{enumerate}
 
-\subsubsection{Marchés}
-\paragraph{}Les deux principaux marchés présents dans les articles utilisés sont :
+\subsubsection{\textit{FOREX}}
+
+\paragraph{}Afin de comprendre le fonctionnement du \textit{FOREX}, il est important de mentionner certaines décisions historiques. Ces dernières ont façonné le marché des devises actuel.
+
+\paragraph{}
+Jusqu'à la première guerre mondiale, le système en vigueur se base sur l'or, que l'on nomme l'étalon-or\footnote{Source : \ref{étalon-or à étalon-dollar}.}. S'en suit une période d'instabilité notamment dûe aux pertes occasionnées par la guerre, un après-guerre compliqué, la crise boursière de 1929 et la seconde guerre mondiale.
+
+C'est au sortir de cette dernière, que la nécessité de "\textit{mettre en place une organisation monétaire mondiale et de favoriser la reconstruction et le développement économique des pays touchés par la guerre}" \ref{wikipedia bretten woods}, est apparue. Le but était également "\textit{d’aplanir les conflits économiques, reconnaissant par là les problèmes engendrés par les disparités économiques}" \ref{étalon-or à étalon-dollar}.
+
+Plusieurs propositions furent proposées, mais ce fût celle de Harry Dexter White qu'on mit en place. Cette dernière prévoyait entre autre:
 \begin{itemize}
-\item \textit{FOREX}
-\item \textit{Stock Market}
+\item le choix du Dollar américain comme étalon, ce dernier étant rattaché à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 \ref{wikipedia bretten woods}.}.
+\item Création de la Banque internationale pour la reconstruction et le développement (BIRD) qui deviendra la banque mondiale.
+\item Le Fond monétaire international (FMI).
+\item Création de l'Organisation mondial du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord \ref{wikipedia bretten woods}.}.
+\end{itemize}
+
+On remarque que ces institutions sont toujours en activité, cela démontre l'importance de ces accords pour comprendre le système financier. Cela est également vrai pour le marché des taux de changes, où le USD est toujours utilisé entre deux échanges.
+Il n'est en effet pas possible de faire CHF/EUR\footnote{Franc Suisse - Euro}. Le passage par le USD entre les deux est obligatoire; nous aurons donc CHF/USD\footnote{Franc Suisse - Dollar Américain} puis USD/EUR\footnote{Dollar Américain - Euro}
+
+\paragraph{}
+Le marché \textit{FOREX} porte sur les devises. La valeur d'une devise ne peut être exprimée qu'en fonction d'une autre. Par exemple 1 franc suisse vaut 1.05 euro.\footnote{Taux fictif utilisé pour l'exemple.}
+La transaction porte donc sur deux monnaies comme CHF/EUR. On va vendre des francs suisses pour acheter euros ou l'inverse.
+Le nom du marché vient d'ailleurs de ces échanges. On échange une monnaie contre une autre, c'est un \textit{FOreign EXchange}, ou \textit{FOREX}.
+
+Il y a deux variations de la monnaie possibles :
+\begin{itemize}
+\item La monnaie peut subir une dépréciation.
+\item La monnaie peut subir une appréciation.
+\end{itemize}
+Lorsque le prix d'une monnaie augmente par rapport à une monnaie étrangère augmente, on parle d'appréciation. Ainsi dans le cas contraire, on parlera d'une dépréciation.
+
+La mondialisation a facilité ce marché. En effet, toutes les devises sont accessibles depuis n'importe où. Il devient donc possible d'avoir des marchés avec des devises plus exotiques.
+
+\paragraph{}
+Les principaux acteurs financiers sont \ref{marche des changes}:
+\begin{itemize}
+\item Les banques commerciales. Elles peuvent pratiquer des interventions directes car elles gèrent des dépôts et veulent opérer des transactions sur ces derniers. Il est également possible de réaliser le rôle d'intermédiaire financier.
+\item Les entreprises. Ces dernières vont pratique des transactions directes, si elles disposent d'un accès aux marchés sinon via des banques.
+\item Les institutions financières non-bancaires. On peut citer les fonds de pensions, les sociétés d'assurances ou les \textit{hedge funds}. Ce sont surtout dans un but de spéculation, d'arbitrage ou de couverture de risque qu'elles interviennent.
+\item Les banques centrale. Il peut y avoir des interventions directes, dans le but de modifier l'appréciation de la monnaie.
+\item Les ménages. Surtout dans une optique de voyage, d'achat ou de spéculation.
 \end{itemize}
 
 \paragraph{}
-Le marché \textit{FOREX} porte sur les devises. La valeur d'une devise doit être exprimée en fonction d'une autre. Il ne peut être dit qu'un franc suisse vaut 10. Il faut l'exprimer comme 1 franc suisse vaut 1.05 euro.\footnote{Taux fictif utilisé pour l'exemple.}
-La transaction porte donc sur deux monnaies par exemple CHF/EUR\footnote{Franc Suisse - Euro} ou CHF/USD\footnote{Franc Suisse - Dollar Américain}. On va vendre des francs suisses pour acheter des dollars ou vendre des euros et acheter des franc suisses.
-Le nom du marché vient d'ailleurs de ces échanges. On échange une monnaie contre une autre, c'est un \textit{FOreign EXchange}, ou \textit{FOREX}.
-
-Les prix proviennent de l'offre et la demande. Comme illustration récente, on peut citer le cas de la Suisse. Le CHF étant jugé plus sûr, par le marché, que l'EUR, son prix a augmenté par rapport à l'EUR. Car la demande était importante. On peut également mentionner que même si les marchés peuvent être corrélés, il peut y avoir des différences. Par exemple\footnote{Source des images : $[$ \ref{historique taux de change} $]$}: \paragraph{}
-\newpage
-\begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.35]{images/chf_eur_5ans}
-\caption{Cours CHF/EUR de 2013 à 2017}
-\end{figure}
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.35]{images/chf_usd_5ans}
-\caption{Cours CHF/USD de 2013 à 2017}
-\end{figure}
+Henry Bourguinat a énoncé "\textit{la règle des trois unités}" qui correspondent aux unités de temps, de lieu et d'opérations et d'acteurs.
+Le \textit{FOREX} répond à ces trois unités \ref{site fr forex}:
+\begin{itemize}
+\item Ce marché fonctionne 24h/24 et les transactions s'effectuent presque en continue.
+\item Il fonctionne à l'échelle mondiale tout en étant décentralisé. De part l'évolution des technologies, l'information circule aisément malgré son statut.
+\item L'uniformité des procédés ainsi que des produits est présente. Les acteurs malgré nationalité sont de même nature.
+\end{itemize}
 
 \paragraph{}
-On peut observer qu'en fin 2014, début 2015, le CHF a pris de la valeur par rapport à l'EUR et l'USD. Mais qu'ensuite le CHF a été dévalué par rapport à l'USD alors qu'il est resté stable par rapport à l'EUR.
-Il peut donc y avoir corrélation comme en fin 2014, début 2015, mais les marchés des devises ne sont pas forcément liés.
+Il existe principalement deux horizon temporels : le \textit{spot} et le {forward}.
 
-\paragraph{}
-La mondialisation a facilité ce marché. En effet, toutes les devises sont accessibles depuis n'importe où. Il devient donc possible d'avoir des marchés avec des devises plus exotiques.
+Le premier est également appelé "Le marché au comptant". Lorsque deux acteurs se mettent d'accord sur une transaction, cette dernière se réalise immédiatement\footnote{Valable en théorie, dans la réalité cela peut prendre du temps \ref{marche des changes}}.
 
-Les principaux outils financiers utilisés sont les options. Nous 
+Le second peut être nommé "Le marché à terme". L'accord est passé à un temps $T$ mais la transaction effective ne se réalise que dans le futur. Ce futur, ou maturité, peut être de plusieurs dizaines de jours, voir des années, soit $T + X$.
+
+Il y a opérations réalisable sur le marché à terme. :
+\begin{itemize}
+\item Les \textit{swaps}. Ils consistent vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$}.
+\item Les \textit{futures/forwards}. La différence entre ces deux tient surtout à leur standardisation et leur mise en place. Cependant le principe reste le même : on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
+\item Les \textit{options}. Dans ce cas, on achète/vend un droit. Par exemple, on peut vendre le droit d'acheter une monnaie à un certain prix. Le détenteur du droit peut choisir de ne pas l'exercer au contraire du \textit{futures/forwards}.
+\end{itemize}
+
 
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
@@ -137,6 +163,10 @@ Les principaux outils financiers utilisés sont les options. Nous
 \item Exemple de réseaux de neurones\url{http://csc.lsu.edu/~jianhua/nn.pdf} p.5
 \item \textit{Backtesting} Investopedia \url{http://www.investopedia.com/terms/b/backtesting.asp} \label{backtesting investopedia}
 \item Historique des taux de changes : \url{http://www.xe.com/currencycharts/} \label{historique taux de change}
+\item Article Wikipedia sur les Accords de Bretten Woods : \url{https://fr.wikipedia.org/wiki/Accords_de_Bretton_Woods} \label{wikipedia bretten woods}
+\item Article Étalon-Or à Étalon-Dollar : \url{http://la-chronique-agora.com/etalon-or-etalon-dollar/} \label{étalon-or à étalon-dollar}
+\item \textit{CHAPITRE 1 : LE MARCHE DES CHANGES Monnaie et Finance Internationales} de David Guerreiro, Université Paris 8, \url{https://economix.fr/docs/1045/chap_1_2015-16.pdf} \label{marche des changes}
+\item Site \textit{FOREX} français : \url{http://www.forex.fr/newslist/8696-la-regle-des-trois-unites-du-marche-des-changes} \label{site fr forex}
 \end{enumerate}
 
 
