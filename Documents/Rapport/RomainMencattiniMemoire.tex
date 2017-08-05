@@ -134,6 +134,39 @@ Il y a opérations réalisable sur le marché à terme. :
 
 
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
+\subsubsection{Introduction}
+\paragraph{}
+T. Mitchell a donné une définition formelle \ref{mitchell}:
+\begin{center}
+"\textit{A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$ is its performance at tasks in $T$, as measured by $P$, improves with experience $E$}"
+\end{center}
+
+On a donc une tâche $T$ à accomplir, où $T$ peut être de trier des images ou de reconnaître des motifs. La mesure de la réussite de cette tâche $T$ est nommée $P$. C'est-à-dire la qualité du résultat du programme pour la tâche donnée, $T$. Si le programme améliore son résultat $P$ pour la tâche $T$ grâce à de l'expérience $E$. Il s'agit d'un programme de \textit{machine learning}. L'expérience peut être vu comme une phase d'entraînement ou comme le fait de retenir les réponses après avoir accompli la tâche.
+
+\paragraph{}
+Il existe deux catégories d'apprentissage :
+\begin{itemize}
+\item L'apprentissage supervisé.
+\item L'apprentissage non-supervisé.
+\end{itemize}
+
+Dans le cas du premier, on fournit au programme, un ensemble d'entraînement\footnote{Ou d'expérience, $E$}, qui contient des réalisations ainsi que le résultat voulu. Le programme va donc pouvoir utiliser ce savoir afin d'améliorer sa performance $P$.
+
+Pour l'apprentissage non-supervisé, on fournit des données, mais sans le résultat voulu. C'est uniquement après avoir décidé d'une valeur qu'on va signifier au programme si cette dernière est correcte. On ne lui donnera jamais la valeur attendue. Il va donc, uniquement en sachant si ces réponses sont vraies ou fausses, améliorer son $P$.
+
+Par exemple, on désire reconnaître un certain type de voiture à partir d'images, mettons une citroën 2CV. Dans le cas de l'apprentissage supervisé, nous allons fournir au programme un ensemble d'entraînement qui contient de nombreuses photos de voitures, ainsi que la marque des dites voitures. L'algorithme va donc travailler avec ces données.
+
+Par contre dans le cas de l'apprentissage non-supervisé, le programme ne pourra utiliser que les photos, et après avoir retourné le résultat, nous lui dirons si c'est juste ou faux.
+
+\paragraph{}
+Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte afin de minimiser les risques de sur-apprentissage\footnote{Le sur-apprentissage consiste à apprendre par coeur la tâche, plutôt que d'apprendre les principes pour réaliser la tâche.}, et de maximiser la qualité de nos données.
+Pour ce faire il faut:
+\begin{itemize}
+\item Représenter la population générale. Donc si le but est du traitement de la langue, il faut que la propension et la répartition des mots soient les mêmes que ceux de la langue.
+\item Contenir des membres de chaque classes. Pour reconnaître des chiffres, il est important de disposer de chacun des chiffres dans l'ensemble d'entraînement.
+\item Contenir de grandes variations ainsi que du bruit. Afin d'éviter le sur-apprentissage, il faut de nombreux exemples différents, voir très différents, les uns des autres ainsi que du bruit\footnote{Comme des faux exemples.}.
+\end{itemize}
+
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
 \subsection{Conclusion}
 \newpage
@@ -152,7 +185,7 @@ Il y a opérations réalisable sur le marché à terme. :
 \item "\textit{A Machine Learning Approach to Automated Trading}", 09.05.2016, Ning Lu
 \item "\textit{An efficient implementation of the backtesting of trading strategies.}" Ni, Jiarui, et Chegqi Zhang, \textit{Parallel and Distributed Processing and Applications} (2005): 126-131.
 \item "\textit{Algorithmic Trading: Winning Strategies and Their Rationale ( Wiley Trading Series)}", John Wiley and Sons, 2013
-\item "\textit{Machine Learning}", Mitchell, Tom M. New York, 1997.
+\item "\textit{Machine Learning}", Mitchell, Tom M. New York, 1997. \label{mitchell}
 \item Article Wikipédia sur SVM : \url{https://fr.wikipedia.org/wiki/Machine_\%C3\%A0_vecteurs_de_support} \label{wikipedia svm}
 \item "\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}", Eleftherios Soulas et Dennis Shasha de NYU, Courant Department. \label{descente du gradient stochastique}
 \item  Article Wikipédia sur Algorithme du gradient : \url{https://fr.wikipedia.org/wiki/Algorithme_du_gradient} \label{wikipedia descente du gradient}
