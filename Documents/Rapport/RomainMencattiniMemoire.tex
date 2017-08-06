@@ -129,8 +129,24 @@ Il y a opérations réalisable sur le marché à terme. :
 \begin{itemize}
 \item Les \textit{swaps}. Ils consistent vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$}.
 \item Les \textit{futures/forwards}. La différence entre ces deux tient surtout à leur standardisation et leur mise en place. Cependant le principe reste le même : on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
-\item Les \textit{options}. Dans ce cas, on achète/vend un droit. Par exemple, on peut vendre le droit d'acheter une monnaie à un certain prix. Le détenteur du droit peut choisir de ne pas l'exercer au contraire du \textit{futures/forwards}.
+\item Les \textit{options}. Cela représente un contract vendu par un parti (\textit{the option writer}) à un autre parti (\textit{the option holder}). Ce contrat offre le droit, et non l'obligation contrairement aux \textit{futures/forwards}, d'acheter (\textit{call}) ou de vendre (\textit{put}). Ici encore, il faut attendre la maturité.
 \end{itemize}
+
+Les options sont très versatiles. Elles peuvent être utilisées afin de spéculer ou de diminuer le risque. Voici les différents types possibles:
+\begin{itemize}
+\item \textbf{long call} $\rightarrow$ on achète le droit d'acheter le sous-jacent à un certain prix.
+\item \textbf{short call} $\rightarrow$ on vend le droit d'acheter le sous-jacent à un certain prix.
+\item \textbf{long put} $\rightarrow$ on achète le droit de vendre le sous-jacent à un certain prix.
+\item \textbf{short put} $\rightarrow$ on vend le droit de vendre le sous-jacent à un certain prix.
+\end{itemize}
+
+\paragraph{}
+Le \textit{bid} est le prix maximum qu'un acheteur est d'accord de payer pour un sous-jacent.
+De la même manière, le \textit{ask} est le prix minimum qu'un vendeur accepte pour vendre un sous-jacent \ref{investopedia bid ask}.
+Lorsqu'il y a un \textit{bid} qui a la même valeur qu'un {ask}, une vente est effectuée. 
+
+La différence entre le \textit{bid} et le \textit{ask} représente la liquidité d'un actif. Il est également utilisé comme marge par les \textit{broker}\ref{wikipedia broker} et autres plateformes.
+
 
 
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
@@ -150,13 +166,14 @@ Il existe deux catégories d'apprentissage :
 \item L'apprentissage non-supervisé.
 \end{itemize}
 
-Dans le cas du premier, on fournit au programme, un ensemble d'entraînement\footnote{Ou d'expérience, $E$}, qui contient des réalisations ainsi que le résultat voulu. Le programme va donc pouvoir utiliser ce savoir afin d'améliorer sa performance $P$.
+Dans le cas du premier, on fournit au programme, un ensemble d'entraînement\footnote{Ou d'expérience, $E$}, qui contient des réalisations ainsi que le résultat de la classification. Le programme va donc pouvoir utiliser ce savoir afin d'améliorer sa performance $P$.
+Nous disposons donc de nombreux couples $(x_i, y_i)$ et le but est de trouver une fonction $f \in F$ telle que : $f(x) = y$.
 
-Pour l'apprentissage non-supervisé, on fournit des données, mais sans le résultat voulu. C'est uniquement après avoir décidé d'une valeur qu'on va signifier au programme si cette dernière est correcte. On ne lui donnera jamais la valeur attendue. Il va donc, uniquement en sachant si ces réponses sont vraies ou fausses, améliorer son $P$.
+Pour l'apprentissage non-supervisé, on fournit des données, mais sans le résultat voulu. C'est uniquement après avoir décidé d'une valeur qu'on va signifier au programme si cette dernière est correcte. On ne lui donnera jamais la valeur attendue. Il va donc utiliser uniquement les résultats précédents pour améliorer son $P$.
 
-Par exemple, on désire reconnaître un certain type de voiture à partir d'images, mettons une citroën 2CV. Dans le cas de l'apprentissage supervisé, nous allons fournir au programme un ensemble d'entraînement qui contient de nombreuses photos de voitures, ainsi que la marque des dites voitures. L'algorithme va donc travailler avec ces données.
+Par exemple, on désire reconnaître un certain type de voiture à partir d'images. Dans le cas de l'apprentissage supervisé, nous allons fournir au programme un ensemble d'entraînement qui contient de nombreuses photos de voitures, ainsi que la marque des dites voitures. L'algorithme va donc travailler avec ces données.
 
-Par contre dans le cas de l'apprentissage non-supervisé, le programme ne pourra utiliser que les photos, et après avoir retourné le résultat, nous lui dirons si c'est juste ou faux.
+Par contre dans le cas de l'apprentissage non-supervisé, le programme ne pourra utiliser que les photos, et après avoir retourné le résultat, nous lui dirons si c'est juste ou faux. Il mémorisera le résultat et va tenter d'optimiser ses réponses.
 
 \paragraph{}
 Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte afin de minimiser les risques de sur-apprentissage\footnote{Le sur-apprentissage consiste à apprendre par coeur la tâche, plutôt que d'apprendre les principes pour réaliser la tâche.}, et de maximiser la qualité de nos données.
@@ -166,6 +183,9 @@ Pour ce faire il faut:
 \item Contenir des membres de chaque classes. Pour reconnaître des chiffres, il est important de disposer de chacun des chiffres dans l'ensemble d'entraînement.
 \item Contenir de grandes variations ainsi que du bruit. Afin d'éviter le sur-apprentissage, il faut de nombreux exemples différents, voir très différents, les uns des autres ainsi que du bruit\footnote{Comme des faux exemples.}.
 \end{itemize}
+
+\paragraph{}
+Il est important de saisir comment fonctionner les algorithmes de \textit{machine learning}. Les données étant "fixes", elles ne peuvent être modifiées afin d'augmenter la performance de classification. Une fois qu'on dispose d'un \textit{tick} en finance ou bien d'un \textit{review}  sur un produit, on ne peut en changer l'expressivité. Il convient donc d'utiliser ces données, souvent de très hautes dimensionnalités, dans des équations dont on pourra faire varier les paramètres afin de classifier au mieux. Le coeur des algorithmes de \textit{machine learning} se trouve donc dans ses équations, qu'il va convenir d'optimiser..
 
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
 \subsection{Conclusion}
@@ -200,6 +220,8 @@ Pour ce faire il faut:
 \item Article Étalon-Or à Étalon-Dollar : \url{http://la-chronique-agora.com/etalon-or-etalon-dollar/} \label{étalon-or à étalon-dollar}
 \item \textit{CHAPITRE 1 : LE MARCHE DES CHANGES Monnaie et Finance Internationales} de David Guerreiro, Université Paris 8, \url{https://economix.fr/docs/1045/chap_1_2015-16.pdf} \label{marche des changes}
 \item Site \textit{FOREX} français : \url{http://www.forex.fr/newslist/8696-la-regle-des-trois-unites-du-marche-des-changes} \label{site fr forex}
+\item Investopedia Bid-Ask : \url{http://www.investopedia.com/terms/b/bid-and-asked.asp} \label{investopedia bid ask}
+\item Wikipedia Broker : \url{https://en.wikipedia.org/wiki/Broker} \label{wikipedia broker}
 \end{enumerate}
 
 
