@@ -12,7 +12,7 @@
 \usepackage{fancyhdr} % pour utiliser le pagestyle fancy
 \usepackage[headheight=10pt]{geometry} % pour les marges
 \usepackage[T1,hyphens]{url}
-\usepackage[colorlinks,urlcolor=blue]{hyperref}
+\usepackage[colorlinks,urlcolor=blue, linkcolor=blue]{hyperref}
 \usepackage{float}
 \usepackage[perpage]{footmisc}
 
@@ -319,6 +319,107 @@ Afin de diminuer l'erreur et optimiser au mieux notre classifieur.
 \subsubsection{Réseaux de neurones}
 \paragraph{}
 Tout comme les algorithmes génétiques qui s'inspirent de la sélection naturelle dans un but d'optimisation, les réseaux de neurones se basent sur un modèle formels de neurones\footnote{Neurones formels: \url{http://www.peoi.org/Courses/Coursesfr/neural/neural3.html}} afin de copier la capacité d'apprentissage des êtres vivants.
+
+Il s'agit d'opérer à partir de données en entrée, des \textit{inputs}, une ou plusieurs multiplications matricielles en utilisant des vecteurs de poids, des \textit{weigth}. L'optimisation s'applique sur les \textit{weights}, afin de maximiser la classification.
+
+Un réseau de neurones peut avoir plusieurs couches, \textit{layers}. Dans ce cas, la première couche est appelée \textit{input layer}, la dernière \textit{output layer} et toutes celles entre ces deux sont les \textit{hidden layers}. De plus les neurones peuvent être pleinement connectés avec ceux de la couche suivante, \textit{feed-forward}; ce qui signifie que les neurones de la couche $n-1$ influencent ceux de la couche $n$. À l'opposé, il est possible que ceux en $n$ pèsent sur les neurones de $n-1$, ce phénomène est appelé \textit{feedback networks}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/neural_net_feedforward}
+\caption[]{Exemple de réseau de neurones avec plusieurs couches. Illustre également le \textit{feed-forward}: l'\textit{ouput} de l'\textit{input layer} est propagé dans chaque neurones de l'\textit{hidden layer}. Même chose pour les deux dernières couches.\footnotemark}
+\end{figure}
+
+\footnotetext{Source: \url{http://web.utk.edu/~wfeng1/spark/_images/fnn.png}}
+
+\begin{figure}[H]
+\centering
+\includegraphics{images/neural_net_feedback}
+\caption[]{Exemple de réseau de neurones avec plusieurs couches. Dans ce cas là, les couches sont \textit{feed-forward} mais de plus, le \textit{feedback} est utilisé afin d'influencer les couches précédant l'\textit{output layer}.\footnotemark}
+\end{figure}
+
+\footnotetext{Source: \url{https://www.researchgate.net/profile/Yen-Ming_Chiang/publication/222562767/figure/fig2/AS:305112384851969@1449755869325/Fig-2-The-architecture-of-a-recurrent-neural-network.png}}
+
+\paragraph{}
+Concernant la valeur de sortie, elle peut être simple. Comme le résultat d'un classification binaire, donc $0$ ou $1$ en sortie. Mais elle peut également être multiple. Il est donc possible d'avoir un résultat étant un vecteur, comme par exemple un point précis dans un espace $R^2$.
+
+Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonction. Nous pouvons citer :
+\begin{itemize}
+\item La fonction sigmoïde : $S(t) = \frac{1}{1 + e^{-t}}$.
+\item La fonction tangente hyperbolique : $f(x) = tanh(x)$.
+\end{itemize}
+
+Bien souvent, l'utilisation d'un réseau de neurones à une couche est suffisante. Cela est valable pour les fonctions continues, dans le cas de fonctions discontinues, il est intéressant de passer à un réseau disposant de plusieurs couches. Attention toutefois, si le nombre de neurones est trop important, l'algorithme va avoir tendance à sur-apprendre, et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc important de bien doser cette quantité afin d'éviter ces problèmes.
+
+\subsubsection{Descente du gradient}
+\paragraph{}
+L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel quel $\mathbb{R}^n$. Il est itératif est fonctionne donc en améliorant l'itération précédente, jusqu'à atteindre une condition d'arrêt.
+
+Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme dans $\mathbb{R}^2$ :
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{images/descente_gradient_exemple}
+\caption[]{Exemple de l'algorithme de descente du gradient en deux dimensions. À chaque itération, il faut prendre la direction opposée au gradient\footnotemark, cela permet d'arriver à un nouveau point. En itérant, on se rapproche de l'maximum. }
+\end{figure}
+
+\footnotetext{Dans cet exemple, il est possible de dire, qu'il faut prendre la normal de la courbe de niveau.}
+
+\paragraph{}
+Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques sur ce sujet. L'algorithme se définit comme suit :
+
+\paragraph{}
+\footnote{Inspiré de [\ref{wikipedia descente du gradient}]}Soit un point initial $x_0 \in \mathbb{R}$. Soit $\epsilon > 0$ un seuil de tolérance. L'algorithme définit une suite d'itération $x_1,x_2,.. \in \mathbb{R}^n$, jusqu'à ce qu'un test d'arrêt soit satisfait. Pour passer de $x_i$ à $x_{i+1}$, il faut :
+\begin{itemize}
+\item Calculer $\bigtriangledown f(x_k)$
+\item Si $||\bigtriangledown f(x_k) \le \epsilon$ alors arrêt.
+\item Sinon il faut calculer $\alpha_k$ par recherche linéaire sur $f$ en $x_k$. Cette recherche se fait dans la direction opposée au gradient, soit $-\bigtriangledown f(x_k)$. Une fois $\alpha_k$ calculé, il faut mettre à jour le point itéré : $$x_{k+1} = x_k - \alpha_k \bigtriangledown f(x_k)$$
+\end{itemize}
+
+\paragraph{}
+La preuve que la recherche dans la direction opposée au gradient induit une décroissance est la suivante.
+Si la dérivée est non nulle au point $x$\footnote{i.e: Si nous ne sommes pas déjà sur un maximum}, $f'(x) \ne 0$. Soit
+$$d = - \bigtriangledown f(x)$$
+Puisque :
+$$f'(x) \cdot d = \bigtriangledown f(x) \cdot -\bigtriangledown f(x) = - ||\bigtriangledown f(x) ||^2 < 0$$
+
+Nous avons un strictement plus petit car la dérivée est non nulle par hypothèse. Cela implique que :
+$$f(x -\alpha \bigtriangledown f(x)) < f(x)\text{,\ } \forall \alpha > 0$$
+
+Nous avons donc que pour chaque itération, la valeur obtenue va décroître jusqu'à attendre un maximum ou le seuil $\epsilon$.
+
+\paragraph{}
+Il existe deux types d'algorithme de descente du gradient :
+\begin{itemize}
+\item Le \textit{Batch Algorithm} a pour but de minimiser la fonction de coût qui aura été définie au préalable. Ce dernier peut prendre énormément de temps sur des gros jeux de données de par son côté itératif.
+\item Le \textit{Online Algorithm} va prendre les exemples un à un. L'optimisation ne va se faire que pour cet unique exemple puis va recommencer sur une autre donnée. Cette manière de procéder s'applique aisément sur les gros volumes de données.
+\end{itemize}
+
+Tiré cet article [\ref{descente du gradient stochastique}], voici des équations pouvant être minimisée dans le cadre d'un programme de \textit{machine learning}.
+Soit $(x_i,y_i)\text{,\ } i=1..N$, un ensemble de données. Notre fonction de coût est $l(y,y')$. Cela représente le coût de prédire $y'$ quand la réponse est $y$. Moyennons cela sur tous les exemples :
+$$E_N(f) = \frac{1}{N} \sum_{i=1}^{n}l(f_w(x_i),y_i)$$
+Où $f_w$ est une fonction pondérée par un vecteur de poids $w$ que l'on cherche à optimiser.
+Pour optimiser les poids, nous allons utiliser la descente du gradient :
+$$w_{k+1} = w_k - \alpha_k \bigtriangledown f_{w_k}(x) \rightarrow w_{k+1} = w_k -\alpha_k \sum_{i=1}^n \bigtriangledown Q ((x_i,y_i), w_k)$$
+
+Où $Q(x,y) = l(f_w(x),y)$.
+
+\paragraph{}
+Comme mentionné plus haut, la technique de \textit{Batch Algorithm} devient lente lorsque la taille du jeu de données augmente. Pour pallier à ce problème, il existe une technique : \textit{stochastic gradient descent}. C'est une méthode d'approximation statistique de la descente du gradient.
+
+Il convient de ne prendre qu'un seul couple au lieu de l'ensemble complet d'entraînement. La somme disparaît donc dans l'équation à minimiser :
+$$w_{k+1} = w_k -\alpha_k \bigtriangledown Q ((x_i,y_i), w_k)$$
+C'est donc une technique de \textit{Online Algorithm}. De part le fait qu'il n'a pas besoin de se souvenir des exemples précédant, l'algorithme peut traiter des données à la volée.
+
+Il est possible pour pénaliser la complexité de $w$ de rajouter un élément. Cela d'essayer de borner les valeurs des poids:
+$$w_{k+1} = w_k -\alpha_k \bigtriangledown Q ((x_i,y_i), w_k) + \sigma P(w_k)$$
+
+Où $\sigma > 0$ est un hyper-paramètre et $P$ peut valoir :
+\begin{itemize}
+\item \textbf{L1 norm} = $P(w) := \sum\limits_{i=1}^n |w_i|$
+\item \textbf{L2 norm} = $P(w) := \frac{1}{2}\sum\limits_{i=1}^n w_i^2$
+\item \textbf{Elastic Net} = $P(w) := \rho \frac{1}{2}\sum\limits_{i=1}^n w_i^2 + (1 - \rho) \sum\limits_{i=1}^n |w_i|$
+\end{itemize}
 
 
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
