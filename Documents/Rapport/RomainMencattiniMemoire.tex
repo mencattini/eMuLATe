@@ -351,6 +351,11 @@ Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonc
 
 Bien souvent, l'utilisation d'un réseau de neurones à une couche est suffisante. Cela est valable pour les fonctions continues, dans le cas de fonctions discontinues, il est intéressant de passer à un réseau disposant de plusieurs couches. Attention toutefois, si le nombre de neurones est trop important, l'algorithme va avoir tendance à sur-apprendre, et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc important de bien doser cette quantité afin d'éviter ces problèmes.
 
+\paragraph{}
+L'article qui se trouve au coeur du projet [\ref{fx trading}] propose un algorithme basé sur les réseaux de neurones. Il s'agit de trois couches qui doivent chacune une série de paramètres. La première va maximiser la première série de paramètres suivant certain critères. Une fois ces paramètres changés, ils deviennent des constantes pour les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant comme les valeurs des paramètres de la première couche constant. Le même principe est répété pour la troisième couche.
+
+Ce n'est donc pas un réseau à multiples couches, dans le sens où, une série de paramètres n'est optimisée que par une couche et non plusieurs. On peut visualiser cela comme trois réseaux qui chaînent leurs résultats.
+
 \subsubsection{Descente du gradient}
 \paragraph{}
 L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel quel $\mathbb{R}^n$. Il est itératif est fonctionne donc en améliorant l'itération précédente, jusqu'à atteindre une condition d'arrêt.
@@ -387,6 +392,13 @@ Nous avons un strictement plus petit car la dérivée est non nulle par hypothè
 $$f(x -\alpha \bigtriangledown f(x)) < f(x)\text{,\ } \forall \alpha > 0$$
 
 Nous avons donc que pour chaque itération, la valeur obtenue va décroître jusqu'à attendre un maximum ou le seuil $\epsilon$.
+
+\paragraph{}
+La descente du gradient d'un point de vue mathématique peut également être utilisée conjointement à un réseau de neurones. En effet dans cet article [\ref{fx trading}], les poids $w$ de la première couche, sont optimisés suivant cette formule :
+$$w_{i,t} = w_{i-1,t} + \rho \bigtriangleup w_{i,t}$$
+
+Où $t$ correspond au temps, $i-1$ à l'itération courante et $\rho$ le taux d'apprentissage.
+De part la convergence de $w_i$ vers son optimale, cela permet, une fois cette valeur obtenue, de l'injecter comme étant les poids d'un réseau de neurones.
 
 \paragraph{}
 Il existe deux types d'algorithme de descente du gradient :
@@ -439,6 +451,7 @@ Il est donc très compliqué de comparer les résultats des algorithmes et d'aff
 \section{Bibliographie}
 
 \begin{enumerate}
+\item "\textit{An automated fx trading system using adaptive reinforcement learning}" de M.A.H Dempster et V. Leemans 2004. \label{fx trading}
 \item Financial Times: "\textit{Real investors eclipsed by fast trading}", 2012 \url{https://www.ft.com/content/da5d033c-8e1c-11e1-bf8f-00144feab49a?mhq5j=e1} \label{real investors}
 \item "\textit{A Machine Learning Approach to Automated Trading}", 09.05.2016, Ning Lu \label{machine learning automated trading}
 \item "\textit{An efficient implementation of the backtesting of trading strategies.}" Ni, Jiarui, et Chegqi Zhang, \textit{Parallel and Distributed Processing and Applications} (2005): 126-131.
