@@ -39,20 +39,20 @@
 \section{État de l'art}
 \subsection{Introduction}
 \paragraph{}
-Avant la démocratisation de l'informatique et de son utilisation, toutes les opérations financières étaient réalisées par des humains. Ce système pouvait avoir des inconvénients:
+Avant la démocratisation de l'informatique, les opérations financières étaient réalisées par des humains. Ce système pouvait avoir des inconvénients:
 \begin{itemize}
-\item L'émotionnel pouvait influer les transactions. En effet, ces dernières étant effectuées par des humains, il y avait une risque non négligeable que l'état de la personne agisse sur sa décision.
-\item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à ce plan afin de ne pas ce laisser influencer par des paramètres extérieurs. Cela pouvait être très difficile.
+\item L'émotionnel influençait les transactions. En effet, ces dernières étant effectuées par des humains, il y avait une risque non négligeable que l'état de la personne agisse sur sa décision.
+\item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à une plan afin de ne pas se laisser influencer par des paramètres extérieurs. Cela pouvait être très difficile.
 \item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. [\ref{backtesting investopedia}]} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
 \end{itemize}
 
 \paragraph{}
 Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux USA, 84\% des transactions étaient accomplies par des algorithmes [\ref{real investors}]. Ce qui représente environ 100000 réalisations, ou \textit{ticks}, par secondes [\ref{real investors}].
-De part l'utilisation intensive de cet outil informatique, le monde de la finance a suivi l'évolution de ce domaine. Afin de perfectionner leurs algorithmes.
-On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. Des propositions de plus en poussées dans les deux domaines voient le jour. L'algorithme qui sera au coeur de ce projet en fait partie. Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
+Durant l'évolution l'outil informatique, le monde de la finance en a suivi les améliorations afin de perfectionner leurs algorithmes.
+On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. Des propositions de plus en ppointues dans les deux domaines voient le jour. L'algorithme qui sera au coeur de ce projet en fait partie. Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
 
-\paragraph{}Afin d'approcher aux mieux ces notions, nous allons discuter des éléments nécessaires à la compréhension.
-Nous allons en premier lieu introduire le domaine financier ainsi que ces outils. Puis nous parlerons de plusieurs méthodes de \textit{ML}.
+\paragraph{}Afin d'approcher aux mieux ces notions, nous allons discuter des éléments nécessaires à leur compréhension.
+Nous allons en premier lieu traiter une partie domaine financier ainsi que ces outils. Puis nous parlerons de plusieurs méthodes de \textit{ML}.
 Voici celles vont être développées dans cet état de l'art:
 \begin{itemize}
 \item Les réseaux de neurones.
@@ -63,51 +63,51 @@ Voici celles vont être développées dans cet état de l'art:
 \item Descente du Gradient [\ref{wikipedia descente du gradient}] ainsi que sa version dite stochastique [\ref{descente du gradient stochastique}].
 \end{itemize}
 
-Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}.
+Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}, en évaluant leur performances.
 
 
 \subsection{Finance}
 
 \subsubsection{\textit{FOREX}}
 
-\paragraph{}Afin de comprendre le fonctionnement du \textit{FOREX}, il est important de mentionner certaines décisions historiques. Ces dernières ont façonné le marché des devises actuel.
+\paragraph{}Afin d'appréhender le fonctionnement du \textit{FOREX}, il est important de mentionner certaines décisions historiques. Ces dernières ayant façonné le marché des devises actuel.
 
 \paragraph{}
-Jusqu'à la première guerre mondiale, le système en vigueur se base sur l'or, que l'on nomme l'étalon-or\footnote{Source: [\ref{étalon-or à étalon-dollar}].}. S'en suit une période d'instabilité notamment dûe aux pertes occasionnées par la guerre, un après-guerre compliqué, la crise boursière de 1929 et la seconde guerre mondiale.
+Jusqu'à la première guerre mondiale, le système en vigueur se basait sur l'or, que l'on nommait l'étalon-or\footnote{Source: [\ref{étalon-or à étalon-dollar}].}. S'en suit une période d'instabilité notamment dûe aux pertes occasionnées par la guerre, un après-guerre compliqué, la crise boursière de 1929 et la seconde guerre mondiale.
 
 C'est au sortir de cette dernière, que la nécessité de "\textit{mettre en place une organisation monétaire mondiale et de favoriser la reconstruction et le développement économique des pays touchés par la guerre}" [\ref{wikipedia bretten woods}], est apparue. Le but était également "\textit{d’aplanir les conflits économiques, reconnaissant par là les problèmes engendrés par les disparités économiques}" [\ref{étalon-or à étalon-dollar}].
 
-Plusieurs propositions furent proposées, mais ce fût celle de Harry Dexter White qu'on mit en place. Cette dernière prévoyait entre autre:
+Plusieurs idées furent proposées, mais ce fût celle de Harry Dexter White qui fût mise en place. Cette dernière prévoyait entre autre:
 \begin{itemize}
-\item le choix du Dollar américain comme étalon, ce dernier étant rattaché à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 [\ref{wikipedia bretten woods}].}.
+\item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 [\ref{wikipedia bretten woods}].}.
 \item Création de la Banque internationale pour la reconstruction et le développement (BIRD) qui deviendra la banque mondiale.
 \item Le Fond monétaire international (FMI).
 \item Création de l'Organisation mondial du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord [\ref{wikipedia bretten woods}].}.
 \end{itemize}
 
-On remarque que ces institutions sont toujours en activité, cela démontre l'importance de ces accords pour comprendre le système financier. Cela est également vrai pour le marché des taux de changes, où le USD est toujours utilisé entre deux échanges.
-Il n'est en effet pas possible de faire CHF/EUR\footnote{Franc Suisse - Euro}. Le passage par le USD entre les deux est obligatoire; nous aurons donc CHF/USD\footnote{Franc Suisse - Dollar Américain} puis USD/EUR\footnote{Dollar Américain - Euro}
+On remarque que ces institutions sont toujours en activités, cela démontre l'importance de ces accords pour le système financier actuel. Cela est également vrai pour le marché des taux de changes, où le USD est toujours utilisé entre deux échanges.
+Il n'est en effet pas possible de faire CHF/EUR\footnote{Franc Suisse - Euro}. Le passage par le USD entre les deux est obligatoire; nous aurons donc CHF/USD\footnote{Franc Suisse - Dollar Américain} puis USD/EUR\footnote{Dollar Américain - Euro}, même si cela reste transparent pour l'utilisateur.
 
 \paragraph{}
 Le marché \textit{FOREX} porte sur les devises. La valeur d'une devise ne peut être exprimée qu'en fonction d'une autre. Par exemple 1 franc suisse vaut 1.05 euro.\footnote{Taux fictif utilisé pour l'exemple.}
 La transaction porte donc sur deux monnaies comme CHF/EUR. On va vendre des francs suisses pour acheter euros ou l'inverse.
 Le nom du marché vient d'ailleurs de ces échanges. On échange une monnaie contre une autre, c'est un \textit{FOreign EXchange}, ou \textit{FOREX}.
 
-Il y a deux variations de la monnaie possibles:
+Il y a deux variations possibles:
 \begin{itemize}
 \item La monnaie peut subir une dépréciation.
 \item La monnaie peut subir une appréciation.
 \end{itemize}
-Lorsque le prix d'une monnaie augmente par rapport à une monnaie étrangère augmente, on parle d'appréciation. Ainsi dans le cas contraire, on parlera d'une dépréciation.
+Lorsque le prix d'une devise augmente par rapport à une monnaie étrangère, on parle d'appréciation. Ainsi dans le cas contraire, on parlera d'une dépréciation.
 
-La mondialisation a facilité ce marché. En effet, toutes les devises sont accessibles depuis n'importe où. Il devient donc possible d'avoir des marchés avec des devises plus exotiques.
+La mondialisation a facilité ce marché. En effet, toutes devises étant accessibles depuis n'importe où, il devient donc possible d'avoir des marchés avec des devises plus exotiques.
 
 \paragraph{}
 Les principaux acteurs financiers sont [\ref{marche des changes}]:
 \begin{itemize}
-\item Les banques commerciales. Elles peuvent pratiquer des interventions directes car elles gèrent des dépôts et veulent opérer des transactions sur ces derniers. Il est également possible de réaliser le rôle d'intermédiaire financier.
-\item Les entreprises. Ces dernières vont pratique des transactions directes, si elles disposent d'un accès aux marchés sinon via des banques.
-\item Les institutions financières non-bancaires. On peut citer les fonds de pensions, les sociétés d'assurances ou les \textit{hedge funds}. Ce sont surtout dans un but de spéculation, d'arbitrage ou de couverture de risque qu'elles interviennent.
+\item Les banques commerciales. Elles peuvent pratiquer des interventions directes car elles gèrent des dépôts et veulent opérer des transactions sur ces derniers. Il leur est également possible de réaliser le rôle d'intermédiaire financier.
+\item Les entreprises. Ces dernières vont pratique des transactions directes, si elles disposent d'un accès aux marchés sinon via des intermédiaires.
+\item Les institutions financières non-bancaires. On peut citer les fonds de pensions, les sociétés d'assurances ou les \textit{hedge funds}. Ce sont surtout dans un but de spéculation, d'arbitrage ou de couverture de risque qu'elles agissent.
 \item Les banques centrale. Il peut y avoir des interventions directes, dans le but de modifier l'appréciation de la monnaie.
 \item Les ménages. Surtout dans une optique de voyage, d'achat ou de spéculation.
 \end{itemize}
@@ -122,15 +122,15 @@ Le \textit{FOREX} répond à ces trois unités [\ref{site fr forex}]:
 \end{itemize}
 
 \paragraph{}
-Il existe principalement deux horizon temporels: le \textit{spot} et le {forward}.
+Il existe principalement deux horizon temporels: le \textit{spot} et le \textit{forward}.
 
 Le premier est également appelé "Le marché au comptant". Lorsque deux acteurs se mettent d'accord sur une transaction, cette dernière se réalise immédiatement\footnote{Valable en théorie, dans la réalité cela peut prendre du temps [\ref{marche des changes}]}.
 
-Le second peut être nommé "Le marché à terme". L'accord est passé à un temps $T$ mais la transaction effective ne se réalise que dans le futur. Ce futur, ou maturité, peut être de plusieurs dizaines de jours, voir des années, soit $T + X$.
+Le second peut être nommé "Le marché à terme". L'accord est passé à un temps $T$ mais la transaction effective ne se réalise que dans le futur. Ce futur, ou maturité, peut être de plusieurs dizaines de jours, voir des années, soit $T + X$\footnote{Où $T$ est le moment présent, et $X$ une durée de temps.}.
 
 Il y a opérations réalisable sur le marché à terme.:
 \begin{itemize}
-\item Les \textit{swaps}. Ils consistent vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$}.
+\item Les \textit{swaps}. Ils consistent à vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$}.
 \item Les \textit{futures/forwards}. La différence entre ces deux tient surtout à leur standardisation et leur mise en place. Cependant le principe reste le même: on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
 \item Les \textit{options}. Cela représente un contract vendu par un parti (\textit{the option writer}) à un autre parti (\textit{the option holder}). Ce contrat offre le droit, et non l'obligation contrairement aux \textit{futures/forwards}, d'acheter (\textit{call}) ou de vendre (\textit{put}). Ici encore, il faut attendre la maturité.
 \end{itemize}
@@ -148,7 +148,7 @@ Le \textit{bid} est le prix maximum qu'un acheteur est d'accord de payer pour un
 De la même manière, le \textit{ask} est le prix minimum qu'un vendeur accepte pour vendre un sous-jacent [\ref{investopedia bid ask}].
 Lorsqu'il y a un \textit{bid} qui a la même valeur qu'un {ask}, une vente est effectuée. 
 
-La différence entre le \textit{bid} et le \textit{ask} représente la liquidité d'un actif. Il est également utilisé comme marge par les \textit{broker}[\ref{wikipedia broker}] et autres plateformes.
+La différence entre le \textit{bid} et le \textit{ask}, appelée le \textit{spread}, représente la liquidité d'un actif. Il est également utilisé comme marge par les \textit{broker}[\ref{wikipedia broker}] et autres plateformes.
 
 
 
@@ -160,7 +160,7 @@ T. Mitchell a donné une définition formelle [\ref{mitchell}]:
 "\textit{A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$ is its performance at tasks in $T$, as measured by $P$, improves with experience $E$}"
 \end{center}
 
-On a donc une tâche $T$ à accomplir, où $T$ peut être de trier des images ou de reconnaître des motifs. La mesure de la réussite de cette tâche $T$ est nommée $P$. C'est-à-dire la qualité du résultat du programme pour la tâche donnée, $T$. Si le programme améliore son résultat $P$ pour la tâche $T$ grâce à de l'expérience $E$. Il s'agit d'un programme de \textit{machine learning}. L'expérience peut être vu comme une phase d'entraînement ou comme le fait de retenir les réponses après avoir accompli la tâche.
+On a donc une tâche $T$ à accomplir, où $T$ peut consister trier des images ou à reconnaître des motifs. La mesure de la réussite de cette tâche $T$ est nommée $P$. C'est-à-dire la qualité du résultat du programme pour la tâche donnée, $T$. Si le programme améliore son résultat $P$ pour la tâche $T$ grâce à de l'expérience $E$. Il s'agit d'un programme de \textit{machine learning}. L'expérience peut être vu comme une phase d'entraînement ou comme le fait de retenir les réponses après avoir accompli la tâche.
 
 \paragraph{}
 Il existe deux catégories d'apprentissage:
@@ -188,11 +188,11 @@ Pour ce faire il faut:
 \end{itemize}
 
 \paragraph{}
-Il est important de saisir comment fonctionner les algorithmes de \textit{machine learning}. Les données étant "fixes", elles ne peuvent être modifiées afin d'augmenter la performance de classification. Une fois qu'on dispose d'un \textit{tick} en finance ou bien d'un \textit{review}  sur un produit, on ne peut en changer l'expressivité. Il convient donc d'utiliser ces données, souvent de très hautes dimensionnalités, dans des équations dont on pourra faire varier les paramètres afin de classifier au mieux. Le coeur des algorithmes de \textit{machine learning} se trouve donc dans ses équations, qu'il va convenir d'optimiser.
+Il est important de saisir comment fonctionne les algorithmes de \textit{machine learning}. Les données étant "fixes", elles ne peuvent être modifiées afin d'augmenter la performance de classification. Une fois qu'on dispose d'un \textit{tick} en finance ou bien d'une \textit{review}  sur un produit, on ne peut en changer l'expressivité. Il convient donc d'utiliser ces données, souvent de très hautes dimensionnalités\footnote{Cela signifie qu'elles sont représentées par un grand nombre d'attributs.}, dans des équations dont on pourra faire varier les paramètres afin de classifier au mieux. Le coeur des algorithmes de \textit{machine learning} se trouve donc dans ses équations, qu'il va convenir d'optimiser.
 
 \subsubsection{\textit{Logistic Regression}} \label{section régression logistique}
 \paragraph{}
-Une régression en statistique consiste à analyser la relation entre une variable par rapport à un ensemble d'autres [\ref{wikipedia régression}]. On veut estimer la probabilité conditionnelle, en se basant sur des variables et en utilisant une distribution logistique cumulative. Cette dernière a un forme semblable à une distribution Gaussienne, mais avec des queues épaisses et donc une \textit{kurtosis} plus élevée. Où la \textit{kurtosis} est définie comme suit:
+Une régression en statistique consiste à analyser la relation entre une variable par rapport à un ensemble d'autres [\ref{wikipedia régression}]. On veut estimer la probabilité conditionnelle, en se basant sur des variables et en utilisant une distribution logistique cumulative. Cette dernière a un forme semblable à une distribution Gaussienne, mais avec des queues épaisses et donc une \textit{kurtosis} plus élevée. La \textit{kurtosis} étant définie comme suit:
 \begin{center}
 $Kurt(X) = \frac{\mu_4}{\sigma^4}$, où $\mu_4$ est le quatrième moment centré et $\sigma^4$ la variance au carré. 
 \end{center}
@@ -205,7 +205,7 @@ $log(\frac{p(x)}{1 - p(x)}) = \beta_0 + x \cdot \beta$
 
 En résolvant cette équation pour $p$, cela donne [\ref{machine learning automated trading}]:
 \begin{center}
-$p(x|y) = \frac{1}{1 + e^{-(\beta_0 + x \cdot \beta}}$
+$p(x|y) = \frac{1}{1 + e^{-(\beta_0 + x \cdot \beta)}}$
 \end{center}
 
 \paragraph{}
@@ -224,10 +224,13 @@ $$\sum_{i=1}^N (y_i - \sum_j\beta_j x_{ij})^2 + \lambda \sum_j |\beta|$$
 Le fonctionnement est similaire au précédent, seul change la pénalité.
 \end{itemize}
 
+\paragraph{}
+Comme mentionné plus haut, l'optimisation concerne les paramètres variables. Dans le cas de la régression logistique, il s'agît du $\beta$. Il conviendra donc de trouver la valeur optimale pour cette variable afin de maximiser ou minimiser les équations ci-dessus. Cette manière de faire s'applique aux autres techniques de \textit{ML}. Les équations et les paramètres vont changer, mais  le but sera toujours d'optimiser ces éléments. 
+
 \subsubsection{Les arbres de décision}
 
 \paragraph{}
-Un arbre de décision est un arbre, dont chaque nœud représente un test sur un attribut. Les branches qui suivent directement le nœud sont les valeurs possibles de l'attribut et donc les résultats. Les feuilles de l'arbre, quant à elles, sont la classification de l'élément donné en entrée.
+Un arbre de décision est un arbre, dont chaque nœud représente un test sur un attribut. Les branches qui suivent directement le nœud sont les valeurs possibles de l'attribut. Les feuilles de l'arbre, quant à elles, sont la classification de l'élément donné en entrée.
 
 Il est important de disposer des attributs avant de commencer la construction de l'arbre. Lors de l'implémentation, nous pouvons représenter l'arbre comme une suite de \textit{if-then-else} afin d'améliorer la lisibilité. Dans ce cas très précis, disposer d'un langage permettant le \textit{pattern matching} est fort utile.
 
@@ -241,7 +244,7 @@ Voici un exemple d'arbre de décision\footnote{\url{http://cloudmark.github.io/i
 \end{figure}
 
 \paragraph{}
-Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe plusieurs algorithmes. Un des plus connus est le \textit{ID3} [\ref{id3}]. Il s'agit d'une méthode de type \textit{greedy} qui va à chaque itération, effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour la classification [\ref{id3}].} afin de savoir quel attribut est le plus discriminant, utilisant cet attribut comme nœud, puis itérer jusqu'à avoir utilisé tous les attributs.
+Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe plusieurs algorithmes. Un des plus connus est le \textit{ID3} [\ref{id3}]. Il s'agit d'une méthode de type \textit{greedy} qui va à chaque itération, effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour la classification [\ref{id3}].} afin de savoir quel attribut est le plus discriminant, utiliser cet attribut comme nœud, puis itérer jusqu'à avoir utilisé tous les attributs.
 
 
 \subsubsection{\textit{Naive Bayes}}
@@ -259,8 +262,12 @@ $V_{NB} = arg\ max_{v_{j \in V}} P(v_j) \prod\limits_i P(a_i | v_j)$
 Où $V_{NB}$ est la classe obtenue, $P(v_j)$ la probabilité à \textit{priori} donc sans informations et $\prod\limits_i P(a_i | v_j)$ la probabilité de vraisemblance.
 Il convient donc de trouver la classe qui maximise ce calcule.
 
+Afin d'avoir une certain sécurité dans les résultats, il est possible d'ajouter un seuil. Les réponses du classifieur étant comprise entre $0$ et $1$, le seuil permettra de décider si la réponse sera prise en compte.
+
+Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validé. Si $V_{NB} = 0.7$ la réponse est jugée sûre. 
+
 \paragraph{}
-La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} pour différents seuils de classification de l'algorithme \textit{Naive Bayes} [\ref{machine learning automated trading}]. À partir de cela on peut déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
+La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} pour différents seuils de classification de l'algorithme \textit{Naive Bayes} [\ref{machine learning automated trading}]. À partir de cela, nous pouvons déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
 De plus cette courbe peut aider à comparer des classifieurs entre eux en comparant la surface sous la courbe [\ref{machine learning automated trading}].
 
 La méthode utilisée est la suivante [\ref{machine learning automated trading}]: il faut faire s'intersecter la pente $S$ avec la courbe \textit{ROC} et ainsi obtenir une valeur optimale pour le seuil.
@@ -280,7 +287,7 @@ Voici une illustration\footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_54
 
 \subsubsection{\textit{SVM}}
 \paragraph{}
-Le but de l'algorithme \textit{SVM}\footnote{\textit{Support Vector Machine}} est de séparée les données grâce à un hyper-plan. Cela permet de différencier les classes des observations suivant qu'ils se trouvent d'un côté ou l'autre du plan séparant. Ce plan n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}}: 
+Le but de l'algorithme \textit{SVM}\footnote{\textit{Support Vector Machine}} est de séparée les données grâce à un hyper-plan. Cela permet de différencier les classes des observations suivantes en déterminant s'ils se trouvent d'un côté ou l'autre du plan séparant. Ce plan n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}}: 
 \begin{figure}[h!]
 \centering
 \includegraphics{images/svm_exemple}
@@ -292,7 +299,7 @@ Notre fonction est:
 \begin{center}
 $f(x) = (w \cdot x) + b$
 \end{center}
-Le but est de maximiser la distance entre les points les plus proches de l'hyper-plan, tout en pénalisant les points mal classés. Il n'est pas toujours possible de séparer les données de dimensions $n$, il conviendra donc d'augmenter la dimension afin d'obtenir une dimension $m > n$. La fonction $\phi(x)$ est utilisée dans ce but. Un exemple de fonction est:
+Le but est de maximiser la distance entre les points les plus proches de l'hyper-plan, tout en pénalisant les points mal classés. Il n'est pas toujours possible de séparer les données de dimensions $n$, il conviendra donc d'augmenter la dimension afin d'obtenir une dimension $m > n$ plus discriminante. La fonction $\phi(x)$ est utilisée dans ce but. Un exemple de fonction est:
 \begin{center}
 $\phi: R^2 \rightarrow R^3 (x, y) \rightarrow (x, y, z):= (x^2, \sqrt{2}x y, y^2)$
 \end{center}
@@ -305,7 +312,7 @@ Il est possible d'imager cette opération comme cela\footnote{\url{https://www.d
 \end{figure}
 
 
-En terme d'équation, nous voulons minimiser w,$||w||^2$ dans l'équation de l'hyper-plan: $(w \cdot x) + b$. Ce qui donne:
+En terme d'équation, nous voulons minimiser w, soit $||w||^2$ dans l'équation de l'hyper-plan: $(w \cdot x) + b$. Ce qui donne:
 \begin{center}
 $y_i (w \cdot x_i + b) \ge 1$ si $y \in \{-1, +1\}$ [\ref{svm equation}]
 \end{center}
@@ -318,11 +325,11 @@ Afin de diminuer l'erreur et optimiser au mieux notre classifieur.
 
 \subsubsection{Réseaux de neurones}
 \paragraph{}
-Tout comme les algorithmes génétiques qui s'inspirent de la sélection naturelle dans un but d'optimisation, les réseaux de neurones se basent sur un modèle formels de neurones\footnote{Neurones formels: \url{http://www.peoi.org/Courses/Coursesfr/neural/neural3.html}} afin de copier la capacité d'apprentissage des êtres vivants.
+Tout comme les algorithmes génétiques s'inspirent de la sélection naturelle dans un but d'optimisation, les réseaux de neurones se basent sur un modèle formels de neurones\footnote{Neurones formels: \url{http://www.peoi.org/Courses/Coursesfr/neural/neural3.html}} afin de copier la capacité d'apprentissage des êtres vivants.
 
-Il s'agit d'opérer à partir de données en entrée, des \textit{inputs}, une ou plusieurs multiplications matricielles en utilisant des vecteurs de poids, des \textit{weigth}. L'optimisation s'applique sur les \textit{weights}, afin de maximiser la classification.
+Il s'agit d'opérer à partir de données en entrée, des \textit{inputs}, une ou plusieurs multiplications matricielles en utilisant des vecteurs de poids, des \textit{weights}. L'optimisation s'applique sur les \textit{weights}, afin de maximiser la classification.
 
-Un réseau de neurones peut avoir plusieurs couches, \textit{layers}. Dans ce cas, la première couche est appelée \textit{input layer}, la dernière \textit{output layer} et toutes celles entre ces deux sont les \textit{hidden layers}. De plus les neurones peuvent être pleinement connectés avec ceux de la couche suivante, \textit{feed-forward}; ce qui signifie que les neurones de la couche $n-1$ influencent ceux de la couche $n$. À l'opposé, il est possible que ceux en $n$ pèsent sur les neurones de $n-1$, ce phénomène est appelé \textit{feedback networks}.
+Un réseau de neurones peut avoir plusieurs couches, \textit{layers}. Dans ce cas, la première couche est appelée \textit{input layer}, la dernière \textit{output layer} et toutes celles entre ces deux sont les \textit{hidden layers}. De plus les neurones peuvent être pleinement connectés avec ceux de la couche suivante, \textit{feed-forward}; ce qui signifie que les neurones de la couche $n-1$ influencent ceux de la couche $n$. Il est également possible que les éléments de $n$ agissent sur les neurones de $n-1$, ce phénomène est appelé \textit{feedback networks}.
 
 \begin{figure}[H]
 \centering
@@ -335,13 +342,13 @@ Un réseau de neurones peut avoir plusieurs couches, \textit{layers}. Dans ce ca
 \begin{figure}[H]
 \centering
 \includegraphics{images/neural_net_feedback}
-\caption[]{Exemple de réseau de neurones avec plusieurs couches. Dans ce cas là, les couches sont \textit{feed-forward} mais de plus, le \textit{feedback} est utilisé afin d'influencer les couches précédant l'\textit{output layer}.\footnotemark}
+\caption[]{Exemple de réseau de neurones avec plusieurs couches. Dans ce cas là, les couches font du \textit{feed-forward} mais de plus, le \textit{feedback} est utilisé afin d'influencer les couches précédant l'\textit{output layer}.\footnotemark}
 \end{figure}
 
 \footnotetext{Source: \url{https://www.researchgate.net/profile/Yen-Ming_Chiang/publication/222562767/figure/fig2/AS:305112384851969@1449755869325/Fig-2-The-architecture-of-a-recurrent-neural-network.png}}
 
 \paragraph{}
-Concernant la valeur de sortie, elle peut être simple. Comme le résultat d'un classification binaire, donc $0$ ou $1$ en sortie. Mais elle peut également être multiple. Il est donc possible d'avoir un résultat étant un vecteur, comme par exemple un point précis dans un espace $R^2$.
+Concernant la valeur de sortie, elle peut être simple, comme le résultat d'un classification binaire,\textit{i.e.} $0$ ou $1$ en sortie. Mais elle peut également être d'une dimensionnalité plus élevée comme un vecteur, citons l'exemple d'un point dans un espace $R^2$.
 
 Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonction. Nous pouvons citer :
 \begin{itemize}
@@ -352,13 +359,13 @@ Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonc
 Bien souvent, l'utilisation d'un réseau de neurones à une couche est suffisante. Cela est valable pour les fonctions continues, dans le cas de fonctions discontinues, il est intéressant de passer à un réseau disposant de plusieurs couches. Attention toutefois, si le nombre de neurones est trop important, l'algorithme va avoir tendance à sur-apprendre, et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc important de bien doser cette quantité afin d'éviter ces problèmes.
 
 \paragraph{}
-L'article qui se trouve au coeur du projet [\ref{fx trading}] propose un algorithme basé sur les réseaux de neurones. Il s'agit de trois couches qui doivent chacune une série de paramètres. La première va maximiser la première série de paramètres suivant certain critères. Une fois ces paramètres changés, ils deviennent des constantes pour les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant comme les valeurs des paramètres de la première couche constant. Le même principe est répété pour la troisième couche.
+L'article qui se trouve au coeur du projet [\ref{fx trading}] propose un algorithme basé sur les réseaux de neurones. Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser la première série de paramètres suivant certain critères. Une fois ces paramètres changés, ils deviennent des constantes pour les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant les valeurs des paramètres de la première couche constantes. Le même principe est répété pour la troisième couche.
 
 Ce n'est donc pas un réseau à multiples couches, dans le sens où, une série de paramètres n'est optimisée que par une couche et non plusieurs. On peut visualiser cela comme trois réseaux qui chaînent leurs résultats.
 
 \subsubsection{Descente du gradient}
 \paragraph{}
-L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel quel $\mathbb{R}^n$. Il est itératif est fonctionne donc en améliorant l'itération précédente, jusqu'à atteindre une condition d'arrêt.
+L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel quel $\mathbb{R}^n$. Il est itératif et fonctionne donc en améliorant l'itération précédente, jusqu'à atteindre une condition d'arrêt.
 
 Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme dans $\mathbb{R}^2$ :
 
@@ -371,24 +378,24 @@ Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme d
 \footnotetext{Dans cet exemple, il est possible de dire, qu'il faut prendre la normal de la courbe de niveau.}
 
 \paragraph{}
-Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques sur ce sujet. L'algorithme se définit comme suit :
+Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques sur ce sujet. L'algorithme se définit comme suit\footnote{Inspiré de [\ref{wikipedia descente du gradient}]}:
 
 \paragraph{}
-\footnote{Inspiré de [\ref{wikipedia descente du gradient}]}Soit un point initial $x_0 \in \mathbb{R}$. Soit $\epsilon > 0$ un seuil de tolérance. L'algorithme définit une suite d'itération $x_1,x_2,.. \in \mathbb{R}^n$, jusqu'à ce qu'un test d'arrêt soit satisfait. Pour passer de $x_i$ à $x_{i+1}$, il faut :
+Soit un point initial $x_0 \in \mathbb{R}$. Soit $\epsilon > 0$ un seuil de tolérance. L'algorithme définit une suite d'itération $x_1,x_2,.. \in \mathbb{R}^n$, jusqu'à ce qu'un test d'arrêt soit satisfait. Pour passer de $x_i$ à $x_{i+1}$, il faut :
 \begin{itemize}
 \item Calculer $\bigtriangledown f(x_k)$
-\item Si $||\bigtriangledown f(x_k) \le \epsilon$ alors arrêt.
+\item Si $||\bigtriangledown f(x_k)|| \le \epsilon$ alors arrêt.
 \item Sinon il faut calculer $\alpha_k$ par recherche linéaire sur $f$ en $x_k$. Cette recherche se fait dans la direction opposée au gradient, soit $-\bigtriangledown f(x_k)$. Une fois $\alpha_k$ calculé, il faut mettre à jour le point itéré : $$x_{k+1} = x_k - \alpha_k \bigtriangledown f(x_k)$$
 \end{itemize}
 
 \paragraph{}
 La preuve que la recherche dans la direction opposée au gradient induit une décroissance est la suivante.
-Si la dérivée est non nulle au point $x$\footnote{i.e: Si nous ne sommes pas déjà sur un maximum}, $f'(x) \ne 0$. Soit
+Si la dérivée est non nulle\footnote{i.e: Si nous ne sommes pas déjà sur un maximum} au point $x$, $f'(x) \ne 0$. Soit
 $$d = - \bigtriangledown f(x)$$
 Puisque :
 $$f'(x) \cdot d = \bigtriangledown f(x) \cdot -\bigtriangledown f(x) = - ||\bigtriangledown f(x) ||^2 < 0$$
 
-Nous avons un strictement plus petit car la dérivée est non nulle par hypothèse. Cela implique que :
+L'égalité est strictement petit car la dérivée est non nulle par hypothèse. Cela implique que :
 $$f(x -\alpha \bigtriangledown f(x)) < f(x)\text{,\ } \forall \alpha > 0$$
 
 Nous avons donc que pour chaque itération, la valeur obtenue va décroître jusqu'à attendre un maximum ou le seuil $\epsilon$.
@@ -417,7 +424,7 @@ $$w_{k+1} = w_k - \alpha_k \bigtriangledown f_{w_k}(x) \rightarrow w_{k+1} = w_k
 Où $Q(x,y) = l(f_w(x),y)$.
 
 \paragraph{}
-Comme mentionné plus haut, la technique de \textit{Batch Algorithm} devient lente lorsque la taille du jeu de données augmente. Pour pallier à ce problème, il existe une technique : \textit{stochastic gradient descent}. C'est une méthode d'approximation statistique de la descente du gradient.
+Comme mentionné plus haut, la technique de \textit{Batch Algorithm} devient lente lorsque le nombre données augmente. Pour pallier à ce problème, il existe une technique : \textit{stochastic gradient descent}. C'est une méthode d'approximation statistique de la descente du gradient.
 
 Il convient de ne prendre qu'un seul couple au lieu de l'ensemble complet d'entraînement. La somme disparaît donc dans l'équation à minimiser :
 $$w_{k+1} = w_k -\alpha_k \bigtriangledown Q ((x_i,y_i), w_k)$$
