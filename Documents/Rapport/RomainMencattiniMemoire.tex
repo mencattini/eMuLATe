@@ -441,6 +441,52 @@ Où $\sigma > 0$ est un hyper-paramètre et $P$ peut valoir :
 \end{itemize}
 
 
+\subsubsection{\textit{Majority vote}}
+\paragraph{}
+Le \textit{majority vote} n'est pas une algorithme de \textit{ML} à proprement parlé. Il s'agît plutôt d'améliorer les résultats en modifiant la manière d'utiliser les algorithmes pré-mentionnés.
+Il est donc possible d'utiliser le \textit{majority vote} avec la régression logistique, les réseaux de neurones, etc.
+
+\paragraph{}
+Le principe de l'algorithme est le suivant. Soit $E$ notre ensemble d'entraînement, soit $M = \{f_1, f_2, ...\}$ notre ensemble de méthodes $f_i$ de \textit{machine learning}. Notons $M_E = \{f_{1_E}, f_{2_E}, ...\}$ notre ensemble de méthodes $f_{i_E}$ entraînées.
+ 
+\[ f_{i_E}(x) =
+  \begin{cases}
+    1       & \quad \text{si la classe calculée de $x$ est 1.}\\
+    0  & \quad \text{si la classe calculée de $x$ est 0.}\\
+    -1 & \quad \text{si aucune classe n'est trouvée ou si le seuil est insuffisant.}\\
+  \end{cases}
+\]
+
+L'algorithme se comporte comme suit pour une observation $x$:
+\paragraph{}
+$\forall f_{i_E} \in M_E$, il faut calculer $f_{i_E}(x)$ et garder la classe résultante dans notre liste de résultat $R$.
+Si $\exists\ classe_i \in R$, telle que $$\sum (classe_i \in R) > \frac{|M_E|}{2}$$
+
+Alors cela signifie que la $classe_i$ est notre résultat, dans le cas contraire, l'algorithme ne donne aucune réponse.
+
+\paragraph{}
+L'algorithme va donc, à partir d'un ensemble de méthodes et d'une observation, calculer les classes. Si une de ses dernières est représentée de manière majoritaire\footnote{\textit{i.e.} 50\% + 1 voix}, le programme retournera ce résultat. Si la majorité n'est pas atteinte, il n'a aucune classe jugée valable et donc aucun résultat ne sera rendu.
+
+Cette technique réduit la composante individuelle des méthodes de \textit{ML} ainsi que le risque d'erreur. Si une observation est mal classifiée, cela signifie que plus de la moitié des algorithmes ont fait une erreur. Dans ce cas là, il convient de changer les attributs utilisés ou l'ensemble d'entraînement car l'erreur a peu de change de venir d'un problème d'implémentation ou d'un algorithme particulier. Hors les seules composantes communes sont l'ensemble d'entraînement ainsi que les attributs.
+
+\subsection{\textit{Random Subset}}
+\paragraph{}
+À l'instar de la technique de \textit{majority vote}, le \textit{random subset} est un algorithme pour utiliser des méthodes de \textit{ML}.
+
+\paragraph{}
+Le principe est le suivant :
+
+Il faut prendre $N$ différents ensembles de données\footnote{Il est possible de découper notre ensemble initial afin d'atteindre ce critère.} du domaine concerné. Ces $N$ ensembles seront nos ensembles d'entraînements. Ils permettront d'entraîner un algorithme dessus\footnote{Comme \textit{Naive Bayes} ou {SVM}.}. Nous disposerons donc de $N$ instances de l'algorithme de \textit{ML} initial, mais avec un entraînement différent pour chacun, puis pour chaque observation, nous allons utiliser ces $N$ instances afin d'obtenir un résultat de classification.
+
+Comme pour le \textit{majority vote}, si une même classe est représentée une majorité de fois, le \textit{random subset} retournera ce résultat, et aucun dans le cas contraire.
+
+\paragraph{}
+Il est nécessaire d'avoir un grand jeu de données afin de fournir suffisamment d'échantillons aux instances pour qu'elles apprennent correctement.
+Une fois ce problème résolu, cette technique nous donne la possibilité d'utiliser au mieux l'ensemble d'entraînement. En le fractionnant, cela permet d'entraîner les algorithmes avec des données différentes et donc d'augmenter l'horizon de connaissance du programme.
+
+De plus, le système de majorité promeut une qualité et une confiance accrue dans les résultats obtenus.
+
+
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
 \paragraph{}
 Avant de parler des performances des algorithmes mentionnés, il convient de préciser qu'ils proviennent de plusieurs articles et recherches différents. Ils ont donc été testé avec des paramètres ayant des valeurs disparates ainsi que sur des données distinctes.
