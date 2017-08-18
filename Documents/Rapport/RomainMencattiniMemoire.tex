@@ -15,6 +15,48 @@
 \usepackage[colorlinks,urlcolor=blue, linkcolor=blue]{hyperref}
 \usepackage{float}
 \usepackage[perpage]{footmisc}
+\usepackage{titlesec}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% define subsubsubsection %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% end subsubsubsection %
+%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \geometry{hmargin=3cm}
 
@@ -180,7 +222,7 @@ Par contre dans le cas de l'apprentissage non-supervisé, le programme ne pourra
 
 \paragraph{}
 Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte afin de minimiser les risques de sur-apprentissage\footnote{Le sur-apprentissage consiste à apprendre par coeur la tâche, plutôt que d'apprendre les principes pour réaliser la tâche.}, et de maximiser la qualité de nos données.
-Pour ce faire il faut:
+Pour ce faire il faut:\label{astuce ensemble d'entraînement}
 \begin{itemize}
 \item Représenter la population générale. Donc si le but est du traitement de la langue, il faut que la propension et la répartition des mots soient les mêmes que ceux de la langue.
 \item Contenir des membres de chaque classes. Pour reconnaître des chiffres, il est important de disposer de chacun des chiffres dans l'ensemble d'entraînement.
@@ -227,7 +269,7 @@ Le fonctionnement est similaire au précédent, seul change la pénalité.
 \paragraph{}
 Comme mentionné plus haut, l'optimisation concerne les paramètres variables. Dans le cas de la régression logistique, il s'agît du $\beta$. Il conviendra donc de trouver la valeur optimale pour cette variable afin de maximiser ou minimiser les équations ci-dessus. Cette manière de faire s'applique aux autres techniques de \textit{ML}. Les équations et les paramètres vont changer, mais  le but sera toujours d'optimiser ces éléments. 
 
-\subsubsection{Les arbres de décision}
+\subsubsection{Les arbres de décision}\label{section arbre de décision}
 
 \paragraph{}
 Un arbre de décision est un arbre, dont chaque nœud représente un test sur un attribut. Les branches qui suivent directement le nœud sont les valeurs possibles de l'attribut. Les feuilles de l'arbre, quant à elles, sont la classification de l'élément donné en entrée.
@@ -247,7 +289,7 @@ Voici un exemple d'arbre de décision\footnote{\url{http://cloudmark.github.io/i
 Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe plusieurs algorithmes. Un des plus connus est le \textit{ID3} [\ref{id3}]. Il s'agit d'une méthode de type \textit{greedy} qui va à chaque itération, effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour la classification [\ref{id3}].} afin de savoir quel attribut est le plus discriminant, utiliser cet attribut comme nœud, puis itérer jusqu'à avoir utilisé tous les attributs.
 
 
-\subsubsection{\textit{Naive Bayes}}
+\subsubsection{\textit{Naive Bayes}}\label{section naive bayes}
 \paragraph{}
 À l'instar de la régression logistique [\ref{section régression logistique}], il s'agit d'un classifieur probabiliste. Ce dernier se base sur le théorème de Bayes\footnote{\url{https://brilliant.org/wiki/bayes-theorem/}}:
 \begin{center}
@@ -266,7 +308,7 @@ Afin d'avoir une certain sécurité dans les résultats, il est possible d'ajout
 
 Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validé. Si $V_{NB} = 0.7$ la réponse est jugée sûre. 
 
-\paragraph{}
+\paragraph{}\label{section roc curve analysis}
 La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} pour différents seuils de classification de l'algorithme \textit{Naive Bayes} [\ref{machine learning automated trading}]. À partir de cela, nous pouvons déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
 De plus cette courbe peut aider à comparer des classifieurs entre eux en comparant la surface sous la courbe [\ref{machine learning automated trading}].
 
@@ -285,7 +327,7 @@ Voici une illustration\footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_54
 \end{figure}
 
 
-\subsubsection{\textit{SVM}}
+\subsubsection{\textit{SVM}}\label{section svm}
 \paragraph{}
 Le but de l'algorithme \textit{SVM}\footnote{\textit{Support Vector Machine}} est de séparée les données grâce à un hyper-plan. Cela permet de différencier les classes des observations suivantes en déterminant s'ils se trouvent d'un côté ou l'autre du plan séparant. Ce plan n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}}: 
 \begin{figure}[h!]
@@ -441,7 +483,7 @@ Où $\sigma > 0$ est un hyper-paramètre et $P$ peut valoir :
 \end{itemize}
 
 
-\subsubsection{\textit{Majority vote}}
+\subsubsection{\textit{Majority vote}} \label{section majority vote}
 \paragraph{}
 Le \textit{majority vote} n'est pas une algorithme de \textit{ML} à proprement parlé. Il s'agît plutôt d'améliorer les résultats en modifiant la manière d'utiliser les algorithmes pré-mentionnés.
 Il est donc possible d'utiliser le \textit{majority vote} avec la régression logistique, les réseaux de neurones, etc.
@@ -469,7 +511,7 @@ L'algorithme va donc, à partir d'un ensemble de méthodes et d'une observation,
 
 Cette technique réduit la composante individuelle des méthodes de \textit{ML} ainsi que le risque d'erreur. Si une observation est mal classifiée, cela signifie que plus de la moitié des algorithmes ont fait une erreur. Dans ce cas là, il convient de changer les attributs utilisés ou l'ensemble d'entraînement car l'erreur a peu de change de venir d'un problème d'implémentation ou d'un algorithme particulier. Hors les seules composantes communes sont l'ensemble d'entraînement ainsi que les attributs.
 
-\subsection{\textit{Random Subset}}
+\subsubsection{\textit{Random Subset}} \label{section random subset}
 \paragraph{}
 À l'instar de la technique de \textit{majority vote}, le \textit{random subset} est un algorithme pour utiliser des méthodes de \textit{ML}.
 
@@ -488,9 +530,193 @@ De plus, le système de majorité promeut une qualité et une confiance accrue d
 
 
 \subsection{\textit{Machine Learning} dans le cadre de la finance}
+\subsubsection{Introduction}
 \paragraph{}
 Avant de parler des performances des algorithmes mentionnés, il convient de préciser qu'ils proviennent de plusieurs articles et recherches différents. Ils ont donc été testé avec des paramètres ayant des valeurs disparates ainsi que sur des données distinctes.
-Il est donc très compliqué de comparer les résultats des algorithmes et d'affirmer qu'une méthode est meilleure qu'une autre. Ces résultats servent plutôt à illustrer la qualité intrinsèque des procédés. Avec un résultat de 80\%, nous pouvons estimer que la performance est bonne, et l'inverse pour une valeur de 20\%.
+Il est donc très compliqué de comparer les résultats des algorithmes entre deux articles différents et d'affirmer qu'une méthode est meilleure qu'une autre. 
+
+Dans un même article, il sera possible de comparer les résultats cependant entre deux sections, ces résultats serviront plutôt à illustrer la qualité intrinsèque des procédés. Avec un résultat de 80\%, nous pourrons estimer que la performance est bonne, et l'inverse pour une valeur de 20\%.
+
+\paragraph{}
+Pour chaque algorithmes qui ont été mentionnés dans la section précédente, nous allons expliqué les changements appliqués à ces derniers en vue de les appliquer au domaine financier. De plus nous étudierons les résultats obtenus et analyserons quelles améliorations apportent un gain significatif dans la classification.
+
+La séparation sera quelque peu différente. Certains articles cumulant plusieurs algorithmes, afin d'éviter les répétitions d'explications, il convient de séparer par article afin de regrouper les améliorations.
+
+\subsubsection{\textit{A Machine Learning Approach to Automated Trading} [\ref{machine learning automated trading}]}
+
+\subsubsubsection{Introduction}
+\paragraph{}
+L'auteur a appliqué l'algorithme sur le marché des actions\footnote{Ou \textit{Stock market.}}. Après avoir essayé deux approches :
+\begin{itemize}
+\item L'approche individuelle.
+\item L'approche par secteur.
+\end{itemize}
+
+La première partait de l'hypothèse que le prix d'une action est uniquement déterminé par son prix passé. Il est donc indépendant du rester du marché. Après les premiers résultats, l'auteur a conclu que cette approche est trop bancale pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la seconde approche \ref{machine learning automated trading}.
+
+La seconde approche, quant à elle, repose sur la supposition que le prix d'une action dépend des autres actions, souvent concurrentes. Il a donc pris en compte l'historique des prix du sous-jacent évalué, mais également celui de ses concurrents en terme de marché.
+C'est donc avec cette approche que les résultats doivent être interprétés.
+
+\paragraph{}
+Un autre point qu'il convient d'aborder porte sur l'ensemble d'entraînement. Afin d'entraîner et d'évaluer son programme, il a fallu partager le \textit{set} de données.
+
+Dans le cas contraire, il aurait été impossible de tester les algorithmes entraînés. Ou bien, ils auraient été évalués sur les mêmes données que leur entraînement. Ce qui n'est évidemment pas possible.
+
+Le chois a donc été fait de partagé l'ensemble de données en deux sous-parties. Une première contenant 80\% des données qui sera dédiée à l'entraînement et une seconde avec 20\% pour l'évaluation.
+
+\paragraph{}
+Les trois métriques utilisées sont :
+\begin{itemize}
+\item Le \textit{True Positive Rate} est définit comme suit :
+$$\textit{TPR} = \frac{\textit{TP}}{\textit{TP} + \textit{FN}}$$
+Où \textit{TP} sont les positifs détectés positifs et \textit{FN} les négatifs détectés positifs.
+\item Le \textit{True Negative Rate} est définit comme :
+$$\textit{TNR} = \frac{\textit{TN}}{\textit{TN} + \textit{FP}}$$
+
+\item Le \textit{True Rate} :
+$$\textit{TR} = \frac{\textit{TP} + \textit{TN}}{\textit{TP} + \textit{TN} + \textit{FP} + \textit{FN}}$$
+\end{itemize}
+
+\paragraph{}
+Les données possédée par l'auteur portent sur divers secteur. Notamment celui de l'\textit{utility}, de l'\textit{energy} et de l'\textit{information technology}. Le procédé est le suivant, pour déterminer si une action précise $A_1$ va augmenter ou diminuer. Il va regarder le prix de l'action durant $N$ jours précédant mais également celui des $M$ autres actions du secteur donné.
+$$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(M,t_1)},\dots,A_{(M,t_N)}) = A_{(1,t_0)}$$
+
+\subsubsubsection{Résultats}
+
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5595 & 0.4507 & 0.5235 \\
+	\hline
+	\textit{Energy} & 0.4653 & 0.5369 & 0.5047\\
+	\hline
+	\textit{Information Technology} & 0.5244 & 0.5031 & 0.5102\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour l'algorithme \textit{Lasso Logistic Regression} [\ref{section régression logistique}].}
+\end{table}
+
+
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5699 & 0.4624 & 0.5179 \\
+	\hline
+	\textit{Energy} & 0.4524 & 0.5320 & 0.5042\\
+	\hline
+	\textit{Information Technology} & 0.5075 & 0.54966 & 0.5052\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour l'algorithme \textit{Decision Tree} [\ref{section arbre de décision}].}
+\end{table}
+
+
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5949 & 0.4957 & 0.5495 \\
+	\hline
+	\textit{Energy} & 0.4797 & 0.5812 & 0.5193\\
+	\hline
+	\textit{Information Technology} & 0.5115 & 0.5048 & 0.5091\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}].}
+\end{table}
+
+\begin{table}[H]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5804 & 0.5081 & 0.5562 \\
+	\hline
+	\textit{Energy} & 0.4818 & 0.6049 & 0.5201\\
+	\hline
+	\textit{Information Technology} & 0.5142 & 0.5040 & 0.5149\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour l'algorithme \textit{SVM} [\ref{section svm}].}
+\end{table}
+
+\paragraph{}
+À ce stade là, nous remarquons que les performances de la régression logistique et des arbres de décisions sont du même ordre de grandeur. Ces derniers étant battu par les algorithmes \textit{Naive Bayes} et \textit{SVM}.
+
+Un autre point important concernant le fait que les algorithmes détectent mieux les \textit{TPR} que les \textit{TNR}\footnote{Exception faite du secteur énergie.}. Cela est dû au fait que le cours des actions des différents secteur est globalement en hausse dans les données prises de compte. Du coup, de part le manque de données à la baisse dans l'ensemble d'entraînement, l'apprentissage est limité. Concernant le secteur de l'énergie, vu qu'il était en baisse, c'est l'inverse qui se produit.
+
+Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes :
+
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5807 & 0.4921 & 0.5573 \\
+	\hline
+	\textit{Energy} & 0.4753 & 0.6003 & 0.5192\\
+	\hline
+	\textit{Information Technology} & 0.5133 & 0.5055 & 0.5233\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour le \textit{majority vote} [\ref{section majority vote}].}
+\end{table}
+
+Les résultats sont très similaires à ceux de \textit{Naive Bayes} et de \textit{SVM}, cela n'est donc pas très concluant comme amélioration. Cela peut être dû au fait que les deux algorithmes avec les meilleurs résultats sont souvent d'accord ensemble, cassant ainsi l'intérêt du vote.
+
+\paragraph{}
+L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de lui appliquer diverses améliorations. En se concentrant sur un seul algorithme, il lui est plus facile d'en voir les effets.
+
+\paragraph{}
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.5949 & 0.4957 & 0.5495 \\
+	\hline
+	\textit{Energy} & 0.4797 & 0.5812 & 0.5193\\
+	\hline
+	\textit{Information Technology} & 0.5115 & 0.5048 & 0.5091\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}] avec une optimisation par \textit{ROC curve analysis} [\ref{section roc curve analysis}].}
+\end{table}
+
+Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimale permet principalement d'augmenter la performance dans la détection des négatifs. Il est important de mentionner que cela n'influence que peu la détection des positifs car ils sont plus représentés dans l'ensemble d'entraînement et donc mieux reconnu. L'amélioration est donc intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité de classification.
+
+\begin{table}[h!]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\ & \textit{TPR} & \textit{TNR} & \textit{TR}\\
+	\hline
+	\textit{Utility} & 0.6021 & 0.5187 & 0.5779 \\
+	\hline
+	\textit{Energy} & 0.4574 & 0.5871 & 0.5108\\
+	\hline
+	\textit{Information Technology} & 0.5348 & 0.5317 & 0.5382\\
+	\hline
+\end{tabular}
+\caption{Tableau de résultats pour le \textit{Random Subset} [\ref{section random subset}] avec l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}] optimisé par \textit{ROC curve analysis}[\ref{section roc curve analysis}].}
+\end{table}
+
+L'amélioration est assez importante par rapport à l'algorithme \textit{Naive Bayes Roc curve analysis}. Le \textit{Random Subset} obtient 58\% et 54\% pour l'\textit{utility} et l'{information technology}, pour seulement 55\% et 51\% au \textit{Naive Bayes ROC curve analysis}. Même s'il y a une légère perte pour le secteur \textit{energy} d'environ 1\%.
+
+L'ensemble donne de meilleur résultats.
+
+
 \subsection{Conclusion}
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -505,8 +731,11 @@ Il est donc très compliqué de comparer les résultats des algorithmes et d'aff
 
 \begin{enumerate}
 \item "\textit{An automated fx trading system using adaptive reinforcement learning}" de M.A.H Dempster et V. Leemans 2004. \label{fx trading}
+
 \item Financial Times: "\textit{Real investors eclipsed by fast trading}", 2012 \url{https://www.ft.com/content/da5d033c-8e1c-11e1-bf8f-00144feab49a?mhq5j=e1} \label{real investors}
+
 \item "\textit{A Machine Learning Approach to Automated Trading}", 09.05.2016, Ning Lu \label{machine learning automated trading}
+
 \item "\textit{An efficient implementation of the backtesting of trading strategies.}" Ni, Jiarui, et Chegqi Zhang, \textit{Parallel and Distributed Processing and Applications} (2005): 126-131.
 \item "\textit{Algorithmic Trading: Winning Strategies and Their Rationale ( Wiley Trading Series)}", John Wiley and Sons, 2013
 \item "\textit{Machine Learning}", Mitchell, Tom M. New York, 1997. \label{mitchell}
