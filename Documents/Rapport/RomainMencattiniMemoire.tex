@@ -405,7 +405,7 @@ L'article qui se trouve au coeur du projet [\ref{fx trading}] propose un algorit
 
 Ce n'est donc pas un réseau à multiples couches, dans le sens où, une série de paramètres n'est optimisée que par une couche et non plusieurs. On peut visualiser cela comme trois réseaux qui chaînent leurs résultats.
 
-\subsubsection{Descente du gradient}
+\subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
 L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel quel $\mathbb{R}^n$. Il est itératif et fonctionne donc en améliorant l'itération précédente, jusqu'à atteindre une condition d'arrêt.
 
@@ -529,7 +529,7 @@ Une fois ce problème résolu, cette technique nous donne la possibilité d'util
 De plus, le système de majorité promeut une qualité et une confiance accrue dans les résultats obtenus.
 
 
-\subsection{\textit{Machine Learning} dans le cadre de la finance}
+\subsection{\textit{Machine Learning} dans le cadre de la finance}\label{section machine learning finance}
 \subsubsection{Introduction}
 \paragraph{}
 Avant de parler des performances des algorithmes mentionnés, il convient de préciser qu'ils proviennent de plusieurs articles et recherches différents. Ils ont donc été testé avec des paramètres ayant des valeurs disparates ainsi que sur des données distinctes.
@@ -541,6 +541,8 @@ Dans un même article, il sera possible de comparer les résultats cependant ent
 Pour chaque algorithmes qui ont été mentionnés dans la section précédente, nous allons expliqué les changements appliqués à ces derniers en vue de les appliquer au domaine financier. De plus nous étudierons les résultats obtenus et analyserons quelles améliorations apportent un gain significatif dans la classification.
 
 La séparation sera quelque peu différente. Certains articles cumulant plusieurs algorithmes, afin d'éviter les répétitions d'explications, il convient de séparer par article afin de regrouper les améliorations.
+
+De plus, tout les algorithmes ne sont pas forcément évalués dans les articles. Il est donc possible que certains comme les réseaux de neurones n'aient pas de test.
 
 \subsubsection{\textit{A Machine Learning Approach to Automated Trading} [\ref{machine learning automated trading}]}
 
@@ -716,8 +718,115 @@ L'amélioration est assez importante par rapport à l'algorithme \textit{Naive B
 
 L'ensemble donne de meilleur résultats.
 
+\subsubsection{\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}[\ref{descente du gradient stochastique}]}
+
+\subsubsection{Introduction}
+\paragraph{}
+Cet article a principalement exploré la technique de la descente du gradient [\ref{section descente du gradient}] et plus précisément de sa version probabiliste ou \textit{stochastic gradient descent}.
+
+Trois variations ont été implémentées et testées :
+\begin{itemize}
+\item La descente du gradient stochastique simple ou \textit{Plain Stochastic Gradient Descent}\footnote{Noté: \textit{planSGD}.}.
+\item La descente du gradient stochastique avec choix aléatoire ou \textit{Stochastic Gradient Descent with random sample picking}\footnote{Noté: \textit{approxSGD}.}.
+\item La descente du gradient stochastique avec choix aléatoire et "départ chaud" ou \textit{Stochastic Gradient Descent with random sample picking and warm start}\footnote{Noté: \textit{approxWarmSGD}.}.
+\end{itemize}
+
+\paragraph{}
+Le \textit{random sample picking} est une technique qui consiste à choisir aléatoirement un élément d'un ensemble mais de manière non uniforme. Dans ce cadre précis, il est intéressant d'accorder plus de valeurs à une donnée récente qu'à une plus ancienne. On considère que les éléments proches de nous d'un point de vue temporel, ont une plus grande influence.
+
+La meilleure manière d'appliquer cela est d'utiliser une sélection aléatoire exponentielle.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{images/choix_exp}
+\caption{Exemple de distribution exponentielle. Cela va donc permettre de choisir les points les plus proches avec une probabilité plus grande.}
+\end{figure}
+
+\paragraph{}
+L'autre point important est le \textit{warm start}. C'est une pré-optimisation. Il s'agît d'initialiser les paramètres du gradient d'une certaine manière d'augmenter la vitesse et les chances de convergence. Pour ce faire, la meilleure manière trouvée dans l'article [\ref{descente du gradient stochastique}] consiste à utiliser les valeurs trouvées lors de la précédente itération.
+De ce fait, l'algorithme convergera plus vite pour un coût plus faible en terme d'erreur de calcul.
+
+\paragraph{}
+La métrique d'évaluation est différente des notions de \textit{TPR},\textit{TNR} et \textit{TR}. Dans cet article, le but est est devenu le prix d'un cours, comme EURUSD à partir de plusieurs autres, comme EURCAD, EURAUD, EURGBP. Il est donc extrêmement compliqué de calculer avec plusieurs décimales le résultat exacte, impliquant donc des taux nuls pour chacune des métriques.
+Il fallu donc trouver basée sur l'erreur relative :
+$$relative_{error} = \frac{\Delta x}{x}$$
+
+Cela quantifie la différence entre le résultat calculé et le résultat réel tout en le pondérant.
+
+\begin{table}[H]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	Données & \textit{plainSGD} & \textit{approxSGD} & \textit{approxWarmSGD}\\
+	\hline
+	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
+	\hline
+	\textit{Singapoore FOREX with SW-1\footnote{$SW-1$ signifie une fenêtre de choix de taille $N-1$.}} & 0.1366274551\% & 0.133887583\% & 0.2294997927\% \\
+	\hline
+	\textit{Singapoore FOREX with SW/2\footnote{$SW/2$ signifie une fenêtre de choix de taille $N/2$.}} & 0.1366274551\% & 0.09281447603\% & 0.1551851906\%\\
+	\hline
+
+\end{tabular}
+\caption{Tableau de résultats pour les différentes versions de \textit{SGD} sur le \textit{FOREX} de Singapore. Les différences entre le \textit{bid} et le \textit{ask} étant minimes, l'auteur ne les a pas consigné.}
+\end{table}
+
+\paragraph{}
+Les erreurs relatives sont très faibles. Les estimations sont donc très proches des valeurs réelles. De plus on remarque que le  changement de la taille de la \textit{SW} peut avoir une grande influence. Sur le \textit{plainSGD} cela ne change rien, on peut donc en conclure que les $N/2 - 1$ données supplémentaires ne sont pas significative dans le calcul. Pour le \textit{approxSGD} et le \textit{approxWarmSGD}, les erreurs diminuent, nous pouvons donc dire que la fenêtre était trop grande et, pire encore, ajoutait du bruit, rendant le calcul moins précis.
+
+D'un point de vue calculatoire c'est très intéressant, car il est possible de diminuer la taille de la fenêtre, et donc gagner en vitesse, tout en gardant, voir en augmentant, la qualité des résultats.
+
+
+\begin{table}[H]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	Données & \textit{plainSGD} & \textit{approxSGD} & \textit{approxWarmSGD}\\
+	\hline
+	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
+	\hline
+	\textit{Capital K FOREX Data SW-1} & 0.01167\%/0.0117\% & 0.0116\%/0.0117\% & 1.502e-03\%/1.554e-03\% \\
+	\hline
+	\textit{Capital K FOREX Data SW/2} & 0.01167\%/0.0117\% & 0.0314\%/0.0313\% & 1.701e-03\%/1.751e-03\%\\
+	\hline
+
+\end{tabular}
+\caption{Tableau de résultats pour les différentes versions de \textit{SGD}.}
+\end{table}
+
+\paragraph{}
+Ici encore il n'y a pas de différence pour le \textit{plainSGD} entre les deux tailles de fenêtres. On remarque cependant que pour les deux autres variantes, la diminution de la taille les pénalise. Cependant, l'ordre de grandeur des erreurs reste très faible. Il est donc important de savoir si nous voulons un chiffre très précis ou bien obtenir le résultat de manière rapide. L'objectif aiguillera le choix pour l'une ou l'autre des fenêtres.
+
+À noter, que le \textit{approxWarmSGD} obtient de meilleures valeurs que ces concurrents et subit beaucoup moins les effets de la diminution de \textit{SW} que le \textit{approxSGD}.
 
 \subsection{Conclusion}
+\paragraph{}
+Le domaine du \textit{machine learning} est constitué de deux parties distinctes mais complémentaires.
+Les fondations mathématiques et l'application à des cas concrets.
+
+\paragraph{}
+Il est important de saisir les considérations théoriques. À partir de ces connaissances, le choix d'un algorithme est plus aisé. En effet, si vous voulez apprendre une fonction continue, mieux vaut utiliser des techniques de descente de gradient, dans le cas de données faiblement différentiable, l'utilisation d'un programme \textit{SVM} avec un \textit{kernel trick} est recommandée, etc.
+
+Cela est également valable pour sa mise en place. Les optimisations mathématiques possibles sont nombreuses et complexes, comme nous l'avons vu dans la partie [\ref{section machine learning finance}], il conviendra donc de les comprendre afin de mieux cerner les contraintes et les gains lors de l'optimisation.
+
+Ces éléments peuvent être vus comme une boîte à outils algorithmiques, le choix et l'utilisation des différents outils reviendra à la personne qui programmera. Ce sera cette dernière qui devra construire l'algorithme le plus adapté avec les données, les contraintes et les techniques à sa disposition.
+
+\paragraph{}
+La deuxième partie, plus concrète, concerne les cas pratiques. Appliquer, sans chercher à comprendre le domaine, peut mener à des algorithmes peu efficace.
+
+Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante, pour améliorer les techniques en dehors du carde mathématique. L'approche par secteur [\ref{machine learning automated trading}] ou bien l'utilisation de méta-paramètres propre au domaine financier [\ref{fx trading}] en sont des exemples concrets.
+Chacun de ces éléments a sensiblement amélioré les performances des algorithmes auxquels ils ont été appliqués.
+
+Une technique de \textit{machine learning} n'est qu'une solution à un problème mathématique précis. L'ajout d'éléments, comme ceux pré-cités, améliore la quantité d'informations disponible et de préciser l'équation mathématique à optimiser.
+
+\paragraph{}
+Il est important de vraiment lier ces deux parties pour obtenir les résultats optimaux.
+
+Ces derniers peuvent être vraiment bon. Même s'il convient de relativiser les résultats, ces derniers ayant pu être obtenus sur des ensembles de données "faciles". Ce mot qualifie des périodes avec peu de changements ou peu de variations, ce qui facilite grandement la classification.
+Néanmoins les taux d'erreurs sont faibles et la classification efficace.
+Cela démontre que les bons algorithmes appliqués avec une bonne connaissance du domaine fournissent des résultats satisfaisants. 
+
+
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % début du projet  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -737,24 +846,43 @@ L'ensemble donne de meilleur résultats.
 \item "\textit{A Machine Learning Approach to Automated Trading}", 09.05.2016, Ning Lu \label{machine learning automated trading}
 
 \item "\textit{An efficient implementation of the backtesting of trading strategies.}" Ni, Jiarui, et Chegqi Zhang, \textit{Parallel and Distributed Processing and Applications} (2005): 126-131.
+
 \item "\textit{Algorithmic Trading: Winning Strategies and Their Rationale ( Wiley Trading Series)}", John Wiley and Sons, 2013
+
 \item "\textit{Machine Learning}", Mitchell, Tom M. New York, 1997. \label{mitchell}
+
 \item Article Wikipédia sur SVM: \url{https://fr.wikipedia.org/wiki/Machine_\%C3\%A0_vecteurs_de_support} \label{wikipedia svm}
+
 \item "\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}", Eleftherios Soulas et Dennis Shasha de NYU, Courant Department. \label{descente du gradient stochastique}
+
 \item  Article Wikipédia sur Algorithme du gradient: \url{https://fr.wikipedia.org/wiki/Algorithme_du_gradient} \label{wikipedia descente du gradient}
+
 \item "\textit{Descision Tree Learning}", Tom M. Mitchell \label{id3}
+
 \item Article Investopedia sur les Options \url{http://www.investopedia.com/terms/o/option.asp}
+
 \item "\textit{Support Vector Machine (and Statistical Learning Theory) Tutorial}", de Jason Weston, NEC Labs America. \url{http://www.cs.columbia.edu/~kathy/cs4701/documents/jason_svm_tutorial.pdf} \label{svm equation}
+
 \item  "\textit{An Introduction to Neural Networks}" Vincent Cheung et Kevin Cannons: \url{http://www2.econ.iastate.edu/tesfatsi/NeuralNetworks.CheungCannonNotes.pdf}
+
 \item Exemple de réseaux de neurones\url{http://csc.lsu.edu/~jianhua/nn.pdf} p.5
+
 \item \textit{Backtesting} Investopedia \url{http://www.investopedia.com/terms/b/backtesting.asp} \label{backtesting investopedia}
+
 \item Historique des taux de changes: \url{http://www.xe.com/currencycharts/} \label{historique taux de change}
+
 \item Article Wikipedia sur les Accords de Bretten Woods: \url{https://fr.wikipedia.org/wiki/Accords_de_Bretton_Woods} \label{wikipedia bretten woods}
+
 \item Article Étalon-Or à Étalon-Dollar: \url{http://la-chronique-agora.com/etalon-or-etalon-dollar/} \label{étalon-or à étalon-dollar}
+
 \item \textit{CHAPITRE 1: LE MARCHE DES CHANGES Monnaie et Finance Internationales} de David Guerreiro, Université Paris 8, \url{https://economix.fr/docs/1045/chap_1_2015-16.pdf} \label{marche des changes}
+
 \item Site \textit{FOREX} français: \url{http://www.forex.fr/newslist/8696-la-regle-des-trois-unites-du-marche-des-changes} \label{site fr forex}
+
 \item Investopedia Bid-Ask: \url{http://www.investopedia.com/terms/b/bid-and-asked.asp} \label{investopedia bid ask}
+
 \item Wikipédia Broker: \url{https://en.wikipedia.org/wiki/Broker} \label{wikipedia broker}
+
 \item Wikipédia Régression Statistique: \url{https://fr.wikipedia.org/wiki/R\%C3\%A9gression_(statistiques)} \label{wikipedia régression}
 \end{enumerate}
 
