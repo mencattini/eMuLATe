@@ -16,6 +16,7 @@
 \usepackage{float}
 \usepackage[perpage]{footmisc}
 \usepackage{titlesec}
+\usepackage{tablefootnote}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -485,11 +486,11 @@ Où $\sigma > 0$ est un hyper-paramètre et $P$ peut valoir :
 
 \subsubsection{\textit{Majority vote}} \label{section majority vote}
 \paragraph{}
-Le \textit{majority vote} n'est pas une algorithme de \textit{ML} à proprement parlé. Il s'agît plutôt d'améliorer les résultats en modifiant la manière d'utiliser les algorithmes pré-mentionnés.
-Il est donc possible d'utiliser le \textit{majority vote} avec la régression logistique, les réseaux de neurones, etc.
+Le \textit{majority vote} n'est pas une algorithme de \textit{ML} à proprement parlé. Il s'agît plutôt d'améliorer les résultats en modifiant la manière d'utiliser certains des algorithmes pré-mentionnés.
+Il est donc possible d'employer le \textit{majority vote} avec la régression logistique, les réseaux de neurones, etc.
 
 \paragraph{}
-Le principe de l'algorithme est le suivant. Soit $E$ notre ensemble d'entraînement, soit $M = \{f_1, f_2, ...\}$ notre ensemble de méthodes $f_i$ de \textit{machine learning}. Notons $M_E = \{f_{1_E}, f_{2_E}, ...\}$ notre ensemble de méthodes $f_{i_E}$ entraînées.
+Le principe est le suivant. Soit $E$ notre ensemble d'entraînement, soit $M = \{f_1, f_2, ...\}$ notre ensemble de méthodes $f_i$ de \textit{machine learning}. Notons $M_E = \{f_{1_E}, f_{2_E}, ...\}$ notre ensemble de méthodes $f_{i_E}$ entraînées.
  
 \[ f_{i_E}(x) =
   \begin{cases}
@@ -507,18 +508,18 @@ Si $\exists\ classe_i \in R$, telle que $$\sum (classe_i \in R) > \frac{|M_E|}{2
 Alors cela signifie que la $classe_i$ est notre résultat, dans le cas contraire, l'algorithme ne donne aucune réponse.
 
 \paragraph{}
-L'algorithme va donc, à partir d'un ensemble de méthodes et d'une observation, calculer les classes. Si une de ses dernières est représentée de manière majoritaire\footnote{\textit{i.e.} 50\% + 1 voix}, le programme retournera ce résultat. Si la majorité n'est pas atteinte, il n'a aucune classe jugée valable et donc aucun résultat ne sera rendu.
+L'algorithme va donc, à partir d'un ensemble de méthodes et d'une observation, calculer les classes. Si une de ses dernières est représentée de manière majoritaire\footnote{\textit{i.e.} 50\% des voix + 1 voix}, le programme retournera ce résultat. Si la majorité n'est pas atteinte, aucune classe n'est jugée valable et donc aucune réponse ne sera rendue.
 
-Cette technique réduit la composante individuelle des méthodes de \textit{ML} ainsi que le risque d'erreur. Si une observation est mal classifiée, cela signifie que plus de la moitié des algorithmes ont fait une erreur. Dans ce cas là, il convient de changer les attributs utilisés ou l'ensemble d'entraînement car l'erreur a peu de change de venir d'un problème d'implémentation ou d'un algorithme particulier. Hors les seules composantes communes sont l'ensemble d'entraînement ainsi que les attributs.
+Cette technique réduit la composante individuelle des méthodes de \textit{ML} ainsi que le risque d'erreur. Si une observation est mal classifiée, cela signifie que plus de la moitié des algorithmes ont fait une erreur. Dans ce cas là, il convient de changer les attributs utilisés ou l'ensemble d'entraînement car l'erreur a peu de change de venir d'un problème d'implémentation ou de la faiblesse de classification d'un algorithme particulier.
 
 \subsubsection{\textit{Random Subset}} \label{section random subset}
 \paragraph{}
-À l'instar de la technique de \textit{majority vote}, le \textit{random subset} est un algorithme pour utiliser des méthodes de \textit{ML}.
+À l'instar du \textit{majority vote}, le \textit{random subset} est une technique pour employer des méthodes de \textit{ML}.
 
 \paragraph{}
 Le principe est le suivant :
 
-Il faut prendre $N$ différents ensembles de données\footnote{Il est possible de découper notre ensemble initial afin d'atteindre ce critère.} du domaine concerné. Ces $N$ ensembles seront nos ensembles d'entraînements. Ils permettront d'entraîner un algorithme dessus\footnote{Comme \textit{Naive Bayes} ou {SVM}.}. Nous disposerons donc de $N$ instances de l'algorithme de \textit{ML} initial, mais avec un entraînement différent pour chacun, puis pour chaque observation, nous allons utiliser ces $N$ instances afin d'obtenir un résultat de classification.
+Il faut prendre $N$ différents ensembles de données\footnote{Il est possible de découper notre ensemble initial afin d'atteindre ce critère.} du domaine concerné. Ils permettront d'entraîner un algorithme sur chacun d'entre eux\footnote{Comme \textit{Naive Bayes} ou {SVM}.}. Nous disposerons donc de $N$ instances de l'algorithme de \textit{ML} initial, mais avec un entraînement différent pour chacun, puis pour chaque observation, nous allons utiliser ces $N$ instances afin d'obtenir un résultat de classification.
 
 Comme pour le \textit{majority vote}, si une même classe est représentée une majorité de fois, le \textit{random subset} retournera ce résultat, et aucun dans le cas contraire.
 
@@ -532,17 +533,17 @@ De plus, le système de majorité promeut une qualité et une confiance accrue d
 \subsection{\textit{Machine Learning} dans le cadre de la finance}\label{section machine learning finance}
 \subsubsection{Introduction}
 \paragraph{}
-Avant de parler des performances des algorithmes mentionnés, il convient de préciser qu'ils proviennent de plusieurs articles et recherches différents. Ils ont donc été testé avec des paramètres ayant des valeurs disparates ainsi que sur des données distinctes.
+Avant de parler des performances des algorithmes mentionnés, il convient de préciser que ces derniers proviennent de plusieurs articles différents. Ils ont donc été testés avec des paramètres ayant des valeurs disparates ainsi que sur des données distinctes.
 Il est donc très compliqué de comparer les résultats des algorithmes entre deux articles différents et d'affirmer qu'une méthode est meilleure qu'une autre. 
 
-Dans un même article, il sera possible de comparer les résultats cependant entre deux sections, ces résultats serviront plutôt à illustrer la qualité intrinsèque des procédés. Avec un résultat de 80\%, nous pourrons estimer que la performance est bonne, et l'inverse pour une valeur de 20\%.
+Pour un même article, il sera possible de comparer les performances  cependant dans le cas contraire, ces résultats serviront plutôt à illustrer la qualité intrinsèque des procédés. Avec un résultat de 80\%, nous pourrons estimer que la performance est bonne, et l'inverse pour une valeur de 20\%.
 
 \paragraph{}
-Pour chaque algorithmes qui ont été mentionnés dans la section précédente, nous allons expliqué les changements appliqués à ces derniers en vue de les appliquer au domaine financier. De plus nous étudierons les résultats obtenus et analyserons quelles améliorations apportent un gain significatif dans la classification.
+Pour tous les algorithmes qui ont été mentionnés dans la section précédente, nous allons expliqué les changements appliqués à ces derniers en vue de les étendre au domaine financier. De plus nous étudierons les résultats obtenus et analyserons quelles améliorations apportent un gain significatif dans la classification.
 
-La séparation sera quelque peu différente. Certains articles cumulant plusieurs algorithmes, afin d'éviter les répétitions d'explications, il convient de séparer par article afin de regrouper les améliorations.
+La séparation sera quelque peu différente. Certains articles cumulant plusieurs algorithmes, afin d'éviter les répétitions d'explications, il convient de les séparer par article afin de regrouper les améliorations.
 
-De plus, tout les algorithmes ne sont pas forcément évalués dans les articles. Il est donc possible que certains comme les réseaux de neurones n'aient pas de test.
+De plus, tous les algorithmes ne sont pas forcément évalués dans les articles. Il est donc possible que certains comme les réseaux de neurones n'aient pas de valeurs.
 
 \subsubsection{\textit{A Machine Learning Approach to Automated Trading} [\ref{machine learning automated trading}]}
 
@@ -554,24 +555,24 @@ L'auteur a appliqué l'algorithme sur le marché des actions\footnote{Ou \textit
 \item L'approche par secteur.
 \end{itemize}
 
-La première partait de l'hypothèse que le prix d'une action est uniquement déterminé par son prix passé. Il est donc indépendant du rester du marché. Après les premiers résultats, l'auteur a conclu que cette approche est trop bancale pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la seconde approche \ref{machine learning automated trading}.
+La première partait de l'hypothèse que le prix d'une action est uniquement déterminée par son prix passé. Il est donc indépendant du rester du marché. Après les premiers résultats, l'auteur a conclu que cette approche était trop bancale pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la seconde approche \ref{machine learning automated trading}.
 
 La seconde approche, quant à elle, repose sur la supposition que le prix d'une action dépend des autres actions, souvent concurrentes. Il a donc pris en compte l'historique des prix du sous-jacent évalué, mais également celui de ses concurrents en terme de marché.
-C'est donc avec cette approche que les résultats doivent être interprétés.
+C'est avec cette approche que les résultats doivent être interprétés.
 
 \paragraph{}
 Un autre point qu'il convient d'aborder porte sur l'ensemble d'entraînement. Afin d'entraîner et d'évaluer son programme, il a fallu partager le \textit{set} de données.
 
 Dans le cas contraire, il aurait été impossible de tester les algorithmes entraînés. Ou bien, ils auraient été évalués sur les mêmes données que leur entraînement. Ce qui n'est évidemment pas possible.
 
-Le chois a donc été fait de partagé l'ensemble de données en deux sous-parties. Une première contenant 80\% des données qui sera dédiée à l'entraînement et une seconde avec 20\% pour l'évaluation.
+Le choix a donc été fait de partagé l'ensemble de données en deux sous-parties. Une première contenant 80\% des données qui sera dédiée à l'entraînement et une seconde avec 20\% pour l'évaluation.
 
 \paragraph{}
 Les trois métriques utilisées sont :
 \begin{itemize}
 \item Le \textit{True Positive Rate} est définit comme suit :
 $$\textit{TPR} = \frac{\textit{TP}}{\textit{TP} + \textit{FN}}$$
-Où \textit{TP} sont les positifs détectés positifs et \textit{FN} les négatifs détectés positifs.
+Où \textit{TP} sont les positif détectés positifs et \textit{FN} les négatifs détectés positif.
 \item Le \textit{True Negative Rate} est définit comme :
 $$\textit{TNR} = \frac{\textit{TN}}{\textit{TN} + \textit{FP}}$$
 
@@ -580,10 +581,12 @@ $$\textit{TR} = \frac{\textit{TP} + \textit{TN}}{\textit{TP} + \textit{TN} + \te
 \end{itemize}
 
 \paragraph{}
-Les données possédée par l'auteur portent sur divers secteur. Notamment celui de l'\textit{utility}, de l'\textit{energy} et de l'\textit{information technology}. Le procédé est le suivant, pour déterminer si une action précise $A_1$ va augmenter ou diminuer. Il va regarder le prix de l'action durant $N$ jours précédant mais également celui des $M$ autres actions du secteur donné.
+Les données possédée par l'auteur portent sur divers secteurs. Notamment celui de l'\textit{utility}, de l'\textit{energy} et de l'\textit{information technology}. Le procédé est le suivant, pour déterminer si une action précise $A_1$ va augmenter ou diminuer. Il va regarder le prix de l'action durant $N$ jours précédant mais également celui des $M$ autres actions du secteur donné.
 $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(M,t_1)},\dots,A_{(M,t_N)}) = A_{(1,t_0)}$$
 
 \subsubsubsection{Résultats}
+\paragraph{}
+Les résultats proviennent de l'article suivant: [\ref{machine learning automated trading}]
 
 \begin{table}[h!]
 	\centering
@@ -598,8 +601,9 @@ $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(
 	\textit{Information Technology} & 0.5244 & 0.5031 & 0.5102\\
 	\hline
 \end{tabular}
-\caption{Tableau de résultats pour l'algorithme \textit{Lasso Logistic Regression} [\ref{section régression logistique}].}
+\caption[]{Tableau de résultats pour l'algorithme \textit{Lasso Logistic Regression} [\ref{section régression logistique}].}
 \end{table}
+
 
 
 \begin{table}[h!]
@@ -615,8 +619,9 @@ $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(
 	\textit{Information Technology} & 0.5075 & 0.54966 & 0.5052\\
 	\hline
 \end{tabular}
-\caption{Tableau de résultats pour l'algorithme \textit{Decision Tree} [\ref{section arbre de décision}].}
+\caption[]{Tableau de résultats pour l'algorithme \textit{Decision Tree} [\ref{section arbre de décision}].}
 \end{table}
+
 
 
 \begin{table}[h!]
@@ -632,8 +637,9 @@ $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(
 	\textit{Information Technology} & 0.5115 & 0.5048 & 0.5091\\
 	\hline
 \end{tabular}
-\caption{Tableau de résultats pour l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}].}
+\caption[]{Tableau de résultats pour l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}].}
 \end{table}
+
 
 \begin{table}[H]
 	\centering
@@ -651,12 +657,13 @@ $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(
 \caption{Tableau de résultats pour l'algorithme \textit{SVM} [\ref{section svm}].}
 \end{table}
 
+
 \paragraph{}
-À ce stade là, nous remarquons que les performances de la régression logistique et des arbres de décisions sont du même ordre de grandeur. Ces derniers étant battu par les algorithmes \textit{Naive Bayes} et \textit{SVM}.
+À ce stade là, nous remarquons que les performances de la régression logistique et des arbres de décisions sont du même ordre de grandeur. Ces derniers étant battus par les algorithmes \textit{Naive Bayes} et \textit{SVM}.
 
-Un autre point important concernant le fait que les algorithmes détectent mieux les \textit{TPR} que les \textit{TNR}\footnote{Exception faite du secteur énergie.}. Cela est dû au fait que le cours des actions des différents secteur est globalement en hausse dans les données prises de compte. Du coup, de part le manque de données à la baisse dans l'ensemble d'entraînement, l'apprentissage est limité. Concernant le secteur de l'énergie, vu qu'il était en baisse, c'est l'inverse qui se produit.
+Un autre point important concernant le fait que les algorithmes détectent mieux les \textit{TPR} que les \textit{TNR}\footnote{Exception faite du secteur énergie.}. Cela est dû au cours des actions des différents secteur globalement en hausse dans les données prises en compte. Du coup, de part le manque de données à la baisse dans l'ensemble d'entraînement, l'apprentissage est limité. Concernant le secteur de l'énergie, vu qu'il était en baisse, c'est l'inverse qui se produit.
 
-Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes :
+Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes\footnote{Source des résultats: [\ref{machine learning automated trading}]}:
 
 \begin{table}[h!]
 	\centering
@@ -674,10 +681,10 @@ Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec 
 \caption{Tableau de résultats pour le \textit{majority vote} [\ref{section majority vote}].}
 \end{table}
 
-Les résultats sont très similaires à ceux de \textit{Naive Bayes} et de \textit{SVM}, cela n'est donc pas très concluant comme amélioration. Cela peut être dû au fait que les deux algorithmes avec les meilleurs résultats sont souvent d'accord ensemble, cassant ainsi l'intérêt du vote.
+Les résultats sont très similaires à ceux de \textit{Naive Bayes} et de \textit{SVM}, cela n'est donc pas très concluant comme amélioration. Il est possible que les deux algorithmes ayant les meilleurs résultats sont souvent d'accord sur la classe, cassant ainsi l'intérêt du vote.
 
 \paragraph{}
-L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de lui appliquer diverses améliorations. En se concentrant sur un seul algorithme, il lui est plus facile d'en voir les effets.
+L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de lui appliquer diverses améliorations. En se concentrant sur un seul algorithme, il lui est plus facile d'en voir les effets\footnote{Source des résultats: [\ref{machine learning automated trading}]}.
 
 \paragraph{}
 \begin{table}[h!]
@@ -696,7 +703,7 @@ L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de lui appliquer div
 \caption{Tableau de résultats pour l'algorithme \textit{Naive Bayes} [\ref{section naive bayes}] avec une optimisation par \textit{ROC curve analysis} [\ref{section roc curve analysis}].}
 \end{table}
 
-Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimale permet principalement d'augmenter la performance dans la détection des négatifs. Il est important de mentionner que cela n'influence que peu la détection des positifs car ils sont plus représentés dans l'ensemble d'entraînement et donc mieux reconnu. L'amélioration est donc intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité de classification.
+Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimale permet principalement d'augmenter la performance dans la détection des négatifs. Il est important de mentionner que cela n'influence que peu la détection des positifs car ils sont bien représentés dans l'ensemble d'entraînement et donc mieux reconnus. L'amélioration est donc intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité de classification.
 
 \begin{table}[h!]
 	\centering
@@ -715,12 +722,11 @@ Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optima
 \end{table}
 
 L'amélioration est assez importante par rapport à l'algorithme \textit{Naive Bayes Roc curve analysis}. Le \textit{Random Subset} obtient 58\% et 54\% pour l'\textit{utility} et l'{information technology}, pour seulement 55\% et 51\% au \textit{Naive Bayes ROC curve analysis}. Même s'il y a une légère perte pour le secteur \textit{energy} d'environ 1\%.
-
 L'ensemble donne de meilleur résultats.
 
 \subsubsection{\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}[\ref{descente du gradient stochastique}]}
 
-\subsubsection{Introduction}
+\subsubsubsection{Introduction}
 \paragraph{}
 Cet article a principalement exploré la technique de la descente du gradient [\ref{section descente du gradient}] et plus précisément de sa version probabiliste ou \textit{stochastic gradient descent}.
 
@@ -739,19 +745,23 @@ La meilleure manière d'appliquer cela est d'utiliser une sélection aléatoire 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.40]{images/choix_exp}
-\caption{Exemple de distribution exponentielle. Cela va donc permettre de choisir les points les plus proches avec une probabilité plus grande.}
+\caption[]{Exemple de distribution exponentielle\footnotemark. Cela va donc permettre de choisir les points les plus proches avec une probabilité plus grande.}
 \end{figure}
 
+\footnotetext{Source: [\ref{descente du gradient stochastique}]}
+
 \paragraph{}
-L'autre point important est le \textit{warm start}. C'est une pré-optimisation. Il s'agît d'initialiser les paramètres du gradient d'une certaine manière d'augmenter la vitesse et les chances de convergence. Pour ce faire, la meilleure manière trouvée dans l'article [\ref{descente du gradient stochastique}] consiste à utiliser les valeurs trouvées lors de la précédente itération.
+L'autre point important est le \textit{warm start}. C'est une pré-optimisation. Il s'agît d'initialiser les paramètres du gradient d'une certaine manière afin d'augmenter la vitesse et les chances de convergence. Pour ce faire, la meilleure option trouvée dans l'article [\ref{descente du gradient stochastique}] consiste à utiliser les valeurs obtenues lors de la précédente itération.
 De ce fait, l'algorithme convergera plus vite pour un coût plus faible en terme d'erreur de calcul.
 
 \paragraph{}
-La métrique d'évaluation est différente des notions de \textit{TPR},\textit{TNR} et \textit{TR}. Dans cet article, le but est est devenu le prix d'un cours, comme EURUSD à partir de plusieurs autres, comme EURCAD, EURAUD, EURGBP. Il est donc extrêmement compliqué de calculer avec plusieurs décimales le résultat exacte, impliquant donc des taux nuls pour chacune des métriques.
-Il fallu donc trouver basée sur l'erreur relative :
+La métrique d'évaluation est différente des notions de \textit{TPR},\textit{TNR} et \textit{TR}. Dans cet article, le but est de prédire le prix d'un cours, comme EURUSD à partir de plusieurs autres, comme EURCAD, EURAUD, EURGBP. Il est donc extrêmement compliqué de calculer avec plusieurs décimales le résultat exacte, impliquant donc des taux nuls pour chacune des métriques.
+Il fallu donc trouver une méthode basée sur l'erreur relative :
 $$relative_{error} = \frac{\Delta x}{x}$$
 
 Cela quantifie la différence entre le résultat calculé et le résultat réel tout en le pondérant.
+
+\subsubsubsection{Résultats}
 
 \begin{table}[H]
 	\centering
@@ -761,17 +771,24 @@ Cela quantifie la différence entre le résultat calculé et le résultat réel 
 	\hline
 	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
 	\hline
-	\textit{Singapoore FOREX with SW-1\footnote{$SW-1$ signifie une fenêtre de choix de taille $N-1$.}} & 0.1366274551\% & 0.133887583\% & 0.2294997927\% \\
+	\textit{Singapoore with SW-1\footnotemark{}} & 0.1366274551\% & 0.133887583\% & 0.2294997927\% \\
 	\hline
-	\textit{Singapoore FOREX with SW/2\footnote{$SW/2$ signifie une fenêtre de choix de taille $N/2$.}} & 0.1366274551\% & 0.09281447603\% & 0.1551851906\%\\
+	\textit{Singapoore with SW/2\footnotemark{}} & 0.1366274551\% & 0.09281447603\% & 0.1551851906\%\\
 	\hline
 
 \end{tabular}
-\caption{Tableau de résultats pour les différentes versions de \textit{SGD} sur le \textit{FOREX} de Singapore. Les différences entre le \textit{bid} et le \textit{ask} étant minimes, l'auteur ne les a pas consigné.}
+\caption[]{Tableau de résultats\footnote[3]{} pour les différentes versions de \textit{SGD} sur le \textit{FOREX} de Singapore. Les différences entre le \textit{bid} et le \textit{ask} étant minimes, l'auteur ne les a pas consigné.}
 \end{table}
 
+ \addtocounter{footnote}{-2} %3=n
+\stepcounter{footnote}\footnotetext{$SW-1$ signifie une fenêtre de choix de taille $N-1$.}
+\stepcounter{footnote}\footnotetext{$SW/2$ signifie une fenêtre de choix de taille $N/2$.}
+\stepcounter{footnote}\footnotetext{Source des résultats: [\ref{descente du gradient stochastique}].}
+
+
+
 \paragraph{}
-Les erreurs relatives sont très faibles. Les estimations sont donc très proches des valeurs réelles. De plus on remarque que le  changement de la taille de la \textit{SW} peut avoir une grande influence. Sur le \textit{plainSGD} cela ne change rien, on peut donc en conclure que les $N/2 - 1$ données supplémentaires ne sont pas significative dans le calcul. Pour le \textit{approxSGD} et le \textit{approxWarmSGD}, les erreurs diminuent, nous pouvons donc dire que la fenêtre était trop grande et, pire encore, ajoutait du bruit, rendant le calcul moins précis.
+Les erreurs relatives sont très faibles. Les estimations sont donc très proches des valeurs réelles. De plus on remarque que le  changement de la taille de la \textit{SW} peut avoir une grande influence. Sur le \textit{plainSGD} cela ne change rien, on peut donc en conclure que les $N/2 - 1$ données supplémentaires ne sont pas significatives dans le calcul. Pour le \textit{approxSGD} et le \textit{approxWarmSGD}, les erreurs diminuent, nous pouvons donc dire que la fenêtre était trop grande et, pire encore, ajoutait du bruit, rendant le calcul moins précis.
 
 D'un point de vue calculatoire c'est très intéressant, car il est possible de diminuer la taille de la fenêtre, et donc gagner en vitesse, tout en gardant, voir en augmentant, la qualité des résultats.
 
@@ -784,14 +801,16 @@ D'un point de vue calculatoire c'est très intéressant, car il est possible de 
 	\hline
 	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
 	\hline
-	\textit{Capital K FOREX Data SW-1} & 0.01167\%/0.0117\% & 0.0116\%/0.0117\% & 1.502e-03\%/1.554e-03\% \\
+	\textit{Capital K SW-1} & 0.01167\%/0.0117\% & 0.0116\%/0.0117\% & 1.502e-03\%/1.554e-03\% \\
 	\hline
-	\textit{Capital K FOREX Data SW/2} & 0.01167\%/0.0117\% & 0.0314\%/0.0313\% & 1.701e-03\%/1.751e-03\%\\
+	\textit{Capital K SW/2} & 0.01167\%/0.0117\% & 0.0314\%/0.0313\% & 1.701e-03\%/1.751e-03\%\\
 	\hline
 
 \end{tabular}
-\caption{Tableau de résultats pour les différentes versions de \textit{SGD}.}
+\caption[]{Tableau de résultats\footnote{} pour les différentes versions de \textit{SGD}.}
 \end{table}
+
+\footnotetext{Source des résultats: [\ref{descente du gradient stochastique}]}
 
 \paragraph{}
 Ici encore il n'y a pas de différence pour le \textit{plainSGD} entre les deux tailles de fenêtres. On remarque cependant que pour les deux autres variantes, la diminution de la taille les pénalise. Cependant, l'ordre de grandeur des erreurs reste très faible. Il est donc important de savoir si nous voulons un chiffre très précis ou bien obtenir le résultat de manière rapide. L'objectif aiguillera le choix pour l'une ou l'autre des fenêtres.
