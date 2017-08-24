@@ -1,2 +1,9 @@
 *.tex.swp
+RomainMencattini*.aux
+RomainMencattini*.bbl
+RomainMencattini*.blg
+RomainMencattini*.dvi
+RomainMencattini*.log
+RomainMencattini*.out
+RomainMencattini*.toc
 dontFollow/
