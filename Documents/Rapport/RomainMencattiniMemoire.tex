@@ -14,6 +14,7 @@
 \usepackage[T1,hyphens]{url}
 \usepackage{float}
 \usepackage{titlesec}
+\usepackage{cite}
 
 \usepackage[perpage]{footmisc}
 \usepackage[colorlinks,urlcolor=blue, linkcolor=blue]{hyperref}
@@ -87,11 +88,11 @@ Avant la démocratisation de l'informatique, les opérations financières étaie
 \begin{itemize}
 \item L'émotionnel influençait les transactions. En effet, ces dernières étant effectuées par des humains, il y avait une risque non négligeable que l'état de la personne agisse sur sa décision.
 \item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à une plan afin de ne pas se laisser influencer par des paramètres extérieurs. Cela pouvait être très difficile.
-\item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. [\ref{backtesting investopedia}]} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
+\item Le \textit{backtesting}\footnote{Backtesting is the process of testing a trading strategy on relevant historical data to ensure its viability before the trader risks any actual capital. \cite{investopedia_backtesting}} était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. De même pour un \textit{trading plan}.
 \end{itemize}
 
 \paragraph{}
-Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux États-Unis, 84\% des transactions étaient accomplies par des algorithmes [\ref{real investors}]. Ce qui représente environ 100'000 réalisations, ou \textit{ticks}, par secondes [\ref{real investors}].
+Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. En 2014 aux États-Unis, 84\% des transactions étaient accomplies par des algorithmes \cite{real_investors}. Ce qui représente environ 100'000 réalisations, ou \textit{ticks}, par secondes \cite{real_investors}.
 Durant l'évolution l'outil informatique, le monde de la finance en a suivi les améliorations afin de perfectionner leurs algorithmes.
 On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. Des propositions de plus en plus pointues dans les deux domaines voient le jour. L'algorithme qui sera au coeur de ce projet en fait partie. Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
 
@@ -101,10 +102,10 @@ Voici celles vont être développées dans cet état de l'art:
 \begin{itemize}
 \item Les réseaux de neurones.
 \item Les arbres de décision.
-\item Les algorithmes \textit{SVM} [\ref{wikipedia svm}].
+\item Les algorithmes \textit{SVM} \cite{wikipedia_svm}.
 \item \textit{Logistic Regression}.
 \item \textit{Naive Bayes}.
-\item Descente du Gradient [\ref{wikipedia descente du gradient}] ainsi que sa version dite stochastique [\ref{descente du gradient stochastique}].
+\item Descente du Gradient \cite{wikipedia_descente_du_gradient} ainsi que sa version dite stochastique \cite{descente_du_gradient_stochastique}.
 \end{itemize}
 
 Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}, en évaluant leur performances.
@@ -117,16 +118,16 @@ Finalement, nous lierons les deux domaines en montrant comment adapter les modè
 \paragraph{}Afin d'appréhender le fonctionnement du \textit{FOREX}, il est important de mentionner certaines décisions historiques. Ces dernières ayant façonné le marché des devises actuel.
 
 \paragraph{}
-Jusqu'à la première guerre mondiale, le système en vigueur se basait sur l'or, que l'on nommait l'étalon-or\footnote{Source: [\ref{étalon-or à étalon-dollar}].}. S'en suit une période d'instabilité notamment dûe aux pertes occasionnées par la guerre, un après-guerre compliqué, la crise boursière de 1929 et la seconde guerre mondiale.
+Jusqu'à la première guerre mondiale, le système en vigueur se basait sur l'or, que l'on nommait l'étalon-or\footnote{Source: \cite{etalon_or_a_etalon_dollar}.}. S'en suit une période d'instabilité notamment dûe aux pertes occasionnées par la guerre, un après-guerre compliqué, la crise boursière de 1929 et la seconde guerre mondiale.
 
-C'est au sortir de cette dernière, que la nécessité de "\textit{mettre en place une organisation monétaire mondiale et de favoriser la reconstruction et le développement économique des pays touchés par la guerre}" [\ref{wikipedia bretten woods}], est apparue. Le but était également "\textit{d’aplanir les conflits économiques, reconnaissant par là les problèmes engendrés par les disparités économiques}" [\ref{étalon-or à étalon-dollar}].
+C'est au sortir de cette dernière, que la nécessité de "\textit{mettre en place une organisation monétaire mondiale et de favoriser la reconstruction et le développement économique des pays touchés par la guerre}" \cite{wikipedia_bretten_woods}, est apparue. Le but était également "\textit{d’aplanir les conflits économiques, reconnaissant par là les problèmes engendrés par les disparités économiques}" \cite{etalon_or_a_etalon_dollar}.
 
 Plusieurs idées furent proposées, mais ce fût celle de Harry Dexter White qui fût mise en place. Cette dernière prévoyait entre autre:
 \begin{itemize}
-\item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 [\ref{wikipedia bretten woods}].}.
+\item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 \cite{wikipedia_bretten_woods}.}.
 \item Création de la Banque internationale pour la reconstruction et le développement (BIRD) qui deviendra la banque mondiale.
 \item Le Fond monétaire international (FMI).
-\item Création de l'Organisation mondial du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord [\ref{wikipedia bretten woods}].}.
+\item Création de l'Organisation mondial du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord \cite{wikipedia_bretten_woods}.}.
 \end{itemize}
 
 On remarque que ces institutions sont toujours en activités, cela démontre l'importance de ces accords pour le système financier actuel. Cela est également vrai pour le marché des taux de changes, où le USD est toujours utilisé entre deux échanges.
@@ -147,7 +148,7 @@ Lorsque le prix d'une devise augmente par rapport à une monnaie étrangère, on
 La mondialisation a facilité ce marché. En effet, toutes devises étant accessibles depuis n'importe où, il devient donc possible d'avoir des marchés avec des devises plus exotiques.
 
 \paragraph{}
-Les principaux acteurs financiers sont [\ref{marche des changes}]:
+Les principaux acteurs financiers sont \cite{marche_des_changes}:
 \begin{itemize}
 \item Les banques commerciales. Elles peuvent pratiquer des interventions directes car elles gèrent des dépôts et veulent opérer des transactions sur ces derniers. Il leur est également possible de réaliser le rôle d'intermédiaire financier.
 \item Les entreprises. Ces dernières vont pratique des transactions directes, si elles disposent d'un accès aux marchés sinon via des intermédiaires.
@@ -158,7 +159,7 @@ Les principaux acteurs financiers sont [\ref{marche des changes}]:
 
 \paragraph{}
 Henry Bourguinat a énoncé "\textit{la règle des trois unités}" qui correspondent aux unités de temps, de lieu et d'opérations et d'acteurs.
-Le \textit{FOREX} répond à ces trois unités [\ref{site fr forex}]:
+Le \textit{FOREX} répond à ces trois unités \cite{site_fr_forex}:
 \begin{itemize}
 \item Ce marché fonctionne 24h/24 et les transactions s'effectuent presque en continue.
 \item Il fonctionne à l'échelle mondiale tout en étant décentralisé. De part l'évolution des technologies, l'information circule aisément malgré son statut.
@@ -168,7 +169,7 @@ Le \textit{FOREX} répond à ces trois unités [\ref{site fr forex}]:
 \paragraph{}
 Il existe principalement deux horizon temporels: le \textit{spot} et le \textit{forward}.
 
-Le premier est également appelé "Le marché au comptant". Lorsque deux acteurs se mettent d'accord sur une transaction, cette dernière se réalise immédiatement\footnote{Valable en théorie, dans la réalité cela peut prendre du temps [\ref{marche des changes}]}.
+Le premier est également appelé "Le marché au comptant". Lorsque deux acteurs se mettent d'accord sur une transaction, cette dernière se réalise immédiatement\footnote{Valable en théorie, dans la réalité cela peut prendre du temps \cite{marche_des_changes}}.
 
 Le second peut être nommé "Le marché à terme". L'accord est passé à un temps $T$ mais la transaction effective ne se réalise que dans le futur. Ce futur, ou maturité, peut être de plusieurs dizaines de jours, voir des années, soit $T + X$\footnote{Où $T$ est le moment présent, et $X$ une durée de temps.}.
 
@@ -189,17 +190,17 @@ Les options sont très versatiles. Elles peuvent être utilisées afin de spécu
 
 \paragraph{}
 Le \textit{bid} est le prix maximum qu'un acheteur est d'accord de payer pour un sous-jacent.
-De la même manière, le \textit{ask} est le prix minimum qu'un vendeur accepte pour vendre un sous-jacent [\ref{investopedia bid ask}].
+De la même manière, le \textit{ask} est le prix minimum qu'un vendeur accepte pour vendre un sous-jacent \cite{investopedia_bid_ask}.
 Lorsqu'il y a un \textit{bid} qui a la même valeur qu'un {ask}, une vente est effectuée. 
 
-La différence entre le \textit{bid} et le \textit{ask}, appelée le \textit{spread}, représente la liquidité d'un actif. Il est également utilisé comme marge par les \textit{broker}[\ref{wikipedia broker}] et autres plateformes.
+La différence entre le \textit{bid} et le \textit{ask}, appelée le \textit{spread}, représente la liquidité d'un actif. Il est également utilisé comme marge par les \textit{broker}\cite{wikipedia_broker} et autres plateformes.
 
 
 
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
 \subsubsection{Introduction}
 \paragraph{}
-T. Mitchell a donné une définition formelle [\ref{mitchell}]:
+T. Mitchell a donné une définition formelle \cite{mitchell}:
 \begin{center}
 "\textit{A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$ is its performance at tasks in $T$, as measured by $P$, improves with experience $E$}"
 \end{center}
@@ -236,24 +237,24 @@ Il est important de saisir comment fonctionne les algorithmes de \textit{machine
 
 \subsubsection{\textit{Logistic Regression}} \label{section régression logistique}
 \paragraph{}
-Une régression en statistique consiste à analyser la relation entre une variable par rapport à un ensemble d'autres [\ref{wikipedia régression}]. On veut estimer la probabilité conditionnelle, en se basant sur des variables et en utilisant une distribution logistique cumulative. Cette dernière a un forme semblable à une distribution Gaussienne, mais avec des queues épaisses et donc une \textit{kurtosis} plus élevée. La \textit{kurtosis} étant définie comme suit:
+Une régression en statistique consiste à analyser la relation entre une variable par rapport à un ensemble d'autres \cite{wikipedia_regression}. On veut estimer la probabilité conditionnelle, en se basant sur des variables et en utilisant une distribution logistique cumulative. Cette dernière a un forme semblable à une distribution Gaussienne, mais avec des queues épaisses et donc une \textit{kurtosis} plus élevée. La \textit{kurtosis} étant définie comme suit:
 \begin{center}
 $Kurt(X) = \frac{\mu_4}{\sigma^4}$, où $\mu_4$ est le quatrième moment centré et $\sigma^4$ la variance au carré. 
 \end{center}
 Le but est de modéliser: $P(Y=1 | X=x)$ comme fonction de x. Nous voulons donc savoir quelle est la probabilité que la classe $Y$ vaille $1$ sachant que $X$ vaut $x$.
 
-Le modèle de régression est le suivant [\ref{machine learning automated trading}]:
+Le modèle de régression est le suivant \cite{machine_learning_automated_trading}:
 \begin{center}
 $log(\frac{p(x)}{1 - p(x)}) = \beta_0 + x \cdot \beta$
 \end{center}
 
-En résolvant cette équation pour $p$, cela donne [\ref{machine learning automated trading}]:
+En résolvant cette équation pour $p$, cela donne \cite{machine_learning_automated_trading}:
 \begin{center}
 $p(x|y) = \frac{1}{1 + e^{-(\beta_0 + x \cdot \beta)}}$
 \end{center}
 
 \paragraph{}
-Dans le cadre de l'article: \textit{A Machine Learning Approach to Automated Trading} [\ref{machine learning automated trading}], l'auteur a implémenté deux variations de cet algorithmes:
+Dans le cadre de l'article: \textit{A Machine Learning Approach to Automated Trading} \cite{machine_learning_automated_trading}, l'auteur a implémenté deux variations de cet algorithmes:
 \begin{itemize}
 \item \textit{Logistic regression with a ridge penalty}:
 \begin{center}
@@ -288,7 +289,7 @@ Voici un exemple d'arbre de décision\footnote{\url{http://cloudmark.github.io/i
 \end{figure}
 
 \paragraph{}
-Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe plusieurs algorithmes. Un des plus connus est le \textit{ID3} [\ref{id3}]. Il s'agit d'une méthode de type \textit{greedy} qui va à chaque itération, effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour la classification [\ref{id3}].} afin de savoir quel attribut est le plus discriminant, utiliser cet attribut comme nœud, puis itérer jusqu'à avoir utilisé tous les attributs.
+Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe plusieurs algorithmes. Un des plus connus est le \textit{ID3} \cite{id3}. Il s'agit d'une méthode de type \textit{greedy} qui va à chaque itération, effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour la classification \cite{id3}.} afin de savoir quel attribut est le plus discriminant, utiliser cet attribut comme nœud, puis itérer jusqu'à avoir utilisé tous les attributs.
 
 
 \subsubsection{\textit{Naive Bayes}}\label{section naive bayes}
@@ -299,7 +300,7 @@ $P(Y|X) = \frac{P(X|Y)}{P(X)}P(Y)$
 \end{center}
 Il est important que les données aient une distribution normale.
 
-À partir de cela, nous obtenons l'équation de \textit{machine learning} suivante [\ref{machine learning automated trading}]:
+À partir de cela, nous obtenons l'équation de \textit{machine learning} suivante \cite{machine_learning_automated_trading}:
 \begin{center}
 $V_{NB} = arg\ max_{v_{j \in V}} P(v_j) \prod\limits_i P(a_i | v_j)$
 \end{center}
@@ -311,11 +312,11 @@ Afin d'avoir une certain sécurité dans les résultats, il est possible d'ajout
 Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validé. Si $V_{NB} = 0.7$ la réponse est jugée sûre. 
 
 \paragraph{}\label{section roc curve analysis}
-La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} pour différents seuils de classification de l'algorithme \textit{Naive Bayes} [\ref{machine learning automated trading}]. À partir de cela, nous pouvons déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
-De plus cette courbe peut aider à comparer des classifieurs entre eux en comparant la surface sous la courbe [\ref{machine learning automated trading}].
+La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} pour différents seuils de classification de l'algorithme \textit{Naive Bayes} \cite{machine_learning_automated_trading}. À partir de cela, nous pouvons déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
+De plus cette courbe peut aider à comparer des classifieurs entre eux en comparant la surface sous la courbe \cite{machine_learning_automated_trading}.
 
-La méthode utilisée est la suivante [\ref{machine learning automated trading}]: il faut faire s'intersecter la pente $S$ avec la courbe \textit{ROC} et ainsi obtenir une valeur optimale pour le seuil.
-Cette pente $S$ est définie comme suit [\ref{machine learning automated trading}]:
+La méthode utilisée est la suivante \cite{machine_learning_automated_trading}: il faut faire s'intersecter la pente $S$ avec la courbe \textit{ROC} et ainsi obtenir une valeur optimale pour le seuil.
+Cette pente $S$ est définie comme suit \cite{machine_learning_automated_trading}:
 \begin{center}
 $S = \frac{Cost(P|N) - Cost(N|N)}{Cost(N|P) - Cost(P|P)} \cdot \frac{N}{P}$
 \end{center}
@@ -358,11 +359,11 @@ Il est possible d'imager cette opération comme cela\footnote{\url{https://www.d
 
 En terme d'équation, nous voulons minimiser w, soit $||w||^2$ dans l'équation de l'hyper-plan: $(w \cdot x) + b$. Ce qui donne:
 \begin{center}
-$y_i (w \cdot x_i + b) \ge 1$ si $y \in \{-1, +1\}$ [\ref{svm equation}]
+$y_i (w \cdot x_i + b) \ge 1$ si $y \in \{-1, +1\}$ \cite{svm_equation}
 \end{center}
 Si malgré l'augmentation de la dimension, les données ne sont pas séparables, il faut tenter de minimiser le nombre d'éléments mal placés. Pour ce faire:
 \begin{center}
-$y_i (w \cdot x_i + b) \ge 1 - \xi_i$ avec $\xi_i > 0$ [\ref{svm equation}]
+$y_i (w \cdot x_i + b) \ge 1 - \xi_i$ avec $\xi_i > 0$ \cite{svm_equation}
 \end{center}
 Afin de diminuer l'erreur et optimiser au mieux notre classifieur.
 
@@ -403,7 +404,7 @@ Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonc
 Bien souvent, l'utilisation d'un réseau de neurones à une couche est suffisante. Cela est valable pour les fonctions continues, dans le cas de fonctions discontinues, il est intéressant de passer à un réseau disposant de plusieurs couches. Attention toutefois, si le nombre de neurones est trop important, l'algorithme va avoir tendance à sur-apprendre, et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc important de bien doser cette quantité afin d'éviter ces problèmes.
 
 \paragraph{}
-L'article qui se trouve au coeur du projet [\ref{fx trading}] propose un algorithme basé sur les réseaux de neurones. Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser la première série de paramètres suivant certain critères. Une fois ces paramètres changés, ils deviennent des constantes pour les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant les valeurs des paramètres de la première couche constantes. Le même principe est répété pour la troisième couche.
+L'article qui se trouve au coeur du projet ~\cite{fx_trading} propose un algorithme basé sur les réseaux de neurones. Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser la première série de paramètres suivant certain critères. Une fois ces paramètres changés, ils deviennent des constantes pour les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant les valeurs des paramètres de la première couche constantes. Le même principe est répété pour la troisième couche.
 
 Ce n'est donc pas un réseau à multiples couches car, une série de paramètres n'est optimisée que par une couche et non plusieurs. On peut visualiser cela comme trois réseaux qui chaînent leurs résultats.
 
@@ -422,7 +423,7 @@ Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme d
 \footnotetext{Dans cet exemple, il est possible de dire, qu'il faut prendre la normal de la courbe de niveau.}
 
 \paragraph{}
-Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques sur ce sujet. L'algorithme se définit comme suit\footnote{Inspiré de [\ref{wikipedia descente du gradient}]}:
+Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques sur ce sujet. L'algorithme se définit comme suit\footnote{Inspiré de \cite{wikipedia_descente_du_gradient}}:
 
 \paragraph{}
 Soit un point initial $x_0 \in \mathbb{R}$. Soit $\epsilon > 0$ un seuil de tolérance. L'algorithme définit une suite d'itération $x_1,x_2,.. \in \mathbb{R}^n$, jusqu'à ce qu'un test d'arrêt soit satisfait. Pour passer de $x_i$ à $x_{i+1}$, il faut :
@@ -445,7 +446,7 @@ $$f(x -\alpha \bigtriangledown f(x)) < f(x)\text{,\ } \forall \alpha > 0$$
 Nous avons donc que pour chaque itération, la valeur obtenue va décroître jusqu'à attendre un maximum ou le seuil $\epsilon$.
 
 \paragraph{}
-La descente du gradient d'un point de vue mathématique peut également être utilisée conjointement à un réseau de neurones. En effet dans cet article [\ref{fx trading}], les poids $w$ de la première couche, sont optimisés suivant cette formule :
+La descente du gradient d'un point de vue mathématique peut également être utilisée conjointement à un réseau de neurones. En effet dans cet article ~\cite{fx_trading}, les poids $w$ de la première couche, sont optimisés suivant cette formule :
 $$w_{i,t} = w_{i-1,t} + \rho \bigtriangleup w_{i,t}$$
 
 Où $t$ correspond au temps, $i-1$ à l'itération courante et $\rho$ le taux d'apprentissage.
@@ -459,7 +460,7 @@ Il existe deux types d'algorithme de descente du gradient :
 \item Le \textit{Online Algorithm} va prendre les exemples un à un. L'optimisation ne va se faire que pour cet unique exemple puis va recommencer sur une autre donnée. Cette manière de procéder s'applique aisément sur les gros volumes de données.
 \end{itemize}
 
-Provenant cet article [\ref{descente du gradient stochastique}], voici des équations pouvant être minimisées dans le cadre d'un programme de \textit{machine learning}.
+Provenant cet article \cite{descente_du_gradient_stochastique}, voici des équations pouvant être minimisées dans le cadre d'un programme de \textit{machine learning}.
 Soit $(x_i,y_i)\text{,\ } i=1..N$, un ensemble de données. Notre fonction de coût est $l(y,y')$. Cela représente le coût de prédire $y'$ quand la réponse est $y$. Moyennons cela sur tous les exemples :
 $$E_N(f) = \frac{1}{N} \sum_{i=1}^{n}l(f_w(x_i),y_i)$$
 Où $f_w$ est une fonction pondérée par un vecteur de poids $w$ que l'on cherche à optimiser.
@@ -547,7 +548,7 @@ La séparation sera quelque peu différente. Certains articles cumulant plusieur
 
 De plus, tous les algorithmes ne sont pas forcément évalués dans les articles. Il est donc possible que certains comme les réseaux de neurones n'aient pas de valeurs.
 
-\subsubsection{\textit{A Machine Learning Approach to Automated Trading} [\ref{machine learning automated trading}]}
+\subsubsection{\textit{A Machine Learning Approach to Automated Trading} \cite{machine_learning_automated_trading}}
 
 \subsubsubsection{Introduction}
 \paragraph{}
@@ -557,7 +558,7 @@ L'auteur a appliqué l'algorithme sur le marché des actions\footnote{Ou \textit
 \item L'approche par secteur.
 \end{itemize}
 
-La première partait de l'hypothèse que le prix d'une action est uniquement déterminée par son prix passé. Il est donc indépendant du rester du marché. Après les premiers résultats, l'auteur a conclu que cette approche était trop bancale pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la seconde approche \ref{machine learning automated trading}.
+La première partait de l'hypothèse que le prix d'une action est uniquement déterminée par son prix passé. Il est donc indépendant du rester du marché. Après les premiers résultats, l'auteur a conclu que cette approche était trop bancale pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la seconde approche\cite{machine_learning_automated_trading}
 
 La seconde approche, quant à elle, repose sur la supposition que le prix d'une action dépend des autres actions, souvent concurrentes. Il a donc pris en compte l'historique des prix du sous-jacent évalué, mais également celui de ses concurrents en terme de marché.
 C'est avec cette approche que les résultats doivent être interprétés.
@@ -588,7 +589,7 @@ $$f(A_{(1,t_1)},\dots, A_{(1,t_N)}, A_{(2,t_1)}, \dots, A_{(2,t_N)}, \dots, A_{(
 
 \subsubsubsection{Résultats}
 \paragraph{}
-Les résultats proviennent de l'article suivant: [\ref{machine learning automated trading}]
+Les résultats proviennent de l'article suivant: \cite{machine_learning_automated_trading}
 
 \begin{table}[h!]
 	\centering
@@ -665,7 +666,7 @@ Les résultats proviennent de l'article suivant: [\ref{machine learning automate
 
 Un autre point important concernant le fait que les algorithmes détectent mieux les \textit{TPR} que les \textit{TNR}\footnote{Exception faite du secteur énergie.}. Cela est dû au cours des actions des différents secteur globalement en hausse dans les données prises en compte. Du coup, de par le manque de données à la baisse dans l'ensemble d'entraînement, l'apprentissage est limité. Concernant le secteur de l'énergie, vu qu'il était en baisse, l'inverse se produit.
 
-Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes\footnote{Source des résultats: [\ref{machine learning automated trading}]}:
+Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes\footnote{Source des résultats: \cite{machine_learning_automated_trading}}:
 
 \begin{table}[h!]
 	\centering
@@ -686,7 +687,7 @@ Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec 
 Les résultats sont similaires à ceux de \textit{Naive Bayes} et de \textit{SVM}, cela n'est donc pas très concluant comme amélioration. Il est possible que les deux algorithmes ayant les meilleurs résultats sont souvent d'accord sur la classe, cassant ainsi l'intérêt du vote.
 
 \paragraph{}
-L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de l'améliorer. En se concentrant sur un seul algorithme, il lui est plus facile d'en voir les effets\footnote{Source des résultats: [\ref{machine learning automated trading}]}.
+L'auteur va utiliser l'algorithme \textit{Naive Bayes} afin de l'améliorer. En se concentrant sur un seul algorithme, il lui est plus facile d'en voir les effets\footnote{Source des résultats: \cite{machine_learning_automated_trading}}.
 
 \paragraph{}
 \begin{table}[h!]
@@ -726,7 +727,7 @@ Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optima
 L'amélioration est assez importante par rapport à l'algorithme \textit{Naive Bayes Roc curve analysis}. Le \textit{Random Subset} obtient 58\% et 54\% pour l'\textit{utility} et l'{information technology}, pour seulement 55\% et 51\% au \textit{Naive Bayes ROC curve analysis}. Même s'il y a une légère perte pour le secteur \textit{energy} d'environ 1\%.
 L'ensemble procure de meilleurs résultats.
 
-\subsubsection{\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}[\ref{descente du gradient stochastique}]}
+\subsubsection{\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}\cite{descente_du_gradient_stochastique}}
 
 \subsubsubsection{Introduction}
 \paragraph{}
@@ -750,10 +751,10 @@ La meilleure manière d'appliquer cela est d'utiliser une sélection aléatoire 
 \caption[]{Exemple de distribution exponentielle\footnotemark. Cela va donc permettre de choisir les points les plus proches avec une probabilité plus grande.}
 \end{figure}
 
-\footnotetext{Source: [\ref{descente du gradient stochastique}]}
+\footnotetext{Source: \cite{descente_du_gradient_stochastique}}
 
 \paragraph{}
-L'autre point important est le \textit{warm start}. C'est une pré-optimisation. Il s'agît d'initialiser les paramètres du gradient d'une certaine manière afin d'augmenter la vitesse et les chances de convergence. Pour ce faire, la meilleure option trouvée dans l'article [\ref{descente du gradient stochastique}] consiste à utiliser les valeurs obtenues lors de la précédente itération.
+L'autre point important est le \textit{warm start}. C'est une pré-optimisation. Il s'agît d'initialiser les paramètres du gradient d'une certaine manière afin d'augmenter la vitesse et les chances de convergence. Pour ce faire, la meilleure option trouvée dans l'article \cite{descente_du_gradient_stochastique} consiste à utiliser les valeurs obtenues lors de la précédente itération.
 Par conséquent, l'algorithme convergera plus vite pour un coût plus faible en terme d'erreur de calcul.
 
 \paragraph{}
@@ -785,7 +786,7 @@ Cela quantifie la différence entre le résultat calculé et le résultat réel 
  \addtocounter{footnote}{-2} %3=n
 \stepcounter{footnote}\footnotetext{$SW-1$ signifie une fenêtre de choix de taille $N-1$.}
 \stepcounter{footnote}\footnotetext{$SW/2$ signifie une fenêtre de choix de taille $N/2$.}
-\stepcounter{footnote}\footnotetext{Source des résultats: [\ref{descente du gradient stochastique}].}
+\stepcounter{footnote}\footnotetext{Source des résultats: \cite{descente_du_gradient_stochastique}.}
 
 
 
@@ -812,7 +813,7 @@ D'un point de vue calculatoire c'est très intéressant car il est possible de d
 \caption[]{Tableau de résultats\footnote{} pour les différentes versions de \textit{SGD}.}
 \end{table}
 
-\footnotetext{Source des résultats: [\ref{descente du gradient stochastique}]}
+\footnotetext{Source des résultats: \cite{descente_du_gradient_stochastique}}
 
 \paragraph{}
 Nous constatons qu'il n'y a pas de différence pour le \textit{plainSGD} entre les deux tailles de fenêtres. On remarque cependant que pour les deux autres variantes, la diminution de la taille les pénalise. Cependant, l'ordre de grandeur des erreurs demeure faible. Il est donc important de savoir si nous voulons un chiffre précis ou obtenir le résultat de manière rapide. L'objectif aiguillera le choix pour l'une ou l'autre des fenêtres.
@@ -834,7 +835,7 @@ Ces éléments peuvent être vus comme une boîte à outils algorithmiques, le c
 \paragraph{}
 La deuxième partie, plus concrète, concerne les cas pratiques. Appliquer sans chercher à comprendre le domaine peut mener à des algorithmes peu efficace.
 
-Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante, pour améliorer les techniques en dehors du carde mathématique. L'approche par secteur [\ref{machine learning automated trading}] ou bien l'utilisation de méta-paramètres propre au domaine financier [\ref{fx trading}] en sont des exemples concrets.
+Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante, pour améliorer les techniques en dehors du carde mathématique. L'approche par secteur \cite{machine_learning_automated_trading} ou bien l'utilisation de méta-paramètres propre au domaine financier ~\cite{fx_trading} en sont des exemples concrets.
 Chacun de ces éléments a sensiblement amélioré les performances des algorithmes auxquels ils ont été appliqués.
 
 Une technique de \textit{machine learning} n'est qu'une solution à un problème mathématique précis. L'ajout d'éléments, comme ceux pré-cités, améliore la quantité d'informations disponible et de préciser l'équation mathématique à optimiser.
@@ -853,58 +854,14 @@ Cela démontre que les bons algorithmes appliqués avec une bonne connaissance d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Projet}
 \newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % début de la bibliographie %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bibliographie}
 
-\begin{enumerate}
-\item "\textit{An automated fx trading system using adaptive reinforcement learning}" de M.A.H Dempster et V. Leemans, 2004. \label{fx trading}
-
-\item "\textit{Real investors eclipsed by fast trading}" du Financial Times, 2012, \url{https://www.ft.com/content/da5d033c-8e1c-11e1-bf8f-00144feab49a?mhq5j=e1} \label{real investors}.
-
-\item "\textit{A Machine Learning Approach to Automated Trading}" de Ning Lu, 09.05.2016. \label{machine learning automated trading}
-
-\item "\textit{An efficient implementation of the backtesting of trading strategies.}" de Ni, Jiarui, et Chegqi Zhang, 2005.
-
-\item "\textit{Algorithmic Trading: Winning Strategies and Their Rationale ( Wiley Trading Series)}" de John Wiley et Sons, 2013.
-
-\item "\textit{Machine Learning}" de Tom Mitchell, 1997. \label{mitchell}
-
-\item "\textit{Support vector machine}" de Wikipédia, \url{https://fr.wikipedia.org/wiki/Machine_\%C3\%A0_vecteurs_de_support}. \label{wikipedia svm}
-
-\item "\textit{Online Machine Learning Algorithms For Currency Exchange Prediction}" de Eleftherios Soulas et Dennis Shasha. \label{descente du gradient stochastique}
-
-\item  "\textit{Algorithme du gradient}" de Wikipédia, \url{https://fr.wikipedia.org/wiki/Algorithme_du_gradient}.\label{wikipedia descente du gradient}
-
-\item "\textit{Descision Tree Learning}" de Tom M. Mitchell.\label{id3}
-
-\item "\textit{Option}" d'Investopedia, \url{http://www.investopedia.com/terms/o/option.asp}.
-
-\item "\textit{Support Vector Machine (and Statistical Learning Theory) Tutorial}" de Jason Weston, \url{http://www.cs.columbia.edu/~kathy/cs4701/documents/jason_svm_tutorial.pdf}.\label{svm equation}
-
-\item  "\textit{An Introduction to Neural Networks}" de Vincent Cheung et Kevin Cannons, \url{http://www2.econ.iastate.edu/tesfatsi/NeuralNetworks.CheungCannonNotes.pdf}.
-
-\item "\textit{Artificial Neural Networks: A Tutorial}" de Anil K. Jain, Jianchang Mao et K.M. Mohiuddin, \url{http://csc.lsu.edu/~jianhua/nn.pdf}.
-
-\item "\textit{Backtesting}" d'Investopedia, \url{http://www.investopedia.com/terms/b/backtesting.asp}. \label{backtesting investopedia}
-
-
-\item "\textit{Les Accords de Bretten Woods}" de Wikipédia,\url{https://fr.wikipedia.org/wiki/Accords_de_Bretton_Woods}.\label{wikipedia bretten woods}
-
-\item "\textit{Comment on est passé de l’étalon-or à l’étalon-dollar}" d'Addison Wiggin,\url{http://la-chronique-agora.com/etalon-or-etalon-dollar/}. \label{étalon-or à étalon-dollar}
-
-\item "\textit{CHAPITRE 1: LE MARCHE DES CHANGES Monnaie et Finance Internationales}" de David Guerreiro, \url{https://economix.fr/docs/1045/chap_1_2015-16.pdf}. \label{marche des changes}
-
-\item "\textit{La règle des trois unités du marché des changes}" d'Estelle Mermet, \url{http://www.forex.fr/newslist/8696-la-regle-des-trois-unites-du-marche-des-changes}. \label{site fr forex}
-
-\item "\textit{Bid And Asked}" d'Investopedia, \url{http://www.investopedia.com/terms/b/bid-and-asked.asp}. \label{investopedia bid ask}
-
-\item "\textit{Broker}" de Wikipédia, \url{https://en.wikipedia.org/wiki/Broker}. \label{wikipedia broker}
-
-\item "\textit{Régression Statistique}" de Wikipédia, \url{https://fr.wikipedia.org/wiki/R\%C3\%A9gression_(statistiques)} \label{wikipedia régression}
-
-\end{enumerate}
+\bibliographystyle{plain}
+\nocite{*}
+\bibliography{bibliographie}
 
 
 \end{document}
