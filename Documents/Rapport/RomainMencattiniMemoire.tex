@@ -1098,8 +1098,6 @@ les effets de la diminution de \textit{SW} que le \textit{approxSGD}.
 
 \subsection{Conclusion}
 \paragraph{}
-
-\paragraph{}
 Afin d'écrire des algorithmes de \textit{ML}, il est important de saisir les considérations théoriques.
 À partir de ces connaissances, le choix d'un algorithme est plus aisé. En effet, si vous voulez apprendre une fonction
 continue, mieux vaut utiliser des techniques de descente de gradient et dans le cas de données faiblement différentiables, 
@@ -1133,6 +1131,36 @@ Les valeurs peuvent être vraiment encourageantes même s'il convient de relativ
 variations, ce qui facilite grandement la classification.
 Néanmoins les taux d'erreurs sont faibles et la classification efficace.
 Cela démontre que les bons algorithmes appliqués avec une bonne connaissance du domaine fournissent des résultats satisfaisants. 
+
+\paragraph{}
+Le choix d'implémenter l'algorithme de réseau de neurones provient des justifications suivantes :
+\begin{itemize}
+ \item Les \textit{Neural Nets} peuvent, avec assez de ressources\footnote{Cela comprend le temps et les données.}, approximer n'importe
+ quel fonction. De plus ils sont capables d'opérer des séparations non linéaires sans recourir au \textit{Kernel trick}.
+ \item Il est possible d'éviter les problèmes de sur-apprentissage, en modifiant les méta-paramètres. Cela nous permet de profiter
+ de n'importe quel ensemble d'entraînement sans craindre que ce dernier pose problème.
+\end{itemize}
+
+Les algorithmes d'arbres de décision sont des classifieurs linéaires. Ce qui signifie qu'ils sont limités
+lorsque les données ne sont pas linéaires, réduisant de fait, la qualité de classification. On retrouve ce même problème
+pour la régression logistique. De plus les arbres de décision (voir \ref{section arbre de décision}) ont de gros risques
+de sur-apprentissage même avec un ensemble d'entraînement adapté, sans compter qu'ils gèrent mal les exemples en continues.
+En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples arrivent de manières continues.} chacun des nouveaux
+éléments peut introduire des exceptions. Ce qui implique de reconstruire l'arbre, ce cas pouvant être très lourd en termes
+de calculs, il convient de l'éviter.
+
+Le classifieur \textit{Naive Bayes} aurait pu être une solution. Ce dernier peut classifier les données non linéaires,
+ne présente pas de problème de sur-apprentissage et est adapté pour un apprentissage \textit{online}. Il suffit de rajouter le
+dernier exemple dans l'équation pour mettre à jour l'apprentissage. La raison qui nous a poussé à choisir les réseaux de neurones 
+plutôt que l'algorithme de \textit{Naive Bayes} est que ce dernier a des performances limitées sur un grand ensemble de données.
+Si l'on prend des petits jeux de données, \textit{Naive Bayes} est très efficace
+\footnote{Dans ce cadre précis, il est même meilleur que tous les autres algorithmes vus dans ce projet.}
+\cite{ml_petites_donnees}.
+Cependant si l'ensemble grandit, ces performances plafonnent, ce qui n'est pas le cas du \textit{Neural Nets} dont les
+résultats augmentent à mesure que le nombre de données disponibles croît.
+
+Au vu des raisons précédentes, un algorithme de réseau de neurones nous semblait le meilleur choix, car le \textit{FOREX} nous
+fournit suffisamment de données pour avoir d'excellent résultats, de plus nous ne sommes pas limités par une classification linéaire.
 
 
 \newpage
