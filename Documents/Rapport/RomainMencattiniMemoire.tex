@@ -79,6 +79,52 @@
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% début l'introduction     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+\paragraph{}
+Le but de ce projet est d'utiliser des techniques de \textit{machine learning} dans le cadre de la finance. Plus précisément, 
+nous allons reprendre des techniques algorithmes pour créer un programme de \textit{trading} de taux de changes.
+
+\paragraph{}
+Nous allons dans un premier temps faire un état de l'art. Ce dernier sera décomposé en
+plusieurs parties.
+
+La première parlera du marché des taux de changes. Afin d'avoir les connaissances pour comprendre les enjeux et les buts recherchés.
+Il s'agira d'une introduction sur des éléments de bases mais néanmoins essentiels à la compréhension des algorithmes.
+
+S'ensuivra une partie plus mathématique. Cette dernière traitera des considérations théoriques de plusieurs algorithmes clefs.
+Nous allons aborder :
+\begin{itemize}
+\item Les réseaux de neurones.
+\item Les arbres de décision.
+\item Les algorithmes \textit{SVM}.
+\item \textit{Logistic Regression}.
+\item \textit{Naive Bayes}.
+\item Descente du Gradient.
+\end{itemize}
+
+Ensuite, nous verrons comment appliquer cette théorie au cas concert du marché des changes. Quels en sont les problèmes, limitations
+et solutions. Il y aura également des résultats concernant les performances des programmes.
+
+Pour finir cet état de l'art, nous conclurons en expliquant pourquoi avoir choisi un algorithme plutôt qu'un autre ainsi que les 
+éléments à retenir du domaine de \textit{machine learning}
+
+\paragraph{}
+Après l'état de l'art, nous implémenterons l'algorithme. De cette action découlera une analyse plus poussée de sa partie mathématique,
+mais également de son application au domaine de la finance. Il y sera également questions des problèmes et solutions trouvés ainsi que
+des choix faits, lors de sa création.
+
+Une fois cette partie terminée, plusieurs \textit{benchmark} seront effectués afin d'estimer quelles améliorations sont les plus
+pertinentes et la performance générale de l'algorithme.
+
+\paragraph{}
+Dans la dernière partie, nous tirerons des conclusions des résultats obtenus. Nous analyserons la pertinence des algorithmes et des
+optimisations et nous proposerons des pistes d'améliorations.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % début de l'état de l'art %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{État de l'art}
@@ -557,14 +603,68 @@ et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc imp
 d'éviter ces problèmes.
 
 \paragraph{}
-L'article qui se trouve au coœur du projet ~\cite{fx_trading} propose un algorithme basé sur les réseaux de neurones. 
-Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser la première série
-de paramètres suivant certains critères. Une fois ces paramètres changés, ils deviennent des constantes pour
-les deux prochaines couches. La deuxième va améliorer les paramètres qui lui sont attachés en gardant les valeurs
-des paramètres de la première couche constantes. Le même principe est répété pour la troisième couche.
+Un exemple concret de réseau de neurones est celui présenté dans l'article qui se trouve au coœur du projet ~\cite{fx_trading}.
+Avant de montrer les équations, en voici un schéma \cite{fx_trading}:
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.4]{images/exemple_nn_projet}
+ \caption{Représentation sous forme de schéma du réseau de neurones. Avec $w$ le vecteur de poids, $v$ le seuil, $\delta$ le coût de
+ \textit{trading}, $\eta$ un paramètre d'adaptation, $\rho$ le taux d'apprentissage, $x$ le seuil d'arrêt lors de pertes, $y$ le
+ seuil de \textit{trading}, $z$ la condition d'arrêt automatique lors de pertes critiques et l'aversion au risque notée $\upsilon$.}
+\end{figure}
 
-Ce n'est donc pas un réseau à multiples couches car, une série de paramètres n'est optimisée que par une couche et non plusieurs.
-On peut visualiser cela comme trois réseaux qui chaînent leurs résultats.
+Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser le vecteur de poids $w$
+ainsi que $v$ le seuil. À partir de ces paramètres, nous pouvons utiliser la formule suivante :
+$$F_t = sign(\sum_{i=0}^M w_{i,t} r_{t-i} + w_{M+1,t} F_{t-1} + v_t)$$
+où $r := p_t - p_{t-1}$ est le retour d'une position. $F_t$ nous permet de calculer la position à prendre au temps $t$, en tenant
+compte de l'historique des prix.
+
+L'optimisation de $w$ se fait par un algorithme de descente du gradient (voir \ref{section descente du gradient}).
+
+\paragraph{}
+La deuxième couche va travailler à partir des paramètres $x,y,z$. Il est possible que le marché soit irrationnel durant une longue
+durée, dans ce cas la psychologie peut pousser à garder une position en espérant un changement. C'est ce genre de comportement qu'un
+algorithme permet d'éviter. Pour ce faire, nous définissons un excédant des pertes et nous veillons qu'il soit toujours à une distance
+$x$ du meilleur prix atteint. Afin d'éviter de tenir trop longtemps une position défavorable.
+
+Il est également intéressant de définir un seuil. Si la réponse du réseau est supérieure à ce seuil, nous la prenons en compte et
+dans le cas contraire, nous ne faisons rien. Cela permet d'évaluer la "force" du signal renvoyé par la première couche. Ce seuil
+est $y$.
+
+La dernière variable utilisée dans cette couche est $z$. Il y a un consensus dans la communauté de \textit{trading} concernant le fait
+que les algorithmes fonctionnent bien durant un temps puis cesse d'être profitable. À ce moment, il convient d'arrêter le programme
+et d'y apporter des modifications\footnote{Au niveau des équations, des données ou des paramètres.} avant de le relancer. La tâche du
+paramètre $z$ est de donner un seuil pour les pertes du profit cumulé qui ,lorsqu'il est dépassé, lance une procédure d'arrêt.
+Contrairement à $x,y$ qui seront optimisés par la troisième couche, le paramètre $z$ est fixé au début du programme et ne change plus.
+
+\paragraph{}
+La couche d'optimisation dynamique est la troisième couche. Cette dernière va, à chaque itération, optimiser les paramètres suivants :
+$x,y,\eta,\delta,\rho$.
+
+Pour ce faire elle va utiliser \cite{fx_trading}:
+$$\Sigma := \frac{\sum_{i=0}^N (R_i)^2 I(R_i < 0)}{\sum_{i=0}^N (R_i)^2 I(R_i > 0)}$$
+$$ U(\overline{R},\Sigma,\upsilon) := a\cdot(1-\upsilon)\cdot \overline{R} - \upsilon \cdot \Sigma$$
+
+,où $R_i := W_i - W{i-1}$ est le retour au temps $i$ avec $W_i$ le profit cumulé, $\overline{R} := \frac{W_N}{N}$ est le profit moyen
+avec $N$ qui est le nombre d'intervalle, $a$ une constante et $\upsilon$ l'aversion au risque.
+
+Ces équations ont été construites de manière à posséder ces propriétés \cite{fx_trading}:
+\begin{itemize}
+ \item Une stratégie négative implique un risque très élevé afin d'éviter de soudaines et importantes pertes.
+ 
+ \item Avec la définition de $\Sigma$, un large total de \textit{trading} défavorable\footnote{Calculé par :
+ $\sum_{i=0}^N (R_i)^2 I(R_i < 0)$.} par rapport à l'impact total des opérations favorable\footnote{Calculé par :
+ $\sum_{i=0}^N (R_i)^2 I(R_i > 0)$.} conduit à un risque important même si le profit reste le même. Cela favorise un système
+ qui augmente de manière monotone ses profits plutôt qu'un autre plus irrégulier.
+ 
+ \item La mesure $\Sigma$ pénalise uniquement les stratégies négatives et pas les stratégies positives. 
+\end{itemize}
+
+La fonction à optimiser est donc :
+$$\max_{\delta, \eta, \rho, x, y} U(\overline{R};\Sigma: \delta, \eta, \rho, x, y; \upsilon)$$
+
+Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces derniers peuvent être optimisé de la manière voulue.
+L'article ne creuse pas cette fois et utilise une recherche aléatoire composante par composante.
 
 \subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
@@ -1145,7 +1245,7 @@ Les algorithmes d'arbres de décision sont des classifieurs linéaires. Ce qui s
 lorsque les données ne sont pas linéaires, réduisant de fait, la qualité de classification. On retrouve ce même problème
 pour la régression logistique. De plus les arbres de décision (voir \ref{section arbre de décision}) ont de gros risques
 de sur-apprentissage même avec un ensemble d'entraînement adapté, sans compter qu'ils gèrent mal les exemples en continues.
-En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples arrivent de manières continues.} chacun des nouveaux
+En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples arrivent de manière continue.} chacun des nouveaux
 éléments peut introduire des exceptions. Ce qui implique de reconstruire l'arbre, ce cas pouvant être très lourd en termes
 de calculs, il convient de l'éviter.
 
