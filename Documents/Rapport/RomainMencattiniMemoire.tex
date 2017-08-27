@@ -85,17 +85,17 @@
 
 \paragraph{}
 Le but de ce projet est d'utiliser des techniques de \textit{machine learning} dans le cadre de la finance. Plus précisément, 
-nous allons reprendre des techniques algorithmes pour créer un programme de \textit{trading} de taux de changes.
+nous allons reprendre des techniques algorithmiques pour créer un programme de \textit{trading} de taux de changes.
 
 \paragraph{}
-Nous allons dans un premier temps faire un état de l'art. Ce dernier sera décomposé en
+Nous allons dans un premier temps faire un état de l'art. Ce dernier sera composé de
 plusieurs parties.
 
-La première parlera du marché des taux de changes. Afin d'avoir les connaissances pour comprendre les enjeux et les buts recherchés.
-Il s'agira d'une introduction sur des éléments de bases mais néanmoins essentiels à la compréhension des algorithmes.
+La première traitera la marché des taux de changes afin d'obtenir les connaissances pour comprendre les enjeux et les buts recherchés.
+Il s'agira d'une introduction d'éléments de bases mais néanmoins essentiels à la compréhension des algorithmes.
 
-S'ensuivra une partie plus mathématique. Cette dernière traitera des considérations théoriques de plusieurs algorithmes clefs.
-Nous allons aborder :
+La deuxième partie plus mathématique abordera l'aspect théorique de plusieurs algorithmes clefs.
+Soit :
 \begin{itemize}
 \item Les réseaux de neurones.
 \item Les arbres de décision.
@@ -105,23 +105,22 @@ Nous allons aborder :
 \item Descente du Gradient.
 \end{itemize}
 
-Ensuite, nous verrons comment appliquer cette théorie au cas concert du marché des changes. Quels en sont les problèmes, limitations
-et solutions. Il y aura également des résultats concernant les performances des programmes.
+\paragraph{}
+Ensuite, nous verrons l'application de la théorie à notre cas concret, le marché des change; leurs problèmes, limitations et
+solutions rencontrés ainsi que les résultats concernant les performances des programmes.
 
-Pour finir cet état de l'art, nous conclurons en expliquant pourquoi avoir choisi un algorithme plutôt qu'un autre ainsi que les 
-éléments à retenir du domaine de \textit{machine learning}
+Pour conclure, nous justifierons le choix de l'algorithme ainsi que les éléments clefs du \textit{machine learning}.
 
 \paragraph{}
-Après l'état de l'art, nous implémenterons l'algorithme. De cette action découlera une analyse plus poussée de sa partie mathématique,
-mais également de son application au domaine de la finance. Il y sera également questions des problèmes et solutions trouvés ainsi que
-des choix faits, lors de sa création.
+Après l'état de l'art, nous implémenterons l'algorithme ou une analyse plus poussée de sa partie mathématique sera effectuée,
+mais également de son application au domaine financier. Nous analyserons également les problèmes et solutions rencontrés.
 
-Une fois cette partie terminée, plusieurs \textit{benchmark} seront effectués afin d'estimer quelles améliorations sont les plus
+Une fois l'implémentation terminée, plusieurs \textit{benchmark} seront effectués afin d'estimer les améliorations les plus
 pertinentes et la performance générale de l'algorithme.
 
 \paragraph{}
-Dans la dernière partie, nous tirerons des conclusions des résultats obtenus. Nous analyserons la pertinence des algorithmes et des
-optimisations et nous proposerons des pistes d'améliorations.
+Finalement, nous analyserons les résultats et déduirons des conclusions. De plus une analyse de la pertinence de l'algorithme et des
+optimisations sera réalisée et nous proposerons des pistes d'améliorations.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -583,7 +582,7 @@ les couches font du \textit{feed-forward} mais de plus, le \textit{feedback} est
 d'influencer les couches précédant l'\textit{output layer}.\footnotemark}
 \end{figure}
 
-\footnotetext{Source:\url{https://www.researchgate.net/profile/Yen-Ming_Chiang/publication/222562767/figure/fig2/AS:305112384851969@1449755869325/Fig-2-The-architecture-of-a-recurrent-neural-network.png}}
+\footnotetext{Source:\url{https://jcrisch.files.wordpress.com/2015/04/reseau_de_neurones.png}}
 
 \paragraph{}
 Concernant la valeur de sortie, elle peut être simple, comme le résultat d'une classification binaire,\textit{i.e.} $0$ ou $1$
@@ -603,7 +602,7 @@ et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc imp
 d'éviter ces problèmes.
 
 \paragraph{}
-Un exemple concret de réseau de neurones est celui présenté dans l'article qui se trouve au coœur du projet ~\cite{fx_trading}.
+Un exemple concret de réseau de neurones est celui présenté dans l'article qui se trouve au cœur du projet ~\cite{fx_trading}.
 Avant de montrer les équations, en voici un schéma \cite{fx_trading}:
 \begin{figure}[H]
  \centering
@@ -616,7 +615,7 @@ Avant de montrer les équations, en voici un schéma \cite{fx_trading}:
 Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser le vecteur de poids $w$
 ainsi que $v$ le seuil. À partir de ces paramètres, nous pouvons utiliser la formule suivante :
 $$F_t = sign(\sum_{i=0}^M w_{i,t} r_{t-i} + w_{M+1,t} F_{t-1} + v_t)$$
-où $r := p_t - p_{t-1}$ est le retour d'une position. $F_t$ nous permet de calculer la position à prendre au temps $t$, en tenant
+où $r := p_t - p_{t-1}$ est le retour d'une position. $F_t$ nous permet de calculer la position à prendre au temps $t$ en tenant
 compte de l'historique des prix.
 
 L'optimisation de $w$ se fait par un algorithme de descente du gradient (voir \ref{section descente du gradient}).
@@ -625,7 +624,7 @@ L'optimisation de $w$ se fait par un algorithme de descente du gradient (voir \r
 La deuxième couche va travailler à partir des paramètres $x,y,z$. Il est possible que le marché soit irrationnel durant une longue
 durée, dans ce cas la psychologie peut pousser à garder une position en espérant un changement. C'est ce genre de comportement qu'un
 algorithme permet d'éviter. Pour ce faire, nous définissons un excédant des pertes et nous veillons qu'il soit toujours à une distance
-$x$ du meilleur prix atteint. Afin d'éviter de tenir trop longtemps une position défavorable.
+$x$ du meilleur prix atteint; afin d'éviter de tenir trop longtemps une position défavorable.
 
 Il est également intéressant de définir un seuil. Si la réponse du réseau est supérieure à ce seuil, nous la prenons en compte et
 dans le cas contraire, nous ne faisons rien. Cela permet d'évaluer la "force" du signal renvoyé par la première couche. Ce seuil
@@ -634,7 +633,7 @@ est $y$.
 La dernière variable utilisée dans cette couche est $z$. Il y a un consensus dans la communauté de \textit{trading} concernant le fait
 que les algorithmes fonctionnent bien durant un temps puis cesse d'être profitable. À ce moment, il convient d'arrêter le programme
 et d'y apporter des modifications\footnote{Au niveau des équations, des données ou des paramètres.} avant de le relancer. La tâche du
-paramètre $z$ est de donner un seuil pour les pertes du profit cumulé qui ,lorsqu'il est dépassé, lance une procédure d'arrêt.
+paramètre $z$ est de donner un seuil pour les pertes du profit cumulé qui, lorsqu'il est dépassé, lance une procédure d'arrêt.
 Contrairement à $x,y$ qui seront optimisés par la troisième couche, le paramètre $z$ est fixé au début du programme et ne change plus.
 
 \paragraph{}
@@ -663,13 +662,13 @@ Ces équations ont été construites de manière à posséder ces propriétés \
 La fonction à optimiser est donc :
 $$\max_{\delta, \eta, \rho, x, y} U(\overline{R};\Sigma: \delta, \eta, \rho, x, y; \upsilon)$$
 
-Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces derniers peuvent être optimisé de la manière voulue.
+Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces derniers peuvent être optimisés de la manière voulue.
 L'article ne creuse pas cette fois et utilise une recherche aléatoire composante par composante.
 
 \subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
 L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel
-quel $\mathbb{R}^n$. Il est itératif et fonctionne donc en améliorant l'itération précédente, jusqu'à
+que $\mathbb{R}^n$. Il est itératif et fonctionne donc en améliorant l'itération précédente, jusqu'à
 atteindre une condition d'arrêt.
 
 Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme dans $\mathbb{R}^2$ :
@@ -686,7 +685,7 @@ point. En itérant, on se rapproche de l'optimum. }
 
 \paragraph{}
 Afin de comprendre, les divers algorithmes, il est important d'avoir les connaissances mathématiques
-sur ce sujet. L'algorithme se définit comme suit\footnote{Inspiré de \cite{wikipedia_descente_du_gradient}}:
+sur ce sujet. L'algorithme se définit comme suit\footnote{Inspiré de \cite{wikipedia_descente_du_gradient}.}:
 
 \paragraph{}
 Soit un point initial $x_0 \in \mathbb{R}$. Soit $\epsilon > 0$ un seuil de tolérance. L'algorithme définit
@@ -1198,7 +1197,7 @@ les effets de la diminution de \textit{SW} que le \textit{approxSGD}.
 
 \subsection{Conclusion}
 \paragraph{}
-Afin d'écrire des algorithmes de \textit{ML}, il est important de saisir les considérations théoriques.
+Afin d'élaborer des algorithmes de \textit{ML}, il est important de saisir les considérations théoriques.
 À partir de ces connaissances, le choix d'un algorithme est plus aisé. En effet, si vous voulez apprendre une fonction
 continue, mieux vaut utiliser des techniques de descente de gradient et dans le cas de données faiblement différentiables, 
 l'utilisation d'un programme \textit{SVM} avec un \textit{kernel trick} est recommandée.
@@ -1213,7 +1212,7 @@ adapté avec les données, les contraintes et les techniques à sa disposition.
 
 \paragraph{}
 Les considérations mathématiques ne sont pas les seuls éléments importants. Appliquer un algorithme sans chercher à comprendre
-le domaine peut mener à des programmes peu efficaces.
+les cas concrets peut mener à des programmes peu efficaces.
 
 Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante,
 pour améliorer les techniques en dehors du carde mathématique. L'approche par secteur \cite{machine_learning_automated_trading}
@@ -1221,15 +1220,15 @@ ou l'utilisation de méta-paramètres propre au domaine financier ~\cite{fx_trad
 Chacun de ces éléments a sensiblement amélioré les performances des algorithmes auxquels ils ont été appliqués.
 
 Une technique de \textit{machine learning} n'est qu'une solution à un problème mathématique précis. L'ajout d'éléments,
-comme ceux pré-cités, améliore la quantité d'informations disponible et de préciser l'équation mathématique à optimiser.
+comme ceux cités auparavant, améliore la quantité d'informations disponible et précise l'équation mathématique à optimiser.
 
 \paragraph{}
-Il est important de vraiment lier ces deux parties pour obtenir les résultats optimaux.
+Il est important de lier ces deux parties pour obtenir des résultats optimaux.
 
-Les valeurs peuvent être vraiment encourageantes même s'il convient de relativiser les résultats. Ces derniers ayant pu
+Les valeurs peuvent être encourageantes même s'il convient de relativiser les résultats. Ces derniers ayant pu
 être obtenus sur des ensembles de données "faciles". Ce mot qualifie des périodes avec peu de changements ou peu de
 variations, ce qui facilite grandement la classification.
-Néanmoins les taux d'erreurs sont faibles et la classification efficace.
+Néanmoins, les taux d'erreurs sont faibles et la classification efficace.
 Cela démontre que les bons algorithmes appliqués avec une bonne connaissance du domaine fournissent des résultats satisfaisants. 
 
 \paragraph{}
@@ -1247,9 +1246,9 @@ pour la régression logistique. De plus les arbres de décision (voir \ref{secti
 de sur-apprentissage même avec un ensemble d'entraînement adapté, sans compter qu'ils gèrent mal les exemples en continues.
 En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples arrivent de manière continue.} chacun des nouveaux
 éléments peut introduire des exceptions. Ce qui implique de reconstruire l'arbre, ce cas pouvant être très lourd en termes
-de calculs, il convient de l'éviter.
+de calculs, il convient donc de l'éviter.
 
-Le classifieur \textit{Naive Bayes} aurait pu être une solution. Ce dernier peut classifier les données non linéaires,
+Le classifieur \textit{Naive Bayes} aurait pu être une solution car ce dernier peut classifier les données non linéaires,
 ne présente pas de problème de sur-apprentissage et est adapté pour un apprentissage \textit{online}. Il suffit de rajouter le
 dernier exemple dans l'équation pour mettre à jour l'apprentissage. La raison qui nous a poussé à choisir les réseaux de neurones 
 plutôt que l'algorithme de \textit{Naive Bayes} est que ce dernier a des performances limitées sur un grand ensemble de données.
@@ -1259,8 +1258,8 @@ Si l'on prend des petits jeux de données, \textit{Naive Bayes} est très effica
 Cependant si l'ensemble grandit, ces performances plafonnent, ce qui n'est pas le cas du \textit{Neural Nets} dont les
 résultats augmentent à mesure que le nombre de données disponibles croît.
 
-Au vu des raisons précédentes, un algorithme de réseau de neurones nous semblait le meilleur choix, car le \textit{FOREX} nous
-fournit suffisamment de données pour avoir d'excellent résultats, de plus nous ne sommes pas limités par une classification linéaire.
+Au vu des raisons susmentionnées, un algorithme de réseau de neurones nous semblait le meilleur choix, car le \textit{FOREX} nous
+fournit suffisamment de données pour avoir d'excellent résultats, de plus, nous ne sommes pas limités par une classification linéaire.
 
 
 \newpage
