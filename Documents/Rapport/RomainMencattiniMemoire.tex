@@ -16,7 +16,7 @@
 \usepackage{titlesec}
 \usepackage{cite}
 
-\usepackage[perpage]{footmisc}
+\usepackage[perpage, bottom]{footmisc}
 \usepackage[colorlinks,urlcolor=blue, linkcolor=blue]{hyperref}
 \usepackage[colorlinks,urlcolor=blue, linkcolor=blue]{hyperref}
 
@@ -380,7 +380,7 @@ l'auteur a implémenté deux variations de cet algorithme:
 \begin{center}
 $$\sum_{i=1}^N (y_i - \sum_j\beta_j x_{ij})^2 + \lambda \sum_j \beta_j^2$$
 \end{center}
-, où $\beta_j$ sont les coefficients de la régression logistique originale \cite{machine_learning_automated_trading} et $x_{ij}$
+, où $y_i$ est la classe de notre observation, $\beta_j$ sont les coefficients de la régression logistique originale \cite{machine_learning_automated_trading} et $x_{ij}$
 sont les $j$ éléments de l'observation $i$.
 
 L'objectif est de minimiser le carré de la différence entre la classe, ou résultat, de $y_i$ et le résultat 
@@ -481,7 +481,7 @@ vaut la somme des vrais négatifs ainsi que des faux positifs.
 Voici une illustration\footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_5403_f_20-x1000_1600}}:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{images/roc_curve}
+\includegraphics[scale=0.20]{images/roc_curve}
 \caption{Exemple de \textit{ROC curve}: L'axe des $x$ correspond au taux de faux positifs et l'axe des $y$ 
 au taux de vrais positifs. On veut donc trendre vers $y = 1$ et $x = 0$. Lors de l'optimisation par la pente $S$, 
 le but sera d'obtenir une intersection avec la \textit{ROC curve} dans la zone \textit{optimal threshold} 
@@ -572,17 +572,16 @@ le \textit{feed-forward}: l'\textit{ouput} de l'\textit{input layer} est propag�
 neurones de l'\textit{hidden layer}. Même chose pour les deux dernières couches.\footnotemark}
 \end{figure}
 
-\footnotetext{Source: \url{http://web.utk.edu/~wfeng1/spark/_images/fnn.png}}
-
 \begin{figure}[H]
 \centering
 \includegraphics{images/neural_net_feedback}
 \caption[]{Exemple d'un réseau de neurones avec plusieurs couches. Dans ce cas là,
 les couches font du \textit{feed-forward} mais de plus, le \textit{feedback} est utilisé afin
-d'influencer les couches précédant l'\textit{output layer}.\footnotemark}
+d'influencer les couches précédant l'\textit{output layer}.\footnote[2]{}}
 \end{figure}
 
-\footnotetext{Source:\url{https://jcrisch.files.wordpress.com/2015/04/reseau_de_neurones.png}}
+\footnotetext{Source: \url{http://web.utk.edu/~wfeng1/spark/_images/fnn.png}}
+\stepcounter{footnote}\footnotetext{Source:\url{https://jcrisch.files.wordpress.com/2015/04/reseau_de_neurones.png}}
 
 \paragraph{}
 Concernant la valeur de sortie, elle peut être simple, comme le résultat d'une classification binaire,\textit{i.e.} $0$ ou $1$
