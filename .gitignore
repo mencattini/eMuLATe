@@ -8,3 +8,11 @@ RomainMencattini*.out
 RomainMencattini*.toc
 RomainMencattini*.tex.backup
 dontFollow/
+
+
+# for the kotlin part
+*.class
+*.log
+.idea/
+out/
+.idea_modules
