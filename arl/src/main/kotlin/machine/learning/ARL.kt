@@ -47,8 +47,8 @@ class ARL(private val prices: DoubleArray, private val vThreshold: Double, priva
         returns = DoubleArray(0)
 
         // the old value
-        ft = DoubleArray(0)
-        t = 0
+        ft = DoubleArray(1)
+        t = 3
 
         // compute the returns
         computeReturn()
@@ -71,6 +71,12 @@ class ARL(private val prices: DoubleArray, private val vThreshold: Double, priva
      */
     private fun computeFt() : Output {
 
+        // if the t > returns.size, we are out of the array and we
+        // needs more samples
+        if (t > returns.size) {
+            val size = returns.size
+            throw Exception("t($t) is greeter than returns.size($size).")
+        }
         // this part doesn't depends on index
         var sum = weights.last() * ft.last() + vThreshold
 
@@ -89,12 +95,15 @@ class ARL(private val prices: DoubleArray, private val vThreshold: Double, priva
             usefulReturns = returns.sliceArray(0..t).reversedArray()
 
         } else {
-            // we sub the sizeWindow to always get the same number of elements
-            // using the maxof(0, t-sizedwindow) to avoid negative index
+            // we sub the (sizeWindow - 2) to always get the same number of elements than the weights
+            // using the maxof(0, t-sizedwindow + 2) to avoid negative index
             // reverse the array for the same thing than above
             usefulWeights = weights.sliceArray(0..(sizeWindow - 2))
-            usefulReturns = returns.sliceArray(maxOf(0,t-sizeWindow)..t).reversedArray()
+            usefulReturns = returns.sliceArray(maxOf(0,t-sizeWindow + 2)..t).reversedArray()
         }
+
+        println("usefulWeights = " + Arrays.toString(usefulWeights))
+        println("usefulReturns = " + Arrays.toString(usefulReturns))
 
         // we zip the two array together and do the multiplication/sum
         for ((wi, ri) in usefulWeights.zip(usefulReturns)) {
@@ -112,6 +121,7 @@ class ARL(private val prices: DoubleArray, private val vThreshold: Double, priva
     /**
      * Allow us to compute the return. Formule (3) page 3 of article
      *
+     * @param t is the time we want the returns
      *
      */
     private fun computeRt(t: Int) : Double {
