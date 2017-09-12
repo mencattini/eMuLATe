@@ -9,7 +9,7 @@ import java.util.*
  */
 class Weights(private val sizeWindow : Int, val index: Int) {
 
-    private var coefficients : DoubleArray
+    public var coefficients : DoubleArray
 
     init {
         // we init the value with random
@@ -43,29 +43,36 @@ class Weights(private val sizeWindow : Int, val index: Int) {
      *
      * @return a new Weights object with the new coefficients.
      */
-    private fun updateWeights(givenT: Int, param : Parameters, ft: DoubleArray, returns: DoubleArray): Weights {
+    private fun updateWeights(givenT: Int, param : Parameters, ft: Array<Pair<Double, Double>>, returns: DoubleArray,
+                              diffFtMinusOne: List<Double>): Weights {
         // first we need to compute the delta w_{i,t}
 
         // the diff(R_{t}, F_{t})
-        val diffRt = ((param.delta * (ft[givenT - 1] - ft[givenT]))
-                / (Math.abs(ft[givenT] - ft[givenT - 1])))
+        val diffRt = ((param.delta * (ft[givenT - 1].first - ft[givenT].first))
+                / (Math.abs(ft[givenT].first - ft[givenT - 1].first)))
         // the diff(R_{t}, F_{t-1})
-        val diffRtMinusOne = ((param.delta * (ft[givenT] - ft[givenT - 1]))
-                / (Math.abs(ft[givenT] - ft[givenT - 1])) + returns[givenT])
+        val diffRtMinusOne = ((param.delta * (ft[givenT].first - ft[givenT - 1].first))
+                / (Math.abs(ft[givenT].first - ft[givenT - 1].first)) + returns[givenT])
 
-        // diff(F_T, w_{i,t}) and every elements is multiplied by diffRt
-        val diffFt = returns.reversed().toDoubleArray().plus(ft[givenT - 1])
-                .map { it -> it * diffRt }
+        // we need to multiple diff(F_{t-1},w_{i,t-1}) by diff(F_t, F_{t-1})
+        var diffFtMinusOneBis = diffFtMinusOne.map { it -> it * coefficients.last() }
 
-        // diff(F_{T-1}, w_{i, t - 1} and every elements is multiplied by diffRtMinusOne
-        val diffFtMinusOne = returns.reversed().toDoubleArray().plus(ft[givenT - 2])
-                .map {it -> it * diffRtMinusOne}
+        // derivation(F_t, w_{i,t}) = diff(F_t, w_{i,t}) + diff(F_t, F_{t-1}) * diff(F_{t-1},w_{i,t-1})
+        var diffFt = returns.reversed().toDoubleArray().plus(ft[givenT - 1].first)
+                .zip(diffFtMinusOneBis)
+                .map { it -> it.first + it.second }
+
+        // we need to multiply derivation(F_t, w_{i,t}) with diffRt
+        diffFt = diffFt.map { it -> it * diffRt }
+
+        // we need to multiply derivation(F_{t-1}, w_{i,t-1}) with diffRtMinusOne
+        diffFtMinusOneBis = diffFtMinusOne.map { it -> it * diffRtMinusOne }
 
         // i don't know the derivation of Dt by Rt, so i use a constant until i find it.
         val diffDt = 1
 
         // diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne)
-        val deltaW = diffFt.zip(diffFtMinusOne)
+        val deltaW = diffFt.zip(diffFtMinusOneBis)
                 .map { (first, second) -> (first + second) * diffDt}.toDoubleArray()
 
         // the updating delta using weights = weights + rho * deltaW
