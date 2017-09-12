@@ -30,4 +30,10 @@ class Parameters() {
         param.x = x
         param.y = y
     }
+
+    override fun toString(): String {
+        return "Parameters(delta=$delta, eta=$eta, rho=$rho, x=$x, y=$y)"
+    }
+
+
 }
