@@ -10,6 +10,7 @@ import java.util.*
 class Weights(private val sizeWindow : Int, val index: Int) {
 
     public var coefficients : DoubleArray
+    public var oldDiffFt : DoubleArray
 
     init {
         // we init the value with random
@@ -17,6 +18,8 @@ class Weights(private val sizeWindow : Int, val index: Int) {
 
         // create an array of weight with size of $sizeWindow
         coefficients = DoubleArray(sizeWindow, {random.nextDouble()})
+        // we need to store the diffFt value for the next update
+        oldDiffFt = kotlin.DoubleArray(sizeWindow)
     }
 
     /**
@@ -43,19 +46,18 @@ class Weights(private val sizeWindow : Int, val index: Int) {
      *
      * @return a new Weights object with the new coefficients.
      */
-    private fun updateWeights(givenT: Int, param : Parameters, ft: Array<Pair<Double, Double>>, returns: DoubleArray,
-                              diffFtMinusOne: List<Double>): Weights {
+    public fun updateWeights(givenT: Int, param : Parameters, ft: Array<Pair<Double, Double>>, returns: DoubleArray): Weights {
         // first we need to compute the delta w_{i,t}
 
         // the diff(R_{t}, F_{t})
         val diffRt = ((param.delta * (ft[givenT - 1].first - ft[givenT].first))
-                / (Math.abs(ft[givenT].first - ft[givenT - 1].first)))
+                / (Math.abs(ft[givenT].first - ft[givenT - 1].first) + 0.01 ))
         // the diff(R_{t}, F_{t-1})
         val diffRtMinusOne = ((param.delta * (ft[givenT].first - ft[givenT - 1].first))
-                / (Math.abs(ft[givenT].first - ft[givenT - 1].first)) + returns[givenT])
+                / (Math.abs(ft[givenT].first - ft[givenT - 1].first) + 0.01 ) + returns[givenT - 1])
 
         // we need to multiple diff(F_{t-1},w_{i,t-1}) by diff(F_t, F_{t-1})
-        var diffFtMinusOneBis = diffFtMinusOne.map { it -> it * coefficients.last() }
+        var diffFtMinusOneBis = oldDiffFt.map { it -> it * coefficients.last() }
 
         // derivation(F_t, w_{i,t}) = diff(F_t, w_{i,t}) + diff(F_t, F_{t-1}) * diff(F_{t-1},w_{i,t-1})
         var diffFt = returns.reversed().toDoubleArray().plus(ft[givenT - 1].first)
@@ -66,7 +68,7 @@ class Weights(private val sizeWindow : Int, val index: Int) {
         diffFt = diffFt.map { it -> it * diffRt }
 
         // we need to multiply derivation(F_{t-1}, w_{i,t-1}) with diffRtMinusOne
-        diffFtMinusOneBis = diffFtMinusOne.map { it -> it * diffRtMinusOne }
+        diffFtMinusOneBis = oldDiffFt.map { it -> it * diffRtMinusOne }
 
         // i don't know the derivation of Dt by Rt, so i use a constant until i find it.
         val diffDt = 1
@@ -76,9 +78,11 @@ class Weights(private val sizeWindow : Int, val index: Int) {
                 .map { (first, second) -> (first + second) * diffDt}.toDoubleArray()
 
         // the updating delta using weights = weights + rho * deltaW
-         return Weights(coefficients.zip(deltaW)
+        var res = Weights(coefficients.zip(deltaW)
                 .map { (first, second) -> first + param.rho * second }
-                 .toDoubleArray(), givenT + 1)
-
+                .toDoubleArray(), givenT + 1)
+        // we store the current diffFt as oldDiffFt for the next iteration
+        res.oldDiffFt = diffFt.toDoubleArray()
+        return res
     }
 }
