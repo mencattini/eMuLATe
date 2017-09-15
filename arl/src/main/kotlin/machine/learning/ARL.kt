@@ -14,7 +14,7 @@ import java.util.*
 class ARL(private var prices: DoubleArray, private val vThreshold: Double, private val sizeWindow: Int) {
 
     private var z: Double
-    private var weights : Array<Weights>
+    private var weight : Weights
     private var parameters : Parameters
     private var ft: Array<Pair<Double, Double>> // where first = the sign, second = the value
     private var returns: DoubleArray
@@ -27,7 +27,7 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
         z = random.nextDouble()
 
         // create an array of weight with size of $sizeWindow
-        weights = arrayOf(Weights(sizeWindow, 0))
+        weight = Weights(sizeWindow, 0)
         returns = DoubleArray(0)
 
         // the old value
@@ -72,8 +72,13 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
             ft = ft.plus(computeFt(givenT))
 
             // update the weights
+            weight = weight.updateWeights(givenT, parameters, ft, returns)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
+
+            // increase the givenT size
+            println("givenT = ${givenT}")
+            givenT++
         }
     }
 
@@ -90,7 +95,7 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
     private fun computeFt(givenT : Int) : Pair<Double, Double> {
 
         // this part doesn't depends on index
-        var sum = weights[givenT - 1].coefficients.last() * ft[givenT - 1].first + vThreshold
+        var sum = weight.coefficients.last() * ft[givenT - 1].first + vThreshold
 
 
         // we get the useful weights and returns
@@ -103,14 +108,14 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
             // as said in the formal neural net layer :
             // w_{i,t} * r_{t-i}
             // so we need to reverse the returns array
-            usefulWeights = weights[givenT - 1].coefficients.sliceArray(0..givenT)
+            usefulWeights = weight.coefficients.sliceArray(0..givenT)
             usefulReturns = returns.sliceArray(0..givenT).reversedArray()
 
         } else {
             // we sub the (sizeWindow - 2) to always get the same number of elements than the weights
             // using the maxof(0, t-sizedwindow + 2) to avoid negative index
             // reverse the array for the same thing than above
-            usefulWeights = weights[givenT - 1].coefficients.sliceArray(0..(sizeWindow - 2))
+            usefulWeights = weight.coefficients.sliceArray(0..(sizeWindow - 2))
             usefulReturns = returns.sliceArray(maxOf(0,givenT-sizeWindow + 2)..givenT).reversedArray()
         }
 
@@ -128,7 +133,7 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
                 "parameters=$parameters,\n" +
                 "ft=${Arrays.toString(ft)},\n" +
                 "returns=${Arrays.toString(returns)}\n," +
-                "weigths=${Arrays.toString(weights.last().coefficients)}"
+                "weigths=${Arrays.toString(weight.coefficients)}"
                 ")"
     }
 
