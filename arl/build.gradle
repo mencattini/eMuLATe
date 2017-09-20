@@ -28,3 +28,9 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+// add the folder
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin/machine/learning'
+    test.kotlin.srcDirs += 'src/test/kotlin/'
+}
