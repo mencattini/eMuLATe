@@ -60,8 +60,27 @@ class Weights(private val sizeWindow : Int, val index: Int) {
         var diffFtMinusOneBis = oldDiffFt.map { it -> it * coefficients.last() }
 
         // derivation(F_t, w_{i,t}) = diff(F_t, w_{i,t}) + diff(F_t, F_{t-1}) * diff(F_{t-1},w_{i,t-1})
-        var diffFt = returns.reversed().toDoubleArray().plus(ft[givenT - 1].first)
-                .zip(diffFtMinusOneBis)
+        // we need to modify the returns before, so we create a new variable
+        var tmpReturns = DoubleArray(sizeWindow)
+        if (returns.size > sizeWindow - 1) {
+            // we have to many returns, we need to slice to get the right number.
+            // reverse the array
+            tmpReturns = returns.reversed()
+                    // take to sizeWindow - 1 (NOT INCLUDED)
+                    .slice(0..(sizeWindow - 1))
+                    // adding the last element
+                    .plus(ft[givenT - 1].first)
+                    // the cast
+                    .toDoubleArray()
+        } else {
+            // we need to add enough 0 to returns to avoid reduction of diffFtMinusOneBis with map
+            var i = 0
+            for (ele in returns.reversed().toDoubleArray().plus(ft[givenT - 1].first)) {
+                tmpReturns[i] = ele
+                i++
+            }
+        }
+        var diffFt = tmpReturns.zip(diffFtMinusOneBis)
                 .map { it -> it.first + it.second }
 
         // we need to multiply derivation(F_t, w_{i,t}) with diffRt
