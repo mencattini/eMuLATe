@@ -186,10 +186,10 @@ C'est au sortir de cette dernière, que la nécessité de "\textit{mettre en pla
 
 Plusieurs idées furent proposées, mais ce fût celle de Harry Dexter White qui fût mise en place. Cette dernière prévoyait entre autre:
 \begin{itemize}
-\item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 \cite{wikipedia_bretten_woods}.}.
+\item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension de l'équivalence or pour le dollar américain en août 1971 puis abandon définitif en mars 1973 \cite{wikipedia_bretten_woods}.}.
 \item Création de la Banque internationale pour la reconstruction et le développement (BIRD) qui deviendra la banque mondiale.
 \item Le Fond monétaire international (FMI).
-\item Création de l'Organisation mondial du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord \cite{wikipedia_bretten_woods}.}.
+\item Création de l'Organisation mondiale du commerce\footnote{Ne verra le jour qu'en 1995 faute d'accord \cite{wikipedia_bretten_woods}.}.
 \end{itemize}
 
 On remarque que ces institutions sont toujours en activités, 
@@ -454,7 +454,7 @@ Où $V_{NB}$ est la classe obtenue, $P(v_j)$ la probabilité à \textit{priori} 
 et $\prod\limits_i P(a_i | v_j)$ la probabilité de vraisemblance.
 Il convient donc de trouver la classe qui maximise ce calcul.
 
-Afin d'avoir une certain sécurité dans les résultats, il est possible d'ajouter un seuil. 
+Afin d'avoir une certaine sécurité dans les résultats, il est possible d'ajouter un seuil. 
 Les réponses du classifieur étant comprise entre $0$ et $1$, le seuil permettra de décider si la réponse sera prise en compte.
 
 Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validé et le classifieur ne renvoie aucun
@@ -845,7 +845,7 @@ résultats serviront plutôt à illustrer la qualité intrinsèque des procédé
 nous pourrons estimer que la performance est bonne, et l'inverse pour une valeur de 20\%.
 
 \paragraph{}
-Pour tous les algorithmes qui ont été mentionnés dans la section précédente, nous allons expliqué les changements
+Pour tous les algorithmes qui ont été mentionnés dans la section précédente, nous allons expliquer les changements
 appliqués à ces derniers en vue de les étendre au domaine financier. De plus nous étudierons les résultats obtenus
 et analyserons quelles améliorations apportent un gain significatif dans la classification.
 
@@ -887,7 +887,7 @@ il a fallu partager le \textit{set} de données.
 Dans le cas contraire, il aurait été impossible de tester les algorithmes entraînés. Ou bien, ils auraient été évalués
 sur les mêmes données que leur entraînement. Ce qui n'est pas possible.
 
-Le choix a donc été fait de partagé l'ensemble de données en deux sous-parties. Une première contenant 80\% des
+Le choix a donc été fait de partager l'ensemble de données en deux sous-parties. Une première contenant 80\% des
 données qui sera dédiée à l'entraînement et une seconde avec 20\% pour l'évaluation.
 
 \paragraph{}
@@ -1040,7 +1040,7 @@ il lui est plus facile d'en voir les effets\footnote{Source des résultats: \cit
 par \textit{ROC curve analysis} (voir \ref{section roc curve analysis}).}
 \end{table}
 
-Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimale permet principalement d'augmenter
+Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimal permet principalement d'augmenter
 la performance dans la détection des négatifs. Il est important de mentionner que cela n'influence que peu
 la détection des positifs car ils sont bien représentés dans l'ensemble d'entraînement et donc mieux reconnus.
 L'amélioration est donc intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité
