@@ -16,3 +16,6 @@ dontFollow/
 .idea/
 out/
 .idea_modules
+.gradle
+build/
+gradle/
