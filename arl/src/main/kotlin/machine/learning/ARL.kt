@@ -1,6 +1,7 @@
 package machine.learning
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  *  It's the main classe for the Adaptive reinforcement learning
@@ -11,17 +12,20 @@ import java.util.*
  *
  *  @author Romain Mencattini
  */
-class ARL(private var prices: DoubleArray, private val vThreshold: Double, private val sizeWindow: Int) {
+class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Double, private val sizeWindow: Int) {
 
     private var z: Double
     private var weight : Weights
     private var parameters : Parameters
     private var ft: Array<Pair<Double, Double>> // where first = the sign, second = the value
     private var returns: DoubleArray
+    private var prices: DoubleArray
 
     init {
 
         val random = Random()
+
+        prices = arrayPrices.toDoubleArray()
 
         parameters = Parameters()
         z = random.nextDouble()
@@ -77,7 +81,6 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
 
             // increase the givenT size
-            println("givenT = ${givenT}")
             givenT++
         }
     }
@@ -133,7 +136,7 @@ class ARL(private var prices: DoubleArray, private val vThreshold: Double, priva
                 "parameters=$parameters,\n" +
                 "ft=${Arrays.toString(ft)},\n" +
                 "returns=${Arrays.toString(returns)}\n," +
-                "weigths=${Arrays.toString(weight.coefficients)}"
+                "weigths=${Arrays.toString(weight.coefficients)}" +
                 ")"
     }
 
