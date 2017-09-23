@@ -87,7 +87,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
 
 
     /**
-     * Compute the Ft layer using weights, vthresholrd, returns and old_ft.
+     * Compute the Ft layer using weights, vthreshold, returns and old_ft.
      * Given t, my need are :
      * - compute ft
      * - return the value and the sign
@@ -98,7 +98,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
     private fun computeFt(givenT : Int) : Pair<Double, Double> {
 
         // this part doesn't depends on index
-        var sum = weight.coefficients.last() * ft[givenT - 1].first + vThreshold
+        var sum = weight.wMplusOne() * ft[givenT - 1].first + weight.vThreshold()
 
 
         // we get the useful weights and returns
@@ -136,8 +136,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
                 "parameters=$parameters,\n" +
                 "ft=${Arrays.toString(ft)},\n" +
                 "returns=${Arrays.toString(returns)}\n," +
-                "weigths=${Arrays.toString(weight.coefficients)}" +
-                ")"
+                "weigths=" + weight.toString() + ")"
     }
 
 
