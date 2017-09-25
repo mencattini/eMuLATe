@@ -115,7 +115,7 @@ class Weights(private val sizeWindow : Int, val index: Int) {
                 .map { (first, second) -> (first + second) * diffDt}.toDoubleArray()
 
         // the updating delta using weights = weights + rho * deltaW
-        var res = Weights(coefficients.zip(deltaW)
+        val res = Weights(coefficients.zip(deltaW)
                 .map { (first, second) -> first + param.rho * second }
                 .toDoubleArray(), givenT + 1, at, bt)
         // we store the current diffFt as oldDiffFt for the next iteration
