@@ -6,7 +6,8 @@ import kotlin.collections.ArrayList
 /**
  *  It's the main classe for the Adaptive reinforcement learning
  *
- *  @param prices the prices data the algorithm will work with
+ *  @param arrayPrices the prices data the algorithm will work with. The type is arrayList to get compatibility
+ *  with Java.
  *  @param vThreshold the threshold of the neural net
  *  @param sizeWindow the window size of the element to watch during computation
  *
@@ -43,7 +44,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
      * It will reset the returns and the prices.
      * It's useful between two runs to keep the weights and the parameters but not the rest.
      */
-    public fun reset() {
+    fun reset() {
         prices = DoubleArray(0)
         returns = DoubleArray(0)
     }
@@ -51,14 +52,14 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
     /**
      * It sets the prices for a new runs
      */
-    public fun setPrices(prices: DoubleArray) {
+    fun setPrices(prices: DoubleArray) {
         this.prices = prices
     }
 
     /**
      * In the function we will improve the weights and parameters. This is the learning phase.
      */
-    public fun trainingLoop() {
+    fun trainingLoop() {
 
         var oldPrice = prices[0]
         var givenT = 1
@@ -66,7 +67,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
         for (price in prices.sliceArray(1..(prices.size - 1))) {
 
             // compute the return
-            var computedReturn = price - oldPrice
+            val computedReturn = price - oldPrice
             // keep the price for the next loop
             oldPrice = price
             // store the computedReturn in returns
@@ -127,8 +128,15 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
             sum += wi * ri
         }
 
-        // we reutrn the result to the ft vector
-        return Pair(Math.signum(sum), sum)
+        // TODO: adding the x check not sure how.
+
+        // we check the threshold
+        // if it's greater than the threshold, we keep the result
+        if (Math.abs(sum) > parameters.y){
+            return Pair(Math.signum(sum), sum)
+        }
+        // else we just do nothing
+        return Pair(Math.signum(0.0), 0.0)
     }
 
     override fun toString(): String {
