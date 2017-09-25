@@ -21,3 +21,4 @@ build/
 gradle/
 arl/.gradle/
 arl/gradle/
+gradle/wrapper
