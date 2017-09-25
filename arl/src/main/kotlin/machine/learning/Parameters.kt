@@ -4,11 +4,11 @@ import java.util.*
 
 class Parameters() {
 
-    public var delta : Double
-    public var eta : Double
-    public var rho : Double
-    public var x : Double
-    public var y : Double
+    var delta : Double
+    var eta : Double
+    var rho : Double
+    var x : Double
+    var y : Double
 
     init {
         // we init the value with random
@@ -21,14 +21,16 @@ class Parameters() {
         y = random.nextDouble()
     }
 
-    public fun Parameters(delta: Double, eta: Double, rho: Double, x : Double, y : Double) {
+    fun Parameters(delta: Double, eta: Double, rho: Double, x : Double, y : Double): Parameters {
 
-        var param = Parameters()
+        val param = Parameters()
         param.delta = delta
         param.eta = eta
         param.rho = rho
         param.x = x
         param.y = y
+
+        return param
     }
 
     override fun toString(): String {
