@@ -13,7 +13,7 @@ public class Programme {
             array.add(r.nextDouble());
         }
         ARL arl = new ARL(array, 0.0, 4);
-        arl.trainingLoop();
+        arl.trainingLoop(1);
 
         System.out.println(arl.toString());
     }
