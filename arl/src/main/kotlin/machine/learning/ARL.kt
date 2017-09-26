@@ -2,6 +2,7 @@ package machine.learning
 
 import java.util.*
 import kotlin.collections.ArrayList
+import computeFt
 
 /**
  *  It's the main classe for the Adaptive reinforcement learning
@@ -59,12 +60,12 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
     /**
      * In the function we will improve the weights and parameters. This is the learning phase.
      */
-    fun trainingLoop() {
+    fun trainingLoop(givenT: Int = 1) {
 
-        var oldPrice = prices[0]
-        var givenT = 1
+        var t = givenT
+        var oldPrice = prices[t - 1]
         // the training is done over every prices. From the soonest to the latest.
-        for (price in prices.sliceArray(1..(prices.size - 1))) {
+        for (price in prices.sliceArray(t..(prices.size - 1))) {
 
             // compute the return
             val computedReturn = price - oldPrice
@@ -82,7 +83,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
 
             // increase the givenT size
-            givenT++
+            t++
         }
     }
 
@@ -98,45 +99,7 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
      */
     private fun computeFt(givenT : Int) : Pair<Double, Double> {
 
-        // this part doesn't depends on index
-        var sum = weight.wMplusOne() * ft[givenT - 1].first + weight.vThreshold()
-
-
-        // we get the useful weights and returns
-        val usefulWeights :DoubleArray
-        val usefulReturns :DoubleArray
-
-        // if the t is smaller than our windows, we just take the t first elements
-        // we sub 2 because the last weight is used with the F_{t-1}
-        if (givenT < sizeWindow - 2) {
-            // as said in the formal neural net layer :
-            // w_{i,t} * r_{t-i}
-            // so we need to reverse the returns array
-            usefulWeights = weight.coefficients.sliceArray(0..givenT)
-            usefulReturns = returns.sliceArray(0..givenT).reversedArray()
-
-        } else {
-            // we sub the (sizeWindow - 2) to always get the same number of elements than the weights
-            // using the maxof(0, t-sizedwindow + 2) to avoid negative index
-            // reverse the array for the same thing than above
-            usefulWeights = weight.coefficients.sliceArray(0..(sizeWindow - 2))
-            usefulReturns = returns.sliceArray(maxOf(0,givenT-sizeWindow + 2)..givenT).reversedArray()
-        }
-
-        // we zip the two array together and do the multiplication/sum
-        for ((wi, ri) in usefulWeights.zip(usefulReturns)) {
-            sum += wi * ri
-        }
-
-        // TODO: adding the x check not sure how.
-
-        // we check the threshold
-        // if it's greater than the threshold, we keep the result
-        if (Math.abs(sum) > parameters.y){
-            return Pair(Math.signum(sum), sum)
-        }
-        // else we just do nothing
-        return Pair(Math.signum(0.0), 0.0)
+        return computeFt(givenT, weight, ft, sizeWindow, returns, parameters)
     }
 
     override fun toString(): String {
