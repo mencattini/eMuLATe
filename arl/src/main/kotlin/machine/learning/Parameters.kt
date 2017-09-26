@@ -2,6 +2,10 @@ package machine.learning
 
 import java.util.*
 
+/**
+ * @author Romain Mencattini
+ *
+ */
 class Parameters() {
 
     var delta : Double
@@ -21,6 +25,17 @@ class Parameters() {
         y = random.nextDouble()
     }
 
+    /**
+     * A custom constructor.
+     *
+     * @param delta : the new delta
+     * @param eta : the new eta
+     * @param rho : the new rho
+     * @param x : the new x
+     * @param y : the new y
+     *
+     * @return a new Parameters object with custom value for every fields.
+     */
     fun Parameters(delta: Double, eta: Double, rho: Double, x : Double, y : Double): Parameters {
 
         val param = Parameters()
