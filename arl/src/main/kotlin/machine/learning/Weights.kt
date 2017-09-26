@@ -5,7 +5,10 @@ import java.util.*
 /**
  * The weights class. This is the weights for the neural net with the associated methods.
  *
- * @author Romain mencattini
+ * @author Romain Mencattini
+ *
+ * @param sizeWindow : the size of the weights vector
+ * @param index : the current iteration
  */
 class Weights(private val sizeWindow : Int, val index: Int) {
 
@@ -123,10 +126,18 @@ class Weights(private val sizeWindow : Int, val index: Int) {
         return res
     }
 
+    /**
+     * This is an accessor to the private field.
+     * @return the w_{M+1} weights
+     */
     fun wMplusOne() : Double {
         return coefficients.last()
     }
 
+    /**
+     * This is an accessor to the private field.
+     * @return the v_t weight
+     */
     fun vThreshold() : Double {
         return coefficients[coefficients.lastIndex - 1]
     }
