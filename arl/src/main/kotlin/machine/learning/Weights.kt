@@ -110,7 +110,7 @@ class Weights(private val sizeWindow : Int, val index: Int) {
         val bt = oldBt + param.eta * deltaBt
 
 
-        // accorind to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
+        // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
         val diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3/2.0)
 
         // diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne)
@@ -147,6 +147,11 @@ class Weights(private val sizeWindow : Int, val index: Int) {
                 "coefficients=${Arrays.toString(coefficients.sliceArray(0..coefficients.lastIndex - 2))}," +
                 "\nvThreshold=${vThreshold()}," +
                 "\nw_{M+1}=${wMplusOne()})"
+    }
+
+    fun copy(coefficients: DoubleArray = this.coefficients, index : Int = this.index,
+             at : Double = this.oldAt, bt: Double = this.oldBt): Weights {
+        return this.Weights(coefficients, index, at, bt)
     }
 
 
