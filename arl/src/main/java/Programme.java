@@ -9,7 +9,7 @@ public class Programme {
 
         Random r = new Random();
 
-        for(int i=0; i < 10; i++){
+        for(int i=0; i < 15; i++){
             array.add(r.nextDouble());
         }
         ARL arl = new ARL(array, 0.0, 4);
