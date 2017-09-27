@@ -5,7 +5,7 @@ import kotlin.collections.ArrayList
 import computeFt
 
 /**
- *  It's the main classe for the Adaptive reinforcement learning
+ *  It's the main class for the Adaptive reinforcement learning
  *
  *  @param arrayPrices the prices data the algorithm will work with. The type is arrayList to get compatibility
  *  with Java.
@@ -81,7 +81,11 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
             weight = weight.updateWeights(givenT, parameters, ft, returns)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-
+            if (t % 5 == 0) {
+                println("iteration t = $t")
+                println("value of custFunction at $t = " +
+                        "${parameters.costFunction(0.5, 0.5, returns, t - 4, t, weight, sizeWindow)}")
+            }
             // increase the givenT size
             t++
         }
