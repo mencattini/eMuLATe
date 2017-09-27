@@ -149,6 +149,16 @@ class Weights(private val sizeWindow : Int, val index: Int) {
                 "\nw_{M+1}=${wMplusOne()})"
     }
 
+    /**
+     * This function create a copy of the weight object.
+     *
+     * @param coefficients the (w_i, vthreshold, w_{M+1})
+     * @param index the current iteration
+     * @param at the old result of at
+     * @param bt the old result of bt
+     *
+     * @return a new copied object weight
+     */
     fun copy(coefficients: DoubleArray = this.coefficients, index : Int = this.index,
              at : Double = this.oldAt, bt: Double = this.oldBt): Weights {
         return this.Weights(coefficients, index, at, bt)
