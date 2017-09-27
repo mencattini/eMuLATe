@@ -49,21 +49,40 @@ class Parameters {
         return param
     }
 
-    // TODO : add the java doc
+
+    /**
+     * The function we want to optimize.
+     *
+     * @param a cf. article, it's a fixed parameters
+     * @param v cf. article, it's a fiex parameters
+     * @param returns the array of r_t
+     * @param startT the index of start
+     * @param endT the index of end
+     * @param weight the weights
+     * @param sizeWindow the number of considered elements
+     * @param parameters the parameters we want to know the cost, by default it's itself
+     *
+     * @return the result of the cost function
+     */
     fun costFunction(a: Double, v: Double, returns: DoubleArray,
                          startT: Int, endT: Int, weight: Weights,
-                         sizeWindow: Int) : Double {
+                         sizeWindow: Int, parameters: Parameters = this) : Double {
 
-        val parameters = Parameters()
 
         val rt = getRt(returns, startT, endT, parameters, weight, sizeWindow)
         val sumRtPositive = rt.filter { it < 0 }.map { it -> it * it }.sum()
         val sumRtNegative = rt.filter { it > 0 }.map { it -> it * it }.sum()
-        val sigma = sumRtNegative / sumRtPositive
+        // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
+        // we check the denominator
+        val sigma = if (sumRtPositive == 0.0) 1.0 else sumRtNegative / sumRtPositive
 
-        // TODO : implemente the real W_N / N
-        val rbar = rt.sum() / rt.size
-        return a * ( 1 - v ) * rbar - v * sigma
+        // we compute the whole rt. The sum of this vector is the cumulated profit.
+        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
+        // return the result or the neutral element of multiplication
+        // we check the denominator
+        val rBar = if (wN.size == 0) 1.0 else wN.sum() / wN.size
+
+        return a * ( 1 - v ) * rBar - v * sigma
     }
 
     /**
@@ -85,7 +104,7 @@ class Parameters {
         var t = startT
         // the array we will return
         val rt = DoubleArray(endT - startT)
-        var ft = arrayOf(Pair(0.0, 0.0))
+        var ft = Array<Pair<Double,Double>>(startT, {Pair(0.0, 0.0)})
         var mutableWeight = weight.copy()
 
         while (t < endT) {
