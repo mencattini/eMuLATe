@@ -20,5 +20,5 @@ out/
 build/
 gradle/
 arl/.gradle/
-arl/gradle/
-gradle/wrapper
+gradle-wrapper.properties
+.gradle/*/*.bin
