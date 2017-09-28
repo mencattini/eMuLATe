@@ -31,6 +31,10 @@ compileTestKotlin {
 
 // add the folder
 sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin/machine/learning'
+    main.kotlin.srcDirs += 'src/main/kotlin/'
     test.kotlin.srcDirs += 'src/test/kotlin/'
+}
+
+jar {
+    exclude("MainKt.class", "Programme.class")
 }
