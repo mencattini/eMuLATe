@@ -1,13 +1,12 @@
 package machine.learning
 
 import java.util.*
-import computeFt
 
 /**
  * @author Romain Mencattini
  *
  */
-class Parameters {
+internal class Parameters {
 
     var delta : Double
     var eta : Double
@@ -65,8 +64,8 @@ class Parameters {
      * @return the result of the cost function
      */
     fun costFunction(a: Double, v: Double, returns: DoubleArray,
-                         startT: Int, endT: Int, weight: Weights,
-                         sizeWindow: Int, parameters: Parameters = this) : Double {
+                     startT: Int, endT: Int, weight: Weights,
+                     sizeWindow: Int, parameters: Parameters = this) : Double {
 
 
         val rt = getRt(returns, startT, endT, parameters, weight, sizeWindow)
@@ -80,7 +79,7 @@ class Parameters {
         val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
         // return the result or the neutral element of multiplication
         // we check the denominator
-        val rBar = if (wN.size == 0) 1.0 else wN.sum() / wN.size
+        val rBar = if (wN.isEmpty()) 1.0 else wN.sum() / wN.size
 
         return a * ( 1 - v ) * rBar - v * sigma
     }
@@ -98,7 +97,7 @@ class Parameters {
      * @return a array of double containing the R_t
      */
     private fun getRt(returns: DoubleArray, startT: Int, endT: Int, parameters: Parameters, weight: Weights,
-              sizeWindow: Int): DoubleArray {
+                      sizeWindow: Int): DoubleArray {
 
         // it's our index to iterate through the array.
         var t = startT

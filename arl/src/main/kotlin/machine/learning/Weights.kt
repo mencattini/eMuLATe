@@ -10,7 +10,7 @@ import java.util.*
  * @param sizeWindow : the size of the weights vector
  * @param index : the current iteration
  */
-class Weights(private val sizeWindow : Int, val index: Int) {
+internal class Weights(private val sizeWindow : Int, val index: Int) {
 
     var coefficients : DoubleArray
     var oldDiffFt : DoubleArray

@@ -1,5 +1,5 @@
-import machine.learning.ARL;
 import java.util.*;
+import machine.learning.ARL;
 
 public class Programme {
 

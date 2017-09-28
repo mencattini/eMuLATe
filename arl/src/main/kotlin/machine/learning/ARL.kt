@@ -1,8 +1,6 @@
 package machine.learning
 
 import java.util.*
-import kotlin.collections.ArrayList
-import computeFt
 
 /**
  *  It's the main class for the Adaptive reinforcement learning

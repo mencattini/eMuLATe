@@ -1,4 +1,4 @@
-import machine.learning.ARL
+import machine.learning.ARL;
 
 fun main(args : Array<String>) {
 

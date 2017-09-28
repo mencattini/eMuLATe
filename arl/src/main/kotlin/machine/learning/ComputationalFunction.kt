@@ -1,5 +1,4 @@
-import machine.learning.Parameters
-import machine.learning.Weights
+package machine.learning
 
 /**
  * Compute the Ft layer using weights, vthreshold, returns and old_ft.
@@ -16,8 +15,8 @@ import machine.learning.Weights
  *
  * @return a pair of signum and value
  */
-fun computeFt(givenT: Int, weight: Weights, ft:Array<Pair<Double,Double>>,
-                      sizeWindow: Int, returns: DoubleArray, parameters: Parameters): Pair<Double, Double> {
+internal fun computeFt(givenT: Int, weight: Weights, ft:Array<Pair<Double,Double>>,
+                       sizeWindow: Int, returns: DoubleArray, parameters: Parameters): Pair<Double, Double> {
 
     // this part doesn't depends on index
     var sum = weight.wMplusOne() * ft[givenT - 1].first + weight.vThreshold()
