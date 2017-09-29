@@ -1,6 +1,7 @@
 package machine.learning
 
 import java.util.*
+import org.apache.commons.math3.distribution.NormalDistribution
 
 /**
  * @author Romain Mencattini
@@ -103,7 +104,7 @@ internal class Parameters {
         var t = startT
         // the array we will return
         val rt = DoubleArray(endT - startT)
-        var ft = Array<Pair<Double,Double>>(startT, {Pair(0.0, 0.0)})
+        var ft = Array(startT, {Pair(0.0, 0.0)})
         var mutableWeight = weight.copy()
 
         while (t < endT) {
@@ -120,8 +121,81 @@ internal class Parameters {
         return rt
     }
 
+    /**
+     * Given a certain field and a standard deviation, we compute a new parameters objects. We change only the
+     * given field.
+     *
+     * @param field the name of the field we want to change.
+     * @param std the standard deviation around the centred value.
+     *
+     * @return a new parameters object with a new value
+     */
+    private fun generateNewParameters(field : String, std: Double) : Parameters {
 
-    // TODO : implemente the updateParameters function
+        val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x , this.y )
+
+        when (field) {
+            "x" -> returnedParameters.x = centredNormalRandom(this.x, std)
+            "y" -> returnedParameters.x = centredNormalRandom(this.y, std)
+            "eta" -> returnedParameters.x = centredNormalRandom(this.eta, std)
+            "delta" -> returnedParameters.x = centredNormalRandom(this.delta, std)
+            "rho" -> returnedParameters.x = centredNormalRandom(this.rho, std)
+        }
+        return returnedParameters
+    }
+
+    /**
+     * We get a sample with a certain mean and a certain standard deviation.
+     *
+     * @param mean the centred value
+     * @param std the standard deviation
+     *
+     * @return a sample.
+     */
+    private fun centredNormalRandom(mean : Double, std :Double) : Double {
+        return NormalDistribution(mean, std).sample()
+    }
+
+    /**
+     * This function use random walk to optimize the parameters values.
+     *
+     * @param a is a fixed value cf. the article
+     * @param v is a fixed value cf. the article
+     * @param returns is the array of returns
+     * @param startT the start index
+     * @param endT the end index
+     * @param weight the weight of the neural net
+     * @param sizeWindow the numbers of considered elements
+     *
+     * @return an optimized parameters
+     */
+    // TODO : fix the update, because it takes too long
+    fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
+                         sizeWindow: Int) : Parameters {
+
+        // we compute the current value of our parameters : it will be the first "best" result
+        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow, this)
+        var best = Pair(result, this)
+
+        // for every field
+        for (field in arrayListOf("x", "y", "delta", "rho", "eta")){
+            // run 15 times (15 is a fixed value in the article
+            for (notUsed in 0 until 15) {
+                // -the generation
+                val newParameters = best.second.generateNewParameters(field, 5.0)
+
+                // -the cost function
+                result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+
+                // -compare to the "best" and maybe update it
+                if (result < best.first) best = Pair(result, newParameters)
+            }
+        }
+
+        // return the best
+        return best.second
+    }
+
 
     override fun toString(): String {
         return "Parameters(delta=$delta, eta=$eta, rho=$rho, x=$x, y=$y)"
