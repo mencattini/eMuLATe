@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.5'
 }
 
 compileKotlin {
