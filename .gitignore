@@ -8,7 +8,8 @@ RomainMencattini*.out
 RomainMencattini*.toc
 RomainMencattini*.tex.backup
 dontFollow/
- EURUSD.dat
+EURUSD.dat
+data/
 
 
 # for the kotlin part
