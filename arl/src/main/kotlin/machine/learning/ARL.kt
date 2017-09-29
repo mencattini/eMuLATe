@@ -7,12 +7,11 @@ import java.util.*
  *
  *  @param arrayPrices the prices data the algorithm will work with. The type is arrayList to get compatibility
  *  with Java.
- *  @param vThreshold the threshold of the neural net
  *  @param sizeWindow the window size of the element to watch during computation
  *
  *  @author Romain Mencattini
  */
-class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Double, private val sizeWindow: Int) {
+class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
 
     private var z: Double
     private var weight : Weights
@@ -40,12 +39,13 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
     }
 
     /**
-     * It will reset the returns and the prices.
+     * It will reset the returns to avoid big array.
      * It's useful between two runs to keep the weights and the parameters but not the rest.
+     * We keep the sizeWindows last returns for the next computation.
      */
-    fun reset() {
-        prices = DoubleArray(0)
-        returns = DoubleArray(0)
+    fun reset(range: Int) {
+        val sizeReturns = returns.size
+        returns = returns.slice((sizeReturns - range)..(sizeReturns - 1)).toDoubleArray()
     }
 
     /**
@@ -79,10 +79,11 @@ class ARL(private val arrayPrices: ArrayList<Double>, private val vThreshold: Do
             weight = weight.updateWeights(givenT, parameters, ft, returns)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            if (t % 5 == 0) {
-                println("iteration t = $t")
-                println("value of custFunction at $t = " +
-                        "${parameters.costFunction(0.5, 0.5, returns, t - 4, t, weight, sizeWindow)}")
+            val updateThreshold = 100
+            if (t % updateThreshold == 0) {
+                println("t = $t")
+                parameters = parameters.updateParameters(
+                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow)
             }
             // increase the givenT size
             t++
