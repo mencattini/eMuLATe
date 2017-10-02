@@ -9,11 +9,11 @@ import org.apache.commons.math3.distribution.NormalDistribution
  */
 internal class Parameters {
 
-    var delta : Double
-    var eta : Double
-    var rho : Double
-    var x : Double
-    var y : Double
+    var delta: Double
+    var eta: Double
+    var rho: Double
+    var x: Double
+    var y: Double
 
     init {
         // we init the value with random
@@ -37,7 +37,7 @@ internal class Parameters {
      *
      * @return a new Parameters object with custom value for every fields.
      */
-    fun Parameters(delta: Double, eta: Double, rho: Double, x : Double, y : Double): Parameters {
+    private fun Parameters(delta: Double, eta: Double, rho: Double, x: Double, y: Double): Parameters {
 
         val param = Parameters()
         param.delta = delta
@@ -64,9 +64,9 @@ internal class Parameters {
      *
      * @return the result of the cost function
      */
-    fun costFunction(a: Double, v: Double, returns: DoubleArray,
-                     startT: Int, endT: Int, weight: Weights,
-                     sizeWindow: Int, parameters: Parameters = this) : Double {
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray,
+                             startT: Int, endT: Int, weight: Weights,
+                             sizeWindow: Int, parameters: Parameters = this): Double {
 
 
         val rt = getRt(returns, startT, endT, parameters, weight, sizeWindow)
@@ -76,13 +76,14 @@ internal class Parameters {
         // we check the denominator
         val sigma = if (sumRtPositive == 0.0) 1.0 else sumRtNegative / sumRtPositive
 
-        // we compute the whole rt. The sum of this vector is the cumulated profit.
-        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
+//        // we compute the whole rt. The sum of this vector is the cumulated profit.
+//        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
+        val wN = rt.sum() / rt.size
         // return the result or the neutral element of multiplication
         // we check the denominator
-        val rBar = if (wN.isEmpty()) 1.0 else wN.sum() / wN.size
+        val rBar = if (wN == Double.NaN) 1.0 else wN
 
-        return a * ( 1 - v ) * rBar - v * sigma
+        return a * (1 - v) * rBar - v * sigma
     }
 
     /**
@@ -103,15 +104,17 @@ internal class Parameters {
         // it's our index to iterate through the array.
         var t = startT
         // the array we will return
-        val rt = DoubleArray(endT - startT)
-        var ft = Array(startT, {Pair(0.0, 0.0)})
+        val rt = DoubleArray(endT - startT + 1)
+        var ft = Array(startT, { Pair(0.0, 0.0) })
         var mutableWeight = weight.copy()
 
         while (t < endT) {
             // we compute the ft
             ft = ft.plus(computeFt(t, mutableWeight, ft, sizeWindow, returns, parameters))
+
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(t, parameters, ft, returns)
+            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1].first, ft[t].first, t,
+                    parameters, returns)
             // store the result
             rt[t - startT] = ft[t - 1].first * returns[t] - delta * Math.abs(ft[t].first - ft[t - 1].first)
 
@@ -130,9 +133,9 @@ internal class Parameters {
      *
      * @return a new parameters object with a new value
      */
-    private fun generateNewParameters(field : String, std: Double) : Parameters {
+    private fun generateNewParameters(field: String, std: Double): Parameters {
 
-        val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x , this.y )
+        val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x, this.y)
 
         when (field) {
             "x" -> returnedParameters.x = centredNormalRandom(this.x, std)
@@ -152,7 +155,7 @@ internal class Parameters {
      *
      * @return a sample.
      */
-    private fun centredNormalRandom(mean : Double, std :Double) : Double {
+    private fun centredNormalRandom(mean: Double, std: Double): Double {
         return NormalDistribution(mean, std).sample()
     }
 
@@ -171,14 +174,14 @@ internal class Parameters {
      */
     // TODO : fix the update, because it takes too long
     fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
-                         sizeWindow: Int) : Parameters {
+                         sizeWindow: Int): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
         var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow, this)
         var best = Pair(result, this)
 
         // for every field
-        for (field in arrayListOf("x", "y", "delta", "rho", "eta")){
+        for (field in arrayListOf("x", "y", "delta", "rho", "eta")) {
             // run 15 times (15 is a fixed value in the article
             for (notUsed in 0 until 15) {
                 // -the generation
@@ -195,7 +198,6 @@ internal class Parameters {
         // return the best
         return best.second
     }
-
 
     override fun toString(): String {
         return "Parameters(delta=$delta, eta=$eta, rho=$rho, x=$x, y=$y)"
