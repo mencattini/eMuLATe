@@ -5,7 +5,7 @@ public class Programme {
 
     public static void main(String[] args){
 
-        ArrayList<Double> array = new ArrayList<Double>();
+        ArrayList array = new ArrayList<Double>();
 
         Random r = new Random();
 
