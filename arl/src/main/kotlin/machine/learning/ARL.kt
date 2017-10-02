@@ -76,14 +76,16 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             ft = ft.plus(computeFt(givenT))
 
             // update the weights
-            weight = weight.updateWeights(givenT, parameters, ft, returns)
+            weight = weight.updateWeights(returns[givenT - 1], ft[givenT - 1].first, ft[givenT].first, givenT,
+                    parameters, returns)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            val updateThreshold = 100
+            val updateThreshold = 1000
             if (t % updateThreshold == 0) {
-                println("t = $t")
+                val time = System.currentTimeMillis()
                 parameters = parameters.updateParameters(
                         0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow)
+                println("${(System.currentTimeMillis() - time) / 10},")
             }
             // increase the givenT size
             t++
