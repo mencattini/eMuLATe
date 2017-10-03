@@ -2,6 +2,7 @@ package machine.learning
 
 import java.util.*
 import org.apache.commons.math3.distribution.NormalDistribution
+import java.util.concurrent.Executors
 
 /**
  * @author Romain Mencattini
@@ -14,6 +15,7 @@ internal class Parameters {
     var rho: Double
     var x: Double
     var y: Double
+    @Volatile private lateinit var best: Pair<Double, Parameters>
 
     init {
         // we init the value with random
@@ -24,6 +26,7 @@ internal class Parameters {
         rho = random.nextDouble()
         x = random.nextDouble()
         y = random.nextDouble()
+
     }
 
     /**
@@ -63,7 +66,7 @@ internal class Parameters {
      *
      * @return the result of the cost function
      */
-    fun costFunction(a: Double, v: Double, returns: DoubleArray,
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray,
                              startT: Int, endT: Int, weight: Weights,
                              sizeWindow: Int): Double {
 
@@ -170,28 +173,37 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
+    // TODO find why the parameters aren't updated
     fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
         var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
-        var best = Pair(result, this)
+        val storedResult = result
+        best = Pair(result, this)
+        val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),1))
 
         // for every field
         for (field in arrayListOf("x", "y", "delta", "rho", "eta")) {
             // run 15 times (15 is a fixed value in the article
             for (notUsed in 0 until 15) {
-                // -the generation
-                val newParameters = best.second.generateNewParameters(field, std)
 
-                // -the cost function
-                result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+                val worker = Runnable {
+                    // -the generation
+                    val newParameters = best.second.generateNewParameters(field, std)
 
-                // -compare to the "best" and maybe update it
-                if (result < best.first) best = Pair(result, newParameters)
+                    // -the cost function
+                    result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+
+                    // -compare to the "best" and maybe update it
+                    @Synchronized if (result < best.first) best = Pair(result, newParameters)
+                }
+                executor.execute(worker)
             }
         }
-
+        executor.shutdown()
+        while (!executor.isTerminated) { }
+        if (best.first == storedResult) println("No changement")
         // return the best
         return best.second
     }
