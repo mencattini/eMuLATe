@@ -60,63 +60,61 @@ internal class Parameters {
      * @param endT the index of end
      * @param weight the weights
      * @param sizeWindow the number of considered elements
-     * @param parameters the parameters we want to know the cost, by default it's itself
      *
      * @return the result of the cost function
      */
-    private fun costFunction(a: Double, v: Double, returns: DoubleArray,
+    fun costFunction(a: Double, v: Double, returns: DoubleArray,
                              startT: Int, endT: Int, weight: Weights,
-                             sizeWindow: Int, parameters: Parameters = this): Double {
+                             sizeWindow: Int): Double {
 
 
-        val rt = getRt(returns, startT, endT, parameters, weight, sizeWindow)
+        val rt = getRt(returns.sliceArray(startT..endT), this, weight, sizeWindow)
+        val rand = Random()
         val sumRtPositive = rt.filter { it < 0 }.map { it -> it * it }.sum()
         val sumRtNegative = rt.filter { it > 0 }.map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
         // we check the denominator
-        val sigma = if (sumRtPositive == 0.0) 1.0 else sumRtNegative / sumRtPositive
+        val sigma = if (sumRtPositive == 0.0) rand.nextDouble() else sumRtNegative / sumRtPositive
 
 //        // we compute the whole rt. The sum of this vector is the cumulated profit.
 //        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
         val wN = rt.sum() / rt.size
         // return the result or the neutral element of multiplication
         // we check the denominator
-        val rBar = if (wN == Double.NaN) 1.0 else wN
+        val rBar = if (wN == Double.NaN) rand.nextDouble() else wN
 
-        return a * (1 - v) * rBar - v * sigma
+        return Math.abs(a * (1 - v) * rBar - v * sigma)
     }
 
     /**
      * This function compute the R_t := F_{t-1} * r_t - delta * | F_t - F_{t-1}| with custom parameters.
      *
-     * @param returns the array with the computed returns
-     * @param startT the index to start
-     * @param endT the index to stop
+     * @param slicedReturns the array with the computed returns, it's only between two bounds.
      * @param parameters the custom parameters
      * @param weight the weights of the neural net
      * @param sizeWindow the number of considered elements
      *
      * @return a array of double containing the R_t
      */
-    private fun getRt(returns: DoubleArray, startT: Int, endT: Int, parameters: Parameters, weight: Weights,
+    private fun getRt(slicedReturns: DoubleArray, parameters: Parameters, weight: Weights,
                       sizeWindow: Int): DoubleArray {
 
         // it's our index to iterate through the array.
-        var t = startT
+        var t = 1
         // the array we will return
-        val rt = DoubleArray(endT - startT + 1)
-        var ft = Array(startT, { Pair(0.0, 0.0) })
+        val rt = DoubleArray(slicedReturns.size, {0.0})
+        var ft = Array(1,{ Pair(0.0, 0.0) })
         var mutableWeight = weight.copy()
 
-        while (t < endT) {
+        while (t < slicedReturns.size) {
             // we compute the ft
-            ft = ft.plus(computeFt(t, mutableWeight, ft, sizeWindow, returns, parameters))
+            ft = ft.plus(computeFt(t, mutableWeight, ft, sizeWindow, slicedReturns, parameters))
 
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1].first, ft[t].first, t,
-                    parameters, returns)
+            mutableWeight = mutableWeight.updateWeights(slicedReturns[t - 1], ft[t - 1].first, ft[t].first, t,
+                    parameters, slicedReturns)
             // store the result
-            rt[t - startT] = ft[t - 1].first * returns[t] - delta * Math.abs(ft[t].first - ft[t - 1].first)
+            rt[t] = ft[t - 1].first * slicedReturns[t] - delta * Math.abs(ft[t].first - ft[t - 1].first)
 
             t++
         }
@@ -172,12 +170,11 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
-    // TODO : fix the update, because it takes too long
     fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
-                         sizeWindow: Int): Parameters {
+                         sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow, this)
+        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
         var best = Pair(result, this)
 
         // for every field
@@ -185,7 +182,7 @@ internal class Parameters {
             // run 15 times (15 is a fixed value in the article
             for (notUsed in 0 until 15) {
                 // -the generation
-                val newParameters = best.second.generateNewParameters(field, 5.0)
+                val newParameters = best.second.generateNewParameters(field, std)
 
                 // -the cost function
                 result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
