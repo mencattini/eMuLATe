@@ -66,7 +66,6 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             val updateThreshold = 1000
             if (t % updateThreshold == 0) {
-                // TODO verfiy that the parameters are really updated PLUS understand why the paramerter.cost can increase
                 parameters = parameters.updateParameters(
                         0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 10.0)
                 println("t=$t")
