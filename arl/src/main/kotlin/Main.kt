@@ -17,7 +17,8 @@ fun main(args : Array<String>) {
     val arl = ARL(array2.toDoubleArray().slice(0..100000), 5)
 
     arl.trainingLoop()
-    arl.testLoop(prices=array2.toDoubleArray().slice(50000..60000).toDoubleArray())
+    arl.testLoop(prices=array2.toDoubleArray().slice(100000..110000))
+    println("time = ${(System.currentTimeMillis() - time) / 1000 }")
 
 //    println(arl.toString())
 }
