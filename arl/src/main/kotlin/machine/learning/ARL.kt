@@ -82,10 +82,8 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             val updateThreshold = 1000
             if (t % updateThreshold == 0) {
-                val time = System.currentTimeMillis()
                 parameters = parameters.updateParameters(
-                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow)
-                println("${(System.currentTimeMillis() - time) / 10},")
+                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 10.0)
             }
             // increase the givenT size
             t++
