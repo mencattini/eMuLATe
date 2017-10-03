@@ -38,22 +38,6 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
 
     }
 
-    /**
-     * It will reset the returns to avoid big array.
-     * It's useful between two runs to keep the weights and the parameters but not the rest.
-     * We keep the sizeWindows last returns for the next computation.
-     */
-    fun reset(range: Int) {
-        val sizeReturns = returns.size
-        returns = returns.slice((sizeReturns - range)..(sizeReturns - 1)).toDoubleArray()
-    }
-
-    /**
-     * It sets the prices for a new runs
-     */
-    fun setPrices(prices: DoubleArray) {
-        this.prices = prices
-    }
 
     /**
      * In the function we will improve the weights and parameters. This is the learning phase.
@@ -82,12 +66,51 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             val updateThreshold = 1000
             if (t % updateThreshold == 0) {
+                // TODO verfiy that the parameters are really updated PLUS understand why the paramerter.cost can increase
                 parameters = parameters.updateParameters(
                         0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 10.0)
+                println("t=$t")
             }
             // increase the givenT size
             t++
         }
+    }
+
+    fun testLoop(givenT: Int = 1, prices : DoubleArray) {
+
+        var t = givenT
+        var oldPrice = prices[t - 1]
+        // to compute the accuracy of guessing
+        var rightGuessed = 0
+        var n = 0
+
+        // the training is done over every prices. From the soonest to the latest.
+        for (price in prices.sliceArray(t..(prices.size - 1))) {
+
+            // compute the return
+            val computedReturn = price - oldPrice
+
+            // compute the number of right guessed sign changement
+            if (Math.signum(computedReturn) == ft.last().first) rightGuessed++
+            n++
+
+            // keep the price for the next loop
+            oldPrice = price
+            // store the computedReturn in returns
+            returns = returns.plus(computedReturn)
+
+            // compute the Ft
+            ft = ft.plus(computeFt(givenT))
+
+            // update the weights
+            weight = weight.updateWeights(returns[givenT - 1], ft[givenT - 1].first, ft[givenT].first, givenT,
+                    parameters, returns)
+
+            // increase the givenT size
+            t++
+        }
+
+        println("accuracy = ${(rightGuessed.toDouble() / n.toDouble()) * 100}")
     }
 
 
