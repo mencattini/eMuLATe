@@ -14,10 +14,10 @@ fun main(args : Array<String>) {
     } }
 
     val time = System.currentTimeMillis()
-    val arl = ARL(array2.toDoubleArray().slice(0..20000), 5)
+    val arl = ARL(array2.toDoubleArray().slice(0..100000), 5)
 
     arl.trainingLoop()
-    println("${(System.currentTimeMillis() - time) / 1000} secondes" )
+    arl.testLoop(prices=array2.toDoubleArray().slice(50000..60000).toDoubleArray())
 
 //    println(arl.toString())
 }
