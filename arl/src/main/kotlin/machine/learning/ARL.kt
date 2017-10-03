@@ -66,8 +66,8 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             val updateThreshold = 1000
             if (t % updateThreshold == 0) {
-                parameters = parameters.updateParameters(
-                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 10.0)
+                parameters = parameters.parallelUpdateParameters(
+                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 1.0)
                 println("t=$t")
             }
             // increase the givenT size
@@ -80,23 +80,24 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
      *
      * @param prices the prices we want to test the algorithm.
      */
-    //TODO fixe the type of prices, it will not work with java
-    fun testLoop(givenT: Int = 1, prices : DoubleArray) {
+    fun testLoop(givenT: Int = 1, prices : List<Double>) {
 
+        val pricesCasted = prices.toDoubleArray()
         var t = givenT
-        var oldPrice = prices[t - 1]
+        var oldPrice = pricesCasted[t - 1]
         // to compute the accuracy of guessing
         var rightGuessed = 0
         var n = 0
 
-        // the training is done over every prices. From the soonest to the latest.
-        for (price in prices.sliceArray(t..(prices.size - 1))) {
+        // the training is done over every pricesCasted. From the soonest to the latest.
+        for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
             val computedReturn = price - oldPrice
 
             // compute the number of right guessed sign change.
-            if (Math.signum(computedReturn) == ft.last().first) rightGuessed++
+            // if we do nothing (F(t) = 0), we don't to judge that as a failure.
+            if (Math.signum(computedReturn) == ft.last().first || computedReturn == 0.0) rightGuessed++
             n++
 
             // keep the price for the next loop
