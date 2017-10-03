@@ -75,6 +75,12 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
         }
     }
 
+    /**
+     * This loop compute the accuracy of prediction for a given array of price.
+     *
+     * @param prices the prices we want to test the algorithm.
+     */
+    //TODO fixe the type of prices, it will not work with java
     fun testLoop(givenT: Int = 1, prices : DoubleArray) {
 
         var t = givenT
@@ -89,7 +95,7 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             // compute the return
             val computedReturn = price - oldPrice
 
-            // compute the number of right guessed sign changement
+            // compute the number of right guessed sign change.
             if (Math.signum(computedReturn) == ft.last().first) rightGuessed++
             n++
 
