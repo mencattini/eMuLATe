@@ -72,21 +72,20 @@ internal class Parameters {
 
 
         val rt = getRt(returns.sliceArray(startT..endT), this, weight, sizeWindow)
-        val rand = Random()
         val sumRtPositive = rt.filter { it < 0 }.map { it -> it * it }.sum()
         val sumRtNegative = rt.filter { it > 0 }.map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
         // we check the denominator
-        val sigma = if (sumRtPositive == 0.0) rand.nextDouble() else sumRtNegative / sumRtPositive
+        val sigma = if (sumRtPositive == 0.0) Double.MAX_VALUE else sumRtNegative / sumRtPositive
 
 //        // we compute the whole rt. The sum of this vector is the cumulated profit.
 //        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
         val wN = rt.sum() / rt.size
         // return the result or the neutral element of multiplication
         // we check the denominator
-        val rBar = if (wN == Double.NaN) rand.nextDouble() else wN
+        val rBar = if (wN == Double.NaN) 0.0 else wN
 
-        return Math.abs(a * (1 - v) * rBar - v * sigma)
+        return a * (1 - v) * rBar - v * sigma
     }
 
     /**
@@ -140,10 +139,10 @@ internal class Parameters {
 
         when (field) {
             "x" -> returnedParameters.x = centredNormalRandom(this.x, std)
-            "y" -> returnedParameters.x = centredNormalRandom(this.y, std)
-            "eta" -> returnedParameters.x = centredNormalRandom(this.eta, std)
-            "delta" -> returnedParameters.x = centredNormalRandom(this.delta, std)
-            "rho" -> returnedParameters.x = centredNormalRandom(this.rho, std)
+            "y" -> returnedParameters.y = centredNormalRandom(this.y, std)
+            "eta" -> returnedParameters.eta = centredNormalRandom(this.eta, std)
+            "delta" -> returnedParameters.delta = centredNormalRandom(this.delta, std)
+            "rho" -> returnedParameters.rho = centredNormalRandom(this.rho, std)
         }
         return returnedParameters
     }
@@ -161,7 +160,7 @@ internal class Parameters {
     }
 
     /**
-     * This function use random walk to optimize the parameters values.
+     * This function use random walk to optimize the parameters values. The parallel version.
      *
      * @param a is a fixed value cf. the article
      * @param v is a fixed value cf. the article
@@ -173,8 +172,7 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
-    // TODO find why the parameters aren't updated
-    fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
+    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
@@ -196,14 +194,55 @@ internal class Parameters {
                     result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
 
                     // -compare to the "best" and maybe update it
-                    @Synchronized if (result < best.first) best = Pair(result, newParameters)
+                    @Synchronized if (result > best.first) best = Pair(result, newParameters)
                 }
                 executor.execute(worker)
             }
         }
         executor.shutdown()
         while (!executor.isTerminated) { }
-        if (best.first == storedResult) println("No changement")
+        if (best.first != storedResult) println("Changement")
+        // return the best
+        return best.second
+    }
+
+    /**
+     * This function use random walk to optimize the parameters values.
+     *
+     * @param a is a fixed value cf. the article
+     * @param v is a fixed value cf. the article
+     * @param returns is the array of returns
+     * @param startT the start index
+     * @param endT the end index
+     * @param weight the weight of the neural net
+     * @param sizeWindow the numbers of considered elements
+     *
+     * @return an optimized parameters
+     */
+    private fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
+                                 sizeWindow: Int, std: Double): Parameters {
+
+        // we compute the current value of our parameters : it will be the first "best" result
+        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+        val storedResult = result
+        best = Pair(result, this)
+
+        // for every field
+        for (field in arrayListOf("y", "x", "delta", "rho", "eta")) {
+            // run 15 times (15 is a fixed value in the article
+            for (notUsed in 0 until 15) {
+
+                // -the generation
+                val newParameters = best.second.generateNewParameters(field, std)
+
+                // -the cost function
+                result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+
+                // -compare to the "best" and maybe update it
+                if (result > best.first) best = Pair(result, newParameters)
+            }
+        }
+        if (best.first != storedResult) println("Changement")
         // return the best
         return best.second
     }
@@ -211,6 +250,4 @@ internal class Parameters {
     override fun toString(): String {
         return "Parameters(delta=$delta, eta=$eta, rho=$rho, x=$x, y=$y)"
     }
-
-
 }
