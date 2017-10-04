@@ -57,21 +57,16 @@ internal class Parameters {
      * The function we want to optimize.
      *
      * @param a cf. article, it's a fixed parameters
-     * @param v cf. article, it's a fiex parameters
+     * @param v cf. article, it's a fixed parameters
      * @param returns the array of r_t
-     * @param startT the index of start
-     * @param endT the index of end
      * @param weight the weights
      * @param sizeWindow the number of considered elements
      *
      * @return the result of the cost function
      */
-    private fun costFunction(a: Double, v: Double, returns: DoubleArray,
-                             startT: Int, endT: Int, weight: Weights,
-                             sizeWindow: Int): Double {
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray, weight: Weights, sizeWindow: Int): Double {
 
-
-        val rt = getRt(returns.sliceArray(startT..endT), this, weight, sizeWindow)
+        val rt = getRt(returns, this, weight, sizeWindow)
         val sumRtPositive = rt.filter { it < 0 }.map { it -> it * it }.sum()
         val sumRtNegative = rt.filter { it > 0 }.map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
@@ -165,21 +160,19 @@ internal class Parameters {
      * @param a is a fixed value cf. the article
      * @param v is a fixed value cf. the article
      * @param returns is the array of returns
-     * @param startT the start index
-     * @param endT the end index
      * @param weight the weight of the neural net
      * @param sizeWindow the numbers of considered elements
      *
      * @return an optimized parameters
      */
-    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
+    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+        var result = this.costFunction(a, v, returns, weight, sizeWindow)
         val storedResult = result
         best = Pair(result, this)
-        val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),1))
+        val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),4))
 
         // for every field
         for (field in arrayListOf("x", "y", "delta", "rho", "eta")) {
@@ -191,7 +184,7 @@ internal class Parameters {
                     val newParameters = best.second.generateNewParameters(field, std)
 
                     // -the cost function
-                    result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+                    result = newParameters.costFunction(a, v, returns, weight, sizeWindow)
 
                     // -compare to the "best" and maybe update it
                     @Synchronized if (result > best.first) best = Pair(result, newParameters)
@@ -201,7 +194,7 @@ internal class Parameters {
         }
         executor.shutdown()
         while (!executor.isTerminated) { }
-        if (best.first != storedResult) println("Changement")
+        if (best.first != storedResult) println("Changing")
         // return the best
         return best.second
     }
@@ -212,18 +205,16 @@ internal class Parameters {
      * @param a is a fixed value cf. the article
      * @param v is a fixed value cf. the article
      * @param returns is the array of returns
-     * @param startT the start index
-     * @param endT the end index
      * @param weight the weight of the neural net
      * @param sizeWindow the numbers of considered elements
      *
      * @return an optimized parameters
      */
-    private fun updateParameters(a: Double, v: Double, returns: DoubleArray, startT: Int, endT: Int, weight: Weights,
+    private fun updateParameters(a: Double, v: Double, returns: DoubleArray, weight: Weights,
                                  sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+        var result = this.costFunction(a, v, returns, weight, sizeWindow)
         val storedResult = result
         best = Pair(result, this)
 
@@ -236,13 +227,13 @@ internal class Parameters {
                 val newParameters = best.second.generateNewParameters(field, std)
 
                 // -the cost function
-                result = newParameters.costFunction(a, v, returns, startT, endT, weight, sizeWindow)
+                result = newParameters.costFunction(a, v, returns, weight, sizeWindow)
 
                 // -compare to the "best" and maybe update it
                 if (result > best.first) best = Pair(result, newParameters)
             }
         }
-        if (best.first != storedResult) println("Changement")
+        if (best.first != storedResult) println("Changing")
         // return the best
         return best.second
     }
