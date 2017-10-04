@@ -5,26 +5,21 @@ import java.util.*
 /**
  *  It's the main class for the Adaptive reinforcement learning
  *
- *  @param arrayPrices the prices data the algorithm will work with. The type is arrayList to get compatibility
- *  with Java.
  *  @param sizeWindow the window size of the element to watch during computation
  *
  *  @author Romain Mencattini
  */
-class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
+class ARL(private val sizeWindow: Int) {
 
     private var z: Double
     private var weight : Weights
     private var parameters : Parameters
     private var ft: Array<Pair<Double, Double>> // where first = the sign, second = the value
     private var returns: DoubleArray
-    private var prices: DoubleArray
 
     init {
 
         val random = Random()
-
-        prices = arrayPrices.toDoubleArray()
 
         parameters = Parameters()
         z = random.nextDouble()
@@ -40,50 +35,16 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
 
 
     /**
-     * In the function we will improve the weights and parameters. This is the learning phase.
-     */
-    fun trainingLoop(givenT: Int = 1) {
-
-        var t = givenT
-        var oldPrice = prices[t - 1]
-        // the training is done over every prices. From the soonest to the latest.
-        for (price in prices.sliceArray(t..(prices.size - 1))) {
-
-            // compute the return
-            val computedReturn = price - oldPrice
-            // keep the price for the next loop
-            oldPrice = price
-            // store the computedReturn in returns
-            returns = returns.plus(computedReturn)
-
-            // compute the Ft
-            ft = ft.plus(computeFt(givenT))
-
-            // update the weights
-            weight = weight.updateWeights(returns[givenT - 1], ft[givenT - 1].first, ft[givenT].first, givenT,
-                    parameters, returns)
-
-            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            val updateThreshold = 1000
-            if (t % updateThreshold == 0) {
-                parameters = parameters.parallelUpdateParameters(
-                        0.5, 0.5, returns, t - updateThreshold + 1, t, weight, sizeWindow, 1.0)
-                println("t=$t")
-            }
-            // increase the givenT size
-            t++
-        }
-    }
-
-    /**
      * This loop compute the accuracy of prediction for a given array of price.
      *
      * @param prices the prices we want to test the algorithm.
+     * @param test the boolean that said if we want to test or to train. false => train loop, true => test loop
+     * @param updateThreshold the number of test before update of the parameters
      */
-    fun testLoop(givenT: Int = 1, prices : List<Double>) {
+    fun loop(prices : List<Double>, test: Boolean = false, updateThreshold: Int = 1000) {
 
         val pricesCasted = prices.toDoubleArray()
-        var t = givenT
+        var t = 1
         var oldPrice = pricesCasted[t - 1]
         // to compute the accuracy of guessing
         var rightGuessed = 0
@@ -97,7 +58,8 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
 
             // compute the number of right guessed sign change.
             // if we do nothing (F(t) = 0), we don't to judge that as a failure.
-            if (Math.signum(computedReturn) == ft.last().first || computedReturn == 0.0) rightGuessed++
+            // we do this test only if the test == true
+            if (test && (Math.signum(computedReturn) == ft.last().first || computedReturn == 0.0)) rightGuessed++
             n++
 
             // keep the price for the next loop
@@ -106,17 +68,25 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
             returns = returns.plus(computedReturn)
 
             // compute the Ft
-            ft = ft.plus(computeFt(givenT))
+            ft = ft.plus(computeFt(t))
 
             // update the weights
-            weight = weight.updateWeights(returns[givenT - 1], ft[givenT - 1].first, ft[givenT].first, givenT,
+            weight = weight.updateWeights(returns[t - 1], ft[t - 1].first, ft[t].first, t,
                     parameters, returns)
 
+            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
+            if (t % updateThreshold == 0) {
+                parameters = parameters.parallelUpdateParameters(
+                        0.5, 0.5, returns.sliceArray((t - updateThreshold + 1)..t)
+                        , weight, sizeWindow, 1.0)
+                println("t=$t")
+            }
             // increase the givenT size
             t++
         }
 
-        println("accuracy = ${(rightGuessed.toDouble() / n.toDouble()) * 100}")
+        // we print only if it's in test
+        if (test) println("accuracy = ${(rightGuessed.toDouble() / n.toDouble()) * 100}")
     }
 
 
@@ -131,15 +101,13 @@ class ARL(private val arrayPrices: List<Double>, private val sizeWindow: Int) {
      */
     private fun computeFt(givenT : Int) : Pair<Double, Double> {
 
-        return computeFt(givenT, weight, ft, sizeWindow, returns, parameters)
+        return computeFt(givenT, this.weight, this.ft, this.sizeWindow, this.returns, this.parameters)
     }
 
     override fun toString(): String {
         return "ARL(" +
                 "parameters=$parameters,\n" +
-                "ft=${Arrays.toString(ft)},\n" +
-                "returns=${Arrays.toString(returns)}\n," +
-                "weigths=" + weight.toString() + ")"
+                "weights=" + weight.toString() + ")"
     }
 
 
