@@ -111,7 +111,6 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         val at = oldAt + param.eta * deltaAt
         val bt = oldBt + param.eta * deltaBt
 
-
         // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
         val diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3/2.0)
 
