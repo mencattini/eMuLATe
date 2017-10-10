@@ -73,8 +73,6 @@ internal class Parameters {
         // we check the denominator
         val sigma = if (sumRtPositive == 0.0) Double.MAX_VALUE else sumRtNegative / sumRtPositive
 
-//        // we compute the whole rt. The sum of this vector is the cumulated profit.
-//        val wN = getRt(returns, 1, returns.size, parameters, weight, sizeWindow)
         val wN = rt.sum() / rt.size
         // return the result or the neutral element of multiplication
         // we check the denominator
@@ -100,18 +98,18 @@ internal class Parameters {
         var t = 1
         // the array we will return
         val rt = DoubleArray(slicedReturns.size, {0.0})
-        var ft = Array(1,{ Pair(0.0, 0.0) })
+        var ft = Array(1,{ Math.signum(0.0)})
         var mutableWeight = weight.copy()
 
         while (t < slicedReturns.size) {
             // we compute the ft
-            ft = ft.plus(computeFt(t, mutableWeight, ft, sizeWindow, slicedReturns, parameters))
+            ft = ft.plus(computeFt(t, mutableWeight, ft.last(), sizeWindow, slicedReturns, parameters))
 
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(slicedReturns[t - 1], ft[t - 1].first, ft[t].first, t,
+            mutableWeight = mutableWeight.updateWeights(slicedReturns[t - 1], ft[t - 1], ft[t], t,
                     parameters, slicedReturns)
             // store the result
-            rt[t] = ft[t - 1].first * slicedReturns[t] - delta * Math.abs(ft[t].first - ft[t - 1].first)
+            rt[t] = ft[t - 1] * slicedReturns[t] - delta * Math.abs(ft[t] - ft[t - 1])
 
             t++
         }
@@ -170,7 +168,6 @@ internal class Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
         var result = this.costFunction(a, v, returns, weight, sizeWindow)
-        val storedResult = result
         best = Pair(result, this)
         val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),4))
 
@@ -194,7 +191,6 @@ internal class Parameters {
         }
         executor.shutdown()
         while (!executor.isTerminated) { }
-        if (best.first != storedResult) println("Changing")
         // return the best
         return best.second
     }
