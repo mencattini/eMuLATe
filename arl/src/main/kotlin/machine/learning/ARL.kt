@@ -14,7 +14,7 @@ class ARL(private val sizeWindow: Int) {
     private var z: Double
     private var weight : Weights
     private var parameters : Parameters
-    private var ft: Array<Pair<Double, Double>> // where first = the sign, second = the value
+    private var ft: Array<Double> // each element is the result of Math.signum(x)
     private var returns: DoubleArray
 
     init {
@@ -28,8 +28,9 @@ class ARL(private val sizeWindow: Int) {
         weight = Weights(sizeWindow, 0)
         returns = DoubleArray(0)
 
+
         // the old value
-        ft = arrayOf(Pair(0.0, 0.0))
+        ft = arrayOf(Math.signum(0.0))
 
     }
 
@@ -38,29 +39,25 @@ class ARL(private val sizeWindow: Int) {
      * This loop compute the accuracy of prediction for a given array of price.
      *
      * @param prices the prices we want to test the algorithm.
-     * @param test the boolean that said if we want to test or to train. false => train loop, true => test loop
      * @param updateThreshold the number of test before update of the parameters
+     *
+     * @return we return the w_n (cf. article to the meaning and computation)
      */
-    fun loop(prices : List<Double>, test: Boolean = false, updateThreshold: Int = 1000) {
+    fun loop(prices : List<Double>, updateThreshold: Int = 1000, oldP_t: Array<Double> = arrayOf(0.0)): Array<Double> {
 
+        // we cast the price, for the compatibility with java
         val pricesCasted = prices.toDoubleArray()
         var t = 1
         var oldPrice = pricesCasted[t - 1]
-        // to compute the accuracy of guessing
-        var rightGuessed = 0
-        var n = 0
+
+        // we compute the p_t, it's an array
+        var p_t = oldP_t.clone()
 
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
             val computedReturn = price - oldPrice
-
-            // compute the number of right guessed sign change.
-            // if we do nothing (F(t) = 0), we don't to judge that as a failure.
-            // we do this test only if the test == true
-            if (test && (Math.signum(computedReturn) == ft.last().first || computedReturn == 0.0)) rightGuessed++
-            n++
 
             // keep the price for the next loop
             oldPrice = price
@@ -71,22 +68,44 @@ class ARL(private val sizeWindow: Int) {
             ft = ft.plus(computeFt(t))
 
             // update the weights
-            weight = weight.updateWeights(returns[t - 1], ft[t - 1].first, ft[t].first, t,
+            weight = weight.updateWeights(returns[t - 1], ft[t - 1], ft[t], t,
                     parameters, returns)
+
+            // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
+            // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
+            // used for effective decision making by the risk and the performance control layer."
+            ft[ft.lastIndex] = computeFt(t)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             if (t % updateThreshold == 0) {
                 parameters = parameters.parallelUpdateParameters(
                         0.5, 0.5, returns.sliceArray((t - updateThreshold + 1)..t)
                         , weight, sizeWindow, 1.0)
-                println("t=$t")
             }
             // increase the givenT size
             t++
+
+            // we compute the w_n
+            val lastIndex = ft.lastIndex
+            // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
+            p_t = p_t.plus( p_t.last() +
+                    (ft[lastIndex - 1] * returns.last() - parameters.delta *
+                            Math.abs(ft[lastIndex] - ft[lastIndex - 1]))
+            )
         }
 
-        // we print only if it's in test
-        if (test) println("accuracy = ${(rightGuessed.toDouble() / n.toDouble()) * 100}")
+        // return the p_t
+        return p_t
+    }
+
+    /**
+     * Reset the weight and the returns between runs.
+     */
+    fun reset() {
+        this.weight = Weights(sizeWindow, 0)
+        this.returns = DoubleArray(0)
+        this.ft = arrayOf(Math.signum(0.0))
+        this.parameters = Parameters()
     }
 
 
@@ -99,9 +118,9 @@ class ARL(private val sizeWindow: Int) {
      * @param givenT an Int. It's our index.
      * @return a pair of signum and value
      */
-    private fun computeFt(givenT : Int) : Pair<Double, Double> {
+    private fun computeFt(givenT : Int) : Double {
 
-        return computeFt(givenT, this.weight, this.ft, this.sizeWindow, this.returns, this.parameters)
+        return computeFt(givenT, this.weight, this.ft.last(), this.sizeWindow, this.returns, this.parameters)
     }
 
     override fun toString(): String {
