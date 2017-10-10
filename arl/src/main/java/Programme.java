@@ -19,8 +19,8 @@ public class Programme {
         }
 
         ARL arl = new ARL(13);
-        arl.loop(array.subList(200000,260000), false, 1000);
-        arl.loop(array.subList(260000,270000), true, 1000);
+        // arl.loop(array.subList(200000,260000), 1000);
+        // arl.loop(array.subList(260000,270000), 1000);
 
         System.out.println(arl.toString());
     }
