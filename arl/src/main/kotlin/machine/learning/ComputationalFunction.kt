@@ -15,11 +15,11 @@ package machine.learning
  *
  * @return a pair of signum and value
  */
-internal fun computeFt(givenT: Int, weight: Weights, ft:Array<Pair<Double,Double>>,
-                       sizeWindow: Int, returns: DoubleArray, parameters: Parameters): Pair<Double, Double> {
+internal fun computeFt(givenT: Int, weight: Weights, ft: Double, sizeWindow: Int,
+                       returns: DoubleArray, parameters: Parameters): Double {
 
     // this part doesn't depends on index
-    var sum = weight.wMplusOne() * ft[givenT - 1].first + weight.vThreshold()
+    var sum = weight.wMplusOne() * ft + weight.vThreshold()
 
 
     // we get the useful weights and returns
@@ -53,8 +53,9 @@ internal fun computeFt(givenT: Int, weight: Weights, ft:Array<Pair<Double,Double
     // we check the threshold
     // if it's greater than the threshold, we keep the result
     if (Math.abs(sum) > parameters.y) {
-        return Pair(Math.signum(sum), sum)
+        return Math.signum(sum)
     }
+
     // else we just do nothing
-    return Pair(Math.signum(0.0), 0.0)
+    return Math.signum(0.0)
 }
