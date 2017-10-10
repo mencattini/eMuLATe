@@ -16,12 +16,19 @@ apply plugin: 'kotlin'
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://dl.bintray.com/kyonifer/maven"
+        jcenter()
+    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+    compile group: "koma", name:"backend-matrix-mtj", version: "0.10"
+    compile group: "koma", name:"core", version:"0.10"
 }
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
