@@ -63,15 +63,19 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
     fun updateWeights(rt: Double, elementFtMinusOne: Double, elementFt: Double,
                       givenT: Int, param : Parameters, returns: DoubleArray): Weights {
 
-        // the diff(R_{t}, F_{t})
-        var diffRt = (( -param.delta * (elementFt - elementFtMinusOne))
-                / (Math.abs(elementFt - elementFtMinusOne) + 0.01 ))
-        diffRt = if (diffRt == 0.0) 1.0 else diffRt
-
-        // the diff(R_{t}, F_{t-1})
-        var diffRtMinusOne =  rt  + ((param.delta * (elementFt - elementFtMinusOne))
-                / (Math.abs(elementFt - elementFtMinusOne) + 0.01 ) + rt)
-        diffRtMinusOne = if (diffRtMinusOne == 0.0) 1.0 else diffRtMinusOne
+        var diffRt : Double
+        var diffRtMinusOne: Double
+        if (elementFt == elementFtMinusOne) {
+            diffRt = 1.0
+            diffRtMinusOne = rt
+        } else {
+            // the diff(R_{t}, F_{t})
+            diffRt = ((-param.delta * (elementFt - elementFtMinusOne))
+                    / (Math.abs(elementFt - elementFtMinusOne)))
+            // the diff(R_{t}, F_{t-1})
+            diffRtMinusOne = rt + ((param.delta * (elementFt - elementFtMinusOne))
+                    / (Math.abs(elementFt - elementFtMinusOne)))
+        }
 
         // we need to multiple diff(F_{t-1},w_{i,t-1}) by diff(F_t, F_{t-1})
         var diffFtMinusOneBis = oldDiffFt.map { it -> it * this.wMplusOne() }
