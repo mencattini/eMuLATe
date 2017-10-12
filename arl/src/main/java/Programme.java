@@ -7,6 +7,7 @@ import machine.learning.ARL;
 
 public class Programme {
 
+    //TODO fixe the exemple in java
     public static void main(String[] args) throws FileNotFoundException {
 
         ArrayList array = new ArrayList<Double>();
