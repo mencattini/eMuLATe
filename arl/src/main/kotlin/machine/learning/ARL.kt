@@ -16,6 +16,7 @@ class ARL(private val sizeWindow: Int) {
     private var parameters : Parameters
     private var ft: Array<Double> // each element is the result of Math.signum(x)
     private var returns: DoubleArray
+    private lateinit var positionPrice: PositionPrice // will be init, in the loop function
 
     init {
 
@@ -50,11 +51,17 @@ class ARL(private val sizeWindow: Int) {
         var t = 1
         var oldPrice = pricesCasted[t - 1]
 
+        // we init the positionPrice
+        positionPrice = PositionPrice(oldPrice, pricesCasted[t])
+
         // we compute the p_t, it's an array
         var p_t = oldP_t.clone()
 
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
+
+            // update the positionPrice
+            positionPrice.currentPrice = price
 
             // compute the return
             val computedReturn = price - oldPrice
@@ -74,13 +81,13 @@ class ARL(private val sizeWindow: Int) {
             // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
             // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
             // used for effective decision making by the risk and the performance control layer."
-            ft[ft.lastIndex] = computeFt(t)
+            ft[ft.lastIndex] = computeFt(t, ft.lastIndex - 1)
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             if (t % updateThreshold == 0) {
                 parameters = parameters.parallelUpdateParameters(
-                        0.5, 0.5, returns.sliceArray((t - updateThreshold + 1)..t)
-                        , weight, sizeWindow, 1.0)
+                        0.5, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
+                        pricesCasted.sliceArray((t - updateThreshold)..t), weight, sizeWindow, 1.0)
             }
             // increase the givenT size
             t++
@@ -118,9 +125,10 @@ class ARL(private val sizeWindow: Int) {
      * @param givenT an Int. It's our index.
      * @return a pair of signum and value
      */
-    private fun computeFt(givenT : Int) : Double {
+    private fun computeFt(givenT : Int, ftIndex : Int = ft.lastIndex) : Double {
 
-        return computeFt(givenT, this.weight, this.ft.last(), this.sizeWindow, this.returns, this.parameters)
+        return computeFt(givenT, this.weight, this.ft[ftIndex], this.sizeWindow,
+                this.returns, this.parameters, this.positionPrice)
     }
 
     override fun toString(): String {
