@@ -63,8 +63,8 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
     fun updateWeights(rt: Double, elementFtMinusOne: Double, elementFt: Double,
                       givenT: Int, param : Parameters, returns: DoubleArray): Weights {
 
-        var diffRt : Double
-        var diffRtMinusOne: Double
+        val diffRt : Double
+        val diffRtMinusOne: Double
         if (elementFt == elementFtMinusOne) {
             diffRt = 1.0
             diffRtMinusOne = rt
