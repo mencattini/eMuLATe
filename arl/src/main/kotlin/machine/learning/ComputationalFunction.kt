@@ -8,18 +8,18 @@ package machine.learning
  *
  * @param givenT an Int. It's our index.
  * @param weight the weights of the neural net
- * @param ft the pair where first = the sign, second = the value, resulting of F_t
+ * @param oldFt the pair where first = the sign, second = the value, resulting of F_t
  * @param sizeWindow the number of considered items
  * @param returns the array of computed returns
  * @param parameters the parameters
  *
  * @return a pair of signum and value
  */
-internal fun computeFt(givenT: Int, weight: Weights, ft: Double, sizeWindow: Int,
-                       returns: DoubleArray, parameters: Parameters): Double {
+internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: Int,
+                       returns: DoubleArray, parameters: Parameters, positionPrice: PositionPrice): Double {
 
     // this part doesn't depends on index
-    var sum = weight.wMplusOne() * ft + weight.vThreshold()
+    var sum = weight.wMplusOne() * oldFt + weight.vThreshold()
 
 
     // we get the useful weights and returns
@@ -48,14 +48,34 @@ internal fun computeFt(givenT: Int, weight: Weights, ft: Double, sizeWindow: Int
         sum += wi * ri
     }
 
-    // TODO: adding the x check not sure how.
+    val neutral = Math.signum(0.0)
+    var res = Math.signum(0.0)
 
     // we check the threshold
     // if it's greater than the threshold, we keep the result
     if (Math.abs(sum) > parameters.y) {
-        return Math.signum(sum)
+        res = Math.signum(sum)
     }
 
-    // else we just do nothing
-    return Math.signum(0.0)
+    // TODO: fixe it, because it doesn't work
+    // if the ft doesn't change and it's not a 0.0, we need to check the loss
+    if (oldFt == res) {
+        // the difference between the currentPrice and the lastPositionPrice.
+        // if the different is negative, it means the trend goes down, if it's positive, the trend goes up
+        val diff = positionPrice.currentPrice - positionPrice.lastPositionPrice
+        // if it goes up, the good answer is +1, so positive times positive, => positive
+        // if it goes down, the good answer is -1, so negative, times negative => positive
+        // it means, if diff times position, i.e. {-1,+1} is negative, we do a bad choice and we need to controlate
+        // our loss.
+        if (diff * res < 0.0 && Math.abs(diff) > parameters.x * 0.0001) {
+            // we change the signal, to get the opposite
+            res = neutral
+        }
+    } else {
+        // if oldFt and res are different, and not neutral, it means we update the last position price
+        positionPrice.lastPositionPrice = positionPrice.currentPrice
+    }
+
+    // then we return the res
+    return res
 }
