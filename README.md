@@ -2,8 +2,8 @@
 Machine Learning Automatic Trading
 
 ## To correct :
-* at line 121 in ARL.kt, if we change `this.ft.last() by this.ft[givenT - 1]`, it totally change the result.
-* at line 89 in ARL.kt, if we change `lastIndex` by `t`, it change the result. Even if `t == lastIndex` is true
+* make working the _stop trailing loss_
+* make working the program
 
 ## Example :
 
