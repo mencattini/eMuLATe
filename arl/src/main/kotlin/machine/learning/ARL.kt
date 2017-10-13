@@ -86,8 +86,8 @@ class ARL(private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             if (t % updateThreshold == 0) {
                 parameters = parameters.parallelUpdateParameters(
-                        0.5, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
-                        pricesCasted.sliceArray((t - updateThreshold)..t), weight, sizeWindow, 1.0)
+                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
+                        pricesCasted.sliceArray((t - updateThreshold + 1)..t), weight, sizeWindow, 1.0)
             }
             // increase the givenT size
             t++
