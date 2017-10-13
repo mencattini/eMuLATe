@@ -71,8 +71,8 @@ internal class Parameters {
                              sizeWindow: Int): Double {
 
         val rt = getRt(returns, prices,this, weight, sizeWindow)
-        val sumRtPositive = rt.filter { it < 0 }.map { it -> it * it }.sum()
-        val sumRtNegative = rt.filter { it > 0 }.map { it -> it * it }.sum()
+        val sumRtPositive = (rt.filter { it < 0 }).map { it -> it * it }.sum()
+        val sumRtNegative = (rt.filter { it > 0 }).map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
         // we check the denominator
         val sigma = if (sumRtPositive == 0.0) Double.MAX_VALUE else sumRtNegative / sumRtPositive

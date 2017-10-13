@@ -22,7 +22,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         val random = Random()
 
         // create the oldAt and oldBt
-        // the default value are different to avoid the division by 0 in weigth update
+        // the default value are different to avoid the division by 0 in weight update
         oldAt = 1.0
         oldBt = 0.0
 
@@ -52,35 +52,35 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
      * Make the computation to update the coefficients. According to theory it's a gradient ascent.
      *
      * @param rt is the returns at time t
-     * @param elementFt is equal to F(t)
-     * @param elementFtMinusOne is equal to F(t-1)
+     * @param ft is equal to F(t)
+     * @param ftMinusOne is equal to F(t-1)
      * @param givenT is the current time.
      * @param param a parameters object which contains the used values
      * @param returns is the array of previous returns.
      *
      * @return a new Weights object with the new coefficients.
      */
-    fun updateWeights(rt: Double, elementFtMinusOne: Double, elementFt: Double,
+    fun updateWeights(rt: Double, ftMinusOne: Double, ft: Double,
                       givenT: Int, param : Parameters, returns: DoubleArray): Weights {
 
         val diffRt : Double
         val diffRtMinusOne: Double
-        if (elementFt == elementFtMinusOne) {
+        if (ft == ftMinusOne) {
             diffRt = 1.0
             diffRtMinusOne = rt
         } else {
-            // the diff(R_{t}, F_{t})
-            diffRt = ((-param.delta * (elementFt - elementFtMinusOne))
-                    / (Math.abs(elementFt - elementFtMinusOne)))
-            // the diff(R_{t}, F_{t-1})
-            diffRtMinusOne = rt + ((param.delta * (elementFt - elementFtMinusOne))
-                    / (Math.abs(elementFt - elementFtMinusOne)))
+            // the dR_{t} / dF_{t}
+            diffRt = ((-param.delta * (ft - ftMinusOne))
+                    / (Math.abs(ft - ftMinusOne)))
+            // the dR_{t} / F_{t-1}
+            diffRtMinusOne = rt + ((param.delta * (ft - ftMinusOne))
+                    / (Math.abs(ft - ftMinusOne)))
         }
 
-        // we need to multiple diff(F_{t-1},w_{i,t-1}) by diff(F_t, F_{t-1})
+        // we start the computation of dF_t / dw_{i,t}
+        // we need to multiple dF_{t-1} / dw_{i,t-1}) * (\delta F_t / \delta F_{t-1})
         var diffFtMinusOneBis = oldDiffFt.map { it -> it * this.wMplusOne() }
 
-        // derivation(F_t, w_{i,t}) = diff(F_t, w_{i,t}) + diff(F_t, F_{t-1}) * diff(F_{t-1},w_{i,t-1})
         // we need to modify the returns before, so we create a new variable
         var tmpReturns = DoubleArray(sizeWindow + 1)
         if (returns.size > sizeWindow ) {
@@ -88,28 +88,30 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
             // reverse the array
             tmpReturns = returns.reversed()
                     // take to sizeWindow - 1 (NOT INCLUDED)
-                    .slice(0..(sizeWindow ))
+                    .slice(0..sizeWindow)
                     // adding the last element
-                    .plus(elementFtMinusOne)
+                    .plus(ftMinusOne)
                     // the cast
                     .toDoubleArray()
         } else {
             // we need to add enough 0 to returns to avoid reduction of diffFtMinusOneBis with map
-            for ((i, ele) in returns.reversed().toDoubleArray().plus(elementFtMinusOne).withIndex()) {
+            for ((i, ele) in returns.reversed().toDoubleArray().plus(ftMinusOne).withIndex()) {
                 tmpReturns[i] = ele
             }
         }
+
+        // dF_t / dw_{i,t}
         var diffFt = tmpReturns.zip(diffFtMinusOneBis)
                 .map { (first, second) -> first + second }
 
-        // we need to multiply derivation(F_t, w_{i,t}) with diffRt
+        // we need to do : dF_t / dw_{i,t} * dR_t / dF_t
         diffFt = diffFt.map { it -> it * diffRt }
 
-        // we need to multiply derivation(F_{t-1}, w_{i,t-1}) with diffRtMinusOne
+        // dR_t / dF_{t-1} * dF_{t-1} / dw_{i,t-1}
         diffFtMinusOneBis = oldDiffFt.map { it -> it * diffRtMinusOne }
 
 
-        // we compute At, Bt, deltaAt and deltBt
+        // we compute At, Bt, deltaAt and deltaBt
         val deltaAt = (rt - oldAt)
         val deltaBt = (rt * rt - oldBt)
         val at = oldAt + param.eta * deltaAt
