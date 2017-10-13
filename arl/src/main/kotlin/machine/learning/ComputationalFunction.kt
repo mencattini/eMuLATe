@@ -37,19 +37,19 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
 
     } else {
         // we sub the (sizeWindow - 2) to always get the same number of elements than the weights
-        // using the maxof(0, t-sizedwindow + 2) to avoid negative index
         // reverse the array for the same thing than above
-        usefulWeights = weight.coefficients.sliceArray(0..(sizeWindow - 2))
-        usefulReturns = returns.sliceArray(maxOf(0, givenT - sizeWindow + 2)..givenT).reversedArray()
+        usefulWeights = weight.coefficients.sliceArray(0..(sizeWindow - 3))
+        usefulReturns = returns.sliceArray( (givenT - sizeWindow + 3)..givenT).reversedArray()
     }
 
     // we zip the two array together and do the multiplication/sum
-    for ((wi, ri) in usefulWeights.zip(usefulReturns)) {
-        sum += wi * ri
-    }
+    sum += usefulWeights.zip(usefulReturns)
+            .map { (first, second) -> first * second }
+            .reduce{total, next -> total + next}
+
 
     val neutral = Math.signum(0.0)
-    var res = Math.signum(0.0)
+    var res = neutral
 
     // we check the threshold
     // if it's greater than the threshold, we keep the result
@@ -59,7 +59,7 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
 
     // TODO: fixe it, because it doesn't work
     // if the ft doesn't change and it's not a 0.0, we need to check the loss
-    if (oldFt == res) {
+    if (oldFt == res && res != neutral) {
         // the difference between the currentPrice and the lastPositionPrice.
         // if the different is negative, it means the trend goes down, if it's positive, the trend goes up
         val diff = positionPrice.currentPrice - positionPrice.lastPositionPrice
@@ -71,7 +71,7 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
             // we change the signal, to get the opposite
             res = neutral
         }
-    } else {
+    } else if (oldFt != res && res != neutral){
         // if oldFt and res are different, and not neutral, it means we update the last position price
         positionPrice.lastPositionPrice = positionPrice.currentPrice
     }
