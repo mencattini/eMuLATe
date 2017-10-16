@@ -161,15 +161,18 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
      *
      * @param coefficients the (w_i, vthreshold, w_{M+1})
      * @param index the current iteration
-     * @param at the old result of at
-     * @param bt the old result of bt
+     * @param oldAt the old result of at
+     * @param oldBt the old result of bt
+     * @param oldDiffFt the old result of ft derivation
      *
      * @return a new copied object weight
      */
-    fun copy(coefficients: DoubleArray = this.coefficients, index : Int = this.index,
-             at : Double = this.oldAt, bt: Double = this.oldBt): Weights {
-        return this.Weights(coefficients, index, at, bt)
+    fun copy(index: Int = this.index, coefficients: DoubleArray = this.coefficients,
+             oldDiffFt : DoubleArray = this.oldDiffFt,oldAt : Double = this.oldAt,
+             oldBt: Double = this.oldBt): Weights {
+        val res = this.Weights(coefficients, index, oldAt, oldBt)
+        res.oldDiffFt = oldDiffFt
+        return res
     }
-
 
 }

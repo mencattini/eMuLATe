@@ -26,7 +26,7 @@ internal class Parameters {
         delta = random.nextDouble()
         eta = random.nextDouble()
         rho = random.nextDouble()
-        x = random.nextInt(10).toDouble()
+        x = random.nextDouble()
         y = random.nextDouble()
 
     }
@@ -102,7 +102,7 @@ internal class Parameters {
         // it's our index to iterate through the array.
         var t = 1
         // the array we will return
-        val rt = DoubleArray(returns.size, {0.0})
+        val rt = DoubleArray(returns.size)
         var ft = Array(1,{ Math.signum(0.0)})
         var mutableWeight = weight.copy()
         val positionPrice = PositionPrice(prices[0],prices[t])
@@ -112,11 +112,14 @@ internal class Parameters {
             positionPrice.currentPrice = prices[t]
 
             // we compute the ft
-            ft = ft.plus(computeFt(t, mutableWeight, ft.last(), sizeWindow, returns, parameters, positionPrice))
+            val firstComputedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns, parameters, positionPrice)
 
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], ft[t], t,
+            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], firstComputedFt, t,
                     parameters, returns)
+
+            ft = ft.plus(computeFt(t, mutableWeight, firstComputedFt, sizeWindow, returns, parameters, positionPrice))
+
             // store the result
             rt[t] = ft[t - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
 
@@ -140,7 +143,7 @@ internal class Parameters {
         val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x, this.y)
 
         when (field) {
-            "x" -> returnedParameters.x = centredNormalRandom(this.x, std)
+            "x" -> returnedParameters.x = centredNormalRandom(this.x, std * 2)
             "y" -> returnedParameters.y = centredNormalRandom(this.y, std)
             "eta" -> returnedParameters.eta = centredNormalRandom(this.eta, std)
             "delta" -> returnedParameters.delta = centredNormalRandom(this.delta, std)

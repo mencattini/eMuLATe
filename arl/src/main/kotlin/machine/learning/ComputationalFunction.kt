@@ -23,43 +23,31 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
 
 
     // we get the useful weights and returns
-    val usefulWeights: DoubleArray
-    val usefulReturns: DoubleArray
-
-    // if the t is smaller than our windows, we just take the t first elements
-    // we sub 2 because the last weight is used with the F_{t-1}
-    if (givenT < sizeWindow - 2) {
-        // as said in the formal neural net layer :
-        // w_{i,t} * r_{t-i}
-        // so we need to reverse the returns array
-        usefulWeights = weight.coefficients.sliceArray(0..givenT)
-        usefulReturns = returns.sliceArray(0..givenT).reversedArray()
-
-    } else {
-        // we sub the (sizeWindow - 2) to always get the same number of elements than the weights
-        // reverse the array for the same thing than above
-        usefulWeights = weight.coefficients.sliceArray(0..(sizeWindow - 3))
-        usefulReturns = returns.sliceArray( (givenT - sizeWindow + 3)..givenT).reversedArray()
-    }
+    // we add some 0 to avoid the out of bound array execption.
+    val usefulWeights: DoubleArray = weight.coefficients.sliceArray(0..givenT)
+    val usefulReturns: DoubleArray = returns.plus(DoubleArray(sizeWindow))
+            .sliceArray(maxOf(0,givenT - sizeWindow + 3)..givenT)
+            .reversedArray()
 
     // we zip the two array together and do the multiplication/sum
-    sum += usefulWeights.zip(usefulReturns)
-            .map { (first, second) -> first * second }
-            .reduce{total, next -> total + next}
+    for ((first,second) in usefulWeights.zip(usefulReturns)) {
+        sum += first * second
+    }
 
 
     val neutral = Math.signum(0.0)
-    var res = neutral
+    val res :Double
 
     // we check the threshold
     // if it's greater than the threshold, we keep the result
-    if (Math.abs(sum) > parameters.y) {
+    if (Math.abs(sum) < parameters.y) {
+        return neutral
+    } else {
         res = Math.signum(sum)
     }
 
-    // TODO: fixe it, because it doesn't work
     // if the ft doesn't change and it's not a 0.0, we need to check the loss
-    if (oldFt == res && res != neutral) {
+    if (oldFt == res) {
         // the difference between the currentPrice and the lastPositionPrice.
         // if the different is negative, it means the trend goes down, if it's positive, the trend goes up
         val diff = positionPrice.currentPrice - positionPrice.lastPositionPrice
@@ -67,13 +55,14 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
         // if it goes down, the good answer is -1, so negative, times negative => positive
         // it means, if diff times position, i.e. {-1,+1} is negative, we do a bad choice and we need to controlate
         // our loss.
-        if (diff * res < 0.0 && Math.abs(diff) > parameters.x * 0.0001) {
+        if (diff * res < parameters.x * -0.001) {
             // we change the signal, to get the opposite
-            res = neutral
+            return neutral
         }
-    } else if (oldFt != res && res != neutral){
+    } else if (oldFt != res){
         // if oldFt and res are different, and not neutral, it means we update the last position price
         positionPrice.lastPositionPrice = positionPrice.currentPrice
+        return res
     }
 
     // then we return the res
