@@ -19,19 +19,19 @@ fun main(args : Array<String>) {
     val time = System.currentTimeMillis()
     val arl = ARL(10)
 
-    var i = 100000
+    var i = 0
     val copyI = i
     var p_t = arrayOf(0.0)
     val step = 2000
-    val n = 200000
+    val stepLearn = 2500
+    val n = 100000
 
     while(i < n) {
         println("$i")
-        arl.loop(array2.toDoubleArray().slice(i..i+step), 100)
-        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+step+500), 100, p_t)
+        arl.loop(array2.toDoubleArray().slice(i..i+step), 200)
+        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), 200, p_t)
         arl.reset()
-        i += step
-
+        i += stepLearn
     }
 
     figure(1)
@@ -40,11 +40,11 @@ fun main(args : Array<String>) {
     ylabel("p_t")
     title("Run")
 
-//    figure(2)
-//    plot(array2.slice(i..n).toDoubleArray())
-//    xlabel("ticks")
-//    ylabel("value")
-//    title("EURUSD")
+    figure(2)
+    plot(array2.slice(copyI..n).toDoubleArray())
+    xlabel("ticks")
+    ylabel("value")
+    title("EURUSD")
 
 
     println("time = ${(System.currentTimeMillis() - time) / 1000}")

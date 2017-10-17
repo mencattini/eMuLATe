@@ -16,7 +16,7 @@ class ARL(private val sizeWindow: Int) {
     private var parameters : Parameters
     private var ft: Array<Double> // each element is the result of Math.signum(x)
     private var returns: DoubleArray
-    private lateinit var positionPrice: PositionPrice // will be init, in the loop function
+    private var positionProfit :PositionProfit
 
     init {
 
@@ -29,10 +29,10 @@ class ARL(private val sizeWindow: Int) {
         weight = Weights(sizeWindow, 0)
         returns = DoubleArray(0)
 
-
         // the old value
         ft = arrayOf(Math.signum(0.0))
 
+        positionProfit = PositionProfit(0.0,0.0)
     }
 
 
@@ -41,27 +41,24 @@ class ARL(private val sizeWindow: Int) {
      *
      * @param prices the prices we want to test the algorithm.
      * @param updateThreshold the number of test before update of the parameters
+     * @param oldPt the array of cumulative profit
      *
      * @return we return the w_n (cf. article to the meaning and computation)
      */
-    fun loop(prices : List<Double>, updateThreshold: Int = 1000, oldP_t: Array<Double> = arrayOf(0.0)): Array<Double> {
+    fun loop(prices : List<Double>, updateThreshold: Int = 1000, oldPt: Array<Double> = arrayOf(0.0)): Array<Double> {
 
         // we cast the price, for the compatibility with java
         val pricesCasted = prices.toDoubleArray()
         var t = 1
         var oldPrice = pricesCasted[t - 1]
 
-        // we init the positionPrice
-        positionPrice = PositionPrice(oldPrice, pricesCasted[t])
-
         // we compute the p_t, it's an array
-        var p_t = oldP_t.clone()
+        var pt = oldPt.clone()
+        positionProfit.currentProfit = pt.last()
+        positionProfit.lastPositionProfit = pt.last()
 
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
-
-            // update the positionPrice
-            positionPrice.currentPrice = price
 
             // compute the return
             val computedReturn = price - oldPrice
@@ -70,6 +67,9 @@ class ARL(private val sizeWindow: Int) {
             oldPrice = price
             // store the computedReturn in returns
             returns = returns.plus(computedReturn)
+
+            // update the current profit
+            positionProfit.currentProfit = pt.last()
 
             // compute the Ft
             val firstComputedFt = computeFt(t)
@@ -86,8 +86,8 @@ class ARL(private val sizeWindow: Int) {
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             if (t % updateThreshold == 0) {
                 parameters = parameters.parallelUpdateParameters(
-                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
-                        pricesCasted.sliceArray((t - updateThreshold + 1)..t), weight, sizeWindow, 1.0)
+                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t)
+                        ,weight, sizeWindow, 1.0)
             }
             // increase the givenT size
             t++
@@ -95,13 +95,14 @@ class ARL(private val sizeWindow: Int) {
             // we compute the w_n
             val lastIndex = ft.lastIndex
             // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
-            p_t = p_t.plus( p_t.last() +
+            pt = pt.plus( pt.last() +
                     (ft[lastIndex - 1] * returns.last() - parameters.delta *
                             Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
+
         }
 
         // return the p_t
-        return p_t
+        return pt
     }
 
     /**
@@ -127,7 +128,7 @@ class ARL(private val sizeWindow: Int) {
     private fun computeFt(givenT : Int, oldFt :Double = ft.last()) : Double {
 
         return computeFt(givenT, this.weight, oldFt, this.sizeWindow,
-                this.returns, this.parameters, this.positionPrice)
+                this.returns, this.parameters, this.positionProfit)
     }
 
     override fun toString(): String {
