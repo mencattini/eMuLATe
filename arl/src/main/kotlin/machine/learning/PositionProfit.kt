@@ -7,4 +7,4 @@ package machine.learning
  * @param currentPrice the current price
  */
 
-internal class PositionPrice(var lastPositionPrice: Double, var currentPrice: Double)
+internal class PositionProfit(var lastPositionProfit: Double, var currentProfit: Double)

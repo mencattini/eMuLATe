@@ -61,16 +61,15 @@ internal class Parameters {
      * @param a cf. article, it's a fixed parameters
      * @param v cf. article, it's a fixed parameters
      * @param returns the array of r_t
-     * @param prices the array of prices.
      * @param weight the weights
      * @param sizeWindow the number of considered elements
      *
      * @return the result of the cost function
      */
-    private fun costFunction(a: Double, v: Double, returns: DoubleArray, prices: DoubleArray, weight: Weights,
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray, weight: Weights,
                              sizeWindow: Int): Double {
 
-        val rt = getRt(returns, prices,this, weight, sizeWindow)
+        val rt = getRt(returns,this, weight, sizeWindow)
         val sumRtPositive = (rt.filter { it < 0 }).map { it -> it * it }.sum()
         val sumRtNegative = (rt.filter { it > 0 }).map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
@@ -89,14 +88,13 @@ internal class Parameters {
      * This function compute the R_t := F_{t-1} * r_t - delta * | F_t - F_{t-1}| with custom parameters.
      *
      * @param returns the array with the computed returns, it's only between two bounds.
-     * @param prices the array of price. Used for the trailing stop loss.
      * @param parameters the custom parameters
      * @param weight the weights of the neural net
      * @param sizeWindow the number of considered elements
      *
      * @return a array of double containing the R_t
      */
-    private fun getRt(returns: DoubleArray, prices: DoubleArray, parameters: Parameters, weight: Weights,
+    private fun getRt(returns: DoubleArray, parameters: Parameters, weight: Weights,
                       sizeWindow: Int): DoubleArray {
 
         // it's our index to iterate through the array.
@@ -105,24 +103,29 @@ internal class Parameters {
         val rt = DoubleArray(returns.size)
         var ft = Array(1,{ Math.signum(0.0)})
         var mutableWeight = weight.copy()
-        val positionPrice = PositionPrice(prices[0],prices[t])
+        val positionProfit = PositionProfit(0.0, 0.0)
+        var pt = Array(1, {0.0})
 
         while (t < returns.size) {
-            // we update the price position
-            positionPrice.currentPrice = prices[t]
 
+            positionProfit.currentProfit = pt.last()
             // we compute the ft
-            val firstComputedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns, parameters, positionPrice)
+            val firstComputedFt = computeFt(
+                    t, mutableWeight, ft.last(), sizeWindow, returns, parameters, positionProfit)
 
             // update the weights
             mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], firstComputedFt, t,
                     parameters, returns)
 
-            ft = ft.plus(computeFt(t, mutableWeight, firstComputedFt, sizeWindow, returns, parameters, positionPrice))
+            ft = ft.plus(computeFt(t, mutableWeight, firstComputedFt, sizeWindow, returns, parameters, positionProfit))
 
             // store the result
             rt[t] = ft[t - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
 
+            // update the pt
+            pt = pt.plus(pt.last() + rt[t])
+
+            // the loop increment
             t++
         }
 
@@ -175,11 +178,11 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
-    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, prices: DoubleArray, weight: Weights,
+    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, prices, weight, sizeWindow)
+        var result = this.costFunction(a, v, returns, weight, sizeWindow)
         best = Pair(result, this)
         val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),4))
 
@@ -193,7 +196,7 @@ internal class Parameters {
                     val newParameters = best.second.generateNewParameters(field, std)
 
                     // -the cost function
-                    result = newParameters.costFunction(a, v, returns, prices, weight, sizeWindow)
+                    result = newParameters.costFunction(a, v, returns, weight, sizeWindow)
 
                     // -compare to the "best" and maybe update it
                     @Synchronized if (result > best.first) best = Pair(result, newParameters)
