@@ -28,9 +28,9 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
         // create an array of weight with size of $sizeWindow
         // the weight is defined : (w_{0,M}, vThreshold, w_{M+1})
-        coefficients = DoubleArray(sizeWindow + 1, {random.nextDouble()})
+        coefficients = DoubleArray(sizeWindow, {random.nextDouble()})
         // we need to store the diffFt value for the next update
-        oldDiffFt = kotlin.DoubleArray(sizeWindow + 1)
+        oldDiffFt = kotlin.DoubleArray(sizeWindow)
     }
 
     /**
@@ -65,9 +65,16 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
         val diffRt : Double
         val diffRtMinusOne: Double
+
+        // we compute At, Bt, deltaAt and deltaBt
+        val deltaAt = (rt - oldAt)
+        val deltaBt = (rt * rt - oldBt)
+        val at = oldAt + param.eta * deltaAt
+        val bt = oldBt + param.eta * deltaBt
+
         if (ft == ftMinusOne) {
-            diffRt = 1.0
-            diffRtMinusOne = rt
+            // the updating delta using weights = weights + rho * deltaW
+            return Weights(coefficients, givenT + 1, at, bt)
         } else {
             // the dR_{t} / dF_{t}
             diffRt = ((-param.delta * (ft - ftMinusOne))
@@ -82,40 +89,23 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         var diffFtMinusOneBis = oldDiffFt.map { it -> it * this.wMplusOne() }
 
         // we need to modify the returns before, so we create a new variable
-        var tmpReturns = DoubleArray(sizeWindow + 1)
-        if (returns.size > sizeWindow ) {
-            // we have to many returns, we need to slice to get the right number.
-            // reverse the array
-            tmpReturns = returns.reversed()
-                    // take to sizeWindow - 1 (NOT INCLUDED)
-                    .slice(0..sizeWindow)
-                    // adding the last element
-                    .plus(ftMinusOne)
-                    // the cast
-                    .toDoubleArray()
-        } else {
-            // we need to add enough 0 to returns to avoid reduction of diffFtMinusOneBis with map
-            for ((i, ele) in returns.reversed().toDoubleArray().plus(ftMinusOne).withIndex()) {
-                tmpReturns[i] = ele
-            }
-        }
+        val tmpReturns = returns.reversed().toDoubleArray()
+                // if return.size is smaller than sizeWindow, it means we need to add the absolute value of the diff
+                // else we just add an array of size 0
+                .plus(DoubleArray(Math.abs(minOf((returns.size - sizeWindow + 1), 0))))
+                // we slice to sizeWindow (NOT INCLUDED) and then add the ftMinusOne
+                .sliceArray(0 until sizeWindow).plus(ftMinusOne)
 
         // dF_t / dw_{i,t}
         var diffFt = tmpReturns.zip(diffFtMinusOneBis)
                 .map { (first, second) -> first + second }
+        val copyDiffFt = diffFt.toDoubleArray()
 
         // we need to do : dF_t / dw_{i,t} * dR_t / dF_t
         diffFt = diffFt.map { it -> it * diffRt }
 
         // dR_t / dF_{t-1} * dF_{t-1} / dw_{i,t-1}
         diffFtMinusOneBis = oldDiffFt.map { it -> it * diffRtMinusOne }
-
-
-        // we compute At, Bt, deltaAt and deltaBt
-        val deltaAt = (rt - oldAt)
-        val deltaBt = (rt * rt - oldBt)
-        val at = oldAt + param.eta * deltaAt
-        val bt = oldBt + param.eta * deltaBt
 
         // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
         val diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3/2.0)
@@ -129,7 +119,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
                 .map { (first, second) -> first + param.rho * second }
                 .toDoubleArray(), givenT + 1, at, bt)
         // we store the current diffFt as oldDiffFt for the next iteration
-        res.oldDiffFt = diffFt.toDoubleArray()
+        res.oldDiffFt = copyDiffFt
         return res
     }
 
