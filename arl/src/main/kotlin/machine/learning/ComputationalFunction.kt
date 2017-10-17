@@ -34,7 +34,7 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
         sum += first * second
     }
 
-    var res = Math.signum(0.0)
+    var res : Double
     // we check the threshold
     // if it's greater than the threshold, we keep the result
     if (Math.abs(sum) < parameters.y) {
@@ -44,9 +44,9 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
     }
 
     // stop trailing loss
-    if (Math.signum(res) == Math.signum(oldFt) && res != Math.signum(0.0)) {
+    if (Math.signum(res) == Math.signum(oldFt)) {
         // we need to check the loss if we keep the same position
-        if (positionProfit.lastPositionProfit - positionProfit.currentProfit < parameters.x * 0.001){
+        if (Math.abs(positionProfit.lastPositionProfit - positionProfit.currentProfit) < parameters.x * 0.001){
             res = Math.signum(0.0)
         }
     } else if (Math.signum(res) != Math.signum(oldFt)) {

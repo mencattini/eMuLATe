@@ -146,7 +146,7 @@ internal class Parameters {
         val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x, this.y)
 
         when (field) {
-            "x" -> returnedParameters.x = centredNormalRandom(this.x, std * 2)
+            "x" -> returnedParameters.x = centredNormalRandom(this.x, std * 5)
             "y" -> returnedParameters.y = centredNormalRandom(this.y, std)
             "eta" -> returnedParameters.eta = centredNormalRandom(this.eta, std)
             "delta" -> returnedParameters.delta = centredNormalRandom(this.delta, std)
