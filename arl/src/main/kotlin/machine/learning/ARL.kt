@@ -45,7 +45,7 @@ class ARL(private val sizeWindow: Int) {
      *
      * @return we return the w_n (cf. article to the meaning and computation)
      */
-    fun loop(prices : List<Double>, updateThreshold: Int = 1000, oldPt: Array<Double> = arrayOf(0.0)): Array<Double> {
+    fun loop(prices : List<Double>, train : Boolean ,updateThreshold: Int = 1000,oldPt: Array<Double> = arrayOf(0.0)): Array<Double> {
 
         // we cast the price, for the compatibility with java
         val pricesCasted = prices.toDoubleArray()
@@ -84,7 +84,7 @@ class ARL(private val sizeWindow: Int) {
             ft = ft.plus(computeFt(t, firstComputedFt))
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            if (t % updateThreshold == 0) {
+            if (train && t % updateThreshold == 0) {
                 parameters = parameters.parallelUpdateParameters(
                         0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t)
                         ,weight, sizeWindow, 1.0)

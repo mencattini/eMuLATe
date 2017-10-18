@@ -43,13 +43,23 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
         res = Math.signum(sum)
     }
 
-    // stop trailing loss
+    // if the sign are the same we need to check the loss
     if (Math.signum(res) == Math.signum(oldFt)) {
-        // we need to check the loss if we keep the same position
-        if (Math.abs(positionProfit.lastPositionProfit - positionProfit.currentProfit) < parameters.x * 0.001){
-            res = Math.signum(0.0)
+        // we compute the diff between profit
+        val diff = positionProfit.lastPositionProfit - positionProfit.currentProfit
+        // if the diff is negative, it means the lastPositionProfit is less than currentProfit
+        // so we update the position
+        if (diff < 0.0 ){
+            positionProfit.lastPositionProfit = positionProfit.currentProfit
+            return res
+        } else {
+            // we need to check the loss. If big than our rate, we close the position
+            if (diff < parameters.x * 0.001) {
+                return Math.signum(0.0)
+            }
         }
-    } else if (Math.signum(res) != Math.signum(oldFt)) {
+    } else {
+        // if the sign are different, we update the lastPositionProfit
         positionProfit.lastPositionProfit = positionProfit.currentProfit
     }
     return res
