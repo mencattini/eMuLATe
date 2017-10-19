@@ -11,12 +11,10 @@ package machine.learning
  * @param oldFt the pair where first = the sign, second = the value, resulting of F_t
  * @param sizeWindow the number of considered items
  * @param returns the array of computed returns
- * @param parameters the parameters
  *
- * @return a pair of signum and value
+ * @return a pure signal
  */
-internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: Int,
-                       returns: DoubleArray, parameters: Parameters, positionProfit: PositionProfit): Double {
+internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: Int, returns: DoubleArray): Double {
 
     // this part doesn't depends on index
     var sum = weight.wMplusOne() * oldFt + weight.vThreshold()
@@ -34,33 +32,57 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
         sum += first * second
     }
 
-    var res : Double
+    return sum
+}
+
+/**
+ * This is the implementation of layer 2.
+ * We use the threshold and the stop trailing loss to choose if we validate the signal or not.
+ * Position 0.0 means we do nothing, so we keep the position
+ *
+ * @param computedFt the computed signal
+ * @param oldFt the previous validate signal
+ * @param parameters the object containing x and y
+ * @param position the object with best price of the position and the previous position
+ */
+internal fun computeRiskAndPerformance(
+        computedFt : Double, oldFt: Double, parameters: Parameters, position: Position) : Double {
+
+    val res : Double
     // we check the threshold
     // if it's greater than the threshold, we keep the result
-    if (Math.abs(sum) < parameters.y) {
-        return Math.signum(0.0)
+    if (Math.abs(computedFt) < parameters.y) {
+        return position.lastPosition
     } else {
-        res = Math.signum(sum)
+        res = Math.signum(computedFt)
     }
 
     // if the sign are the same we need to check the loss
-    if (Math.signum(res) == Math.signum(oldFt)) {
-        // we compute the diff between profit
-        val diff = positionProfit.lastPositionProfit - positionProfit.currentProfit
-        // if the diff is negative, it means the lastPositionProfit is less than currentProfit
-        // so we update the position
-        if (diff < 0.0 ){
-            positionProfit.lastPositionProfit = positionProfit.currentProfit
+    if (res == oldFt) {
+        // we compute the diff between price
+        val diff = position.currentPrice - position.lastPositionPrice
+        // if the trend is rising, it means this diff will be positive, currentPrice > lastPositionPrice
+        // if the trend is falling, it means this diff will be negative, currentPrice > lastPositionPrice
+        // we need to check we are in the right direction
+        if ( res * diff > 0.0 ){
+            // it means we have the same sign as the trend
+            position.lastPositionPrice = position.currentPrice
+            position.lastPosition = res
+            position.holdPosition = true
             return res
         } else {
             // we need to check the loss. If big than our rate, we close the position
-            if (diff < parameters.x * 0.001) {
-                return Math.signum(0.0)
+            if (Math.abs(diff) > parameters.x * 0.001) {
+                position.holdPosition = false
+                position.lastPosition = res * -1.0
+                return res * -1.0
             }
         }
     } else {
         // if the sign are different, we update the lastPositionProfit
-        positionProfit.lastPositionProfit = positionProfit.currentProfit
+        position.lastPositionPrice = position.currentPrice
+        position.holdPosition = true
     }
+
     return res
 }
