@@ -66,10 +66,10 @@ internal class Parameters {
      *
      * @return the result of the cost function
      */
-    private fun costFunction(a: Double, v: Double, returns: DoubleArray, weight: Weights,
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray, prices : DoubleArray, weight: Weights,
                              sizeWindow: Int): Double {
 
-        val rt = getRt(returns,this, weight, sizeWindow)
+        val rt = getRt(returns,prices,this, weight, sizeWindow)
         val sumRtPositive = (rt.filter { it < 0 }).map { it -> it * it }.sum()
         val sumRtNegative = (rt.filter { it > 0 }).map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
@@ -94,7 +94,7 @@ internal class Parameters {
      *
      * @return a array of double containing the R_t
      */
-    private fun getRt(returns: DoubleArray, parameters: Parameters, weight: Weights,
+    private fun getRt(returns: DoubleArray, prices : DoubleArray, parameters: Parameters, weight: Weights,
                       sizeWindow: Int): DoubleArray {
 
         // it's our index to iterate through the array.
@@ -103,24 +103,33 @@ internal class Parameters {
         val rt = DoubleArray(returns.size)
         var ft = Array(1,{ Math.signum(0.0)})
         var mutableWeight = weight.copy()
-        val positionProfit = PositionProfit(0.0, 0.0)
+
+        // we init the memory of position
+        val position = Position(0.0, 0.0, 1.0, true)
+        position.lastPositionPrice = prices[t-1]
+        position.currentPrice = prices[t]
         var pt = Array(1, {0.0})
 
         while (t < returns.size) {
 
-            positionProfit.currentProfit = pt.last()
+            position.currentPrice = prices[t]
             // we compute the ft
-            val firstComputedFt = computeFt(
-                    t, mutableWeight, ft.last(), sizeWindow, returns, parameters, positionProfit)
+            var computedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns)
 
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], firstComputedFt, t,
+            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
                     parameters, returns)
 
-            ft = ft.plus(computeFt(t, mutableWeight, firstComputedFt, sizeWindow, returns, parameters, positionProfit))
+            computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
+            // we put it in the second layer
+            ft = ft.plus(computeRiskAndPerformance(computedFt, ft.last(), parameters, position))
 
             // store the result
-            rt[t] = ft[t - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
+            rt[t] = if (position.holdPosition) {
+                ft[t - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
+            } else {
+                0.0
+            }
 
             // update the pt
             pt = pt.plus(pt.last() + rt[t])
@@ -178,11 +187,11 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
-    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, weight: Weights,
+    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, prices: DoubleArray, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, weight, sizeWindow)
+        var result = this.costFunction(a, v, returns, prices, weight, sizeWindow)
         best = Pair(result, this)
         val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),4))
 
@@ -196,7 +205,7 @@ internal class Parameters {
                     val newParameters = best.second.generateNewParameters(field, std)
 
                     // -the cost function
-                    result = newParameters.costFunction(a, v, returns, weight, sizeWindow)
+                    result = newParameters.costFunction(a, v, returns, prices, weight, sizeWindow)
 
                     // -compare to the "best" and maybe update it
                     @Synchronized if (result > best.first) best = Pair(result, newParameters)
