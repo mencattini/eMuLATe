@@ -105,7 +105,7 @@ internal class Parameters {
         var mutableWeight = weight.copy()
 
         // we init the memory of position
-        val position = Position(0.0, 0.0, 1.0, true)
+        val position = Position(0.0, 0.0, 1.0, true, false)
         position.lastPositionPrice = prices[t-1]
         position.currentPrice = prices[t]
         var pt = Array(1, {0.0})
@@ -122,14 +122,10 @@ internal class Parameters {
 
             computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
             // we put it in the second layer
-            ft = ft.plus(computeRiskAndPerformance(computedFt, ft.last(), parameters, position))
+            ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
             // store the result
-            rt[t] = if (position.holdPosition) {
-                ft[t - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
-            } else {
-                0.0
-            }
+            rt[t] =  ft[ft.lastIndex - 1] * returns[t] - delta * Math.abs(ft[t] - ft[t - 1])
 
             // update the pt
             pt = pt.plus(pt.last() + rt[t])

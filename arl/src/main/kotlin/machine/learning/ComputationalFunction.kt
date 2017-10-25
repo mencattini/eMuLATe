@@ -41,48 +41,46 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
  * Position 0.0 means we do nothing, so we keep the position
  *
  * @param computedFt the computed signal
- * @param oldFt the previous validate signal
  * @param parameters the object containing x and y
  * @param position the object with best price of the position and the previous position
+ *
+ * @return the right signal according to the risk and performance layer.
  */
 internal fun computeRiskAndPerformance(
-        computedFt : Double, oldFt: Double, parameters: Parameters, position: Position) : Double {
+        computedFt : Double, parameters: Parameters, position: Position) : Double {
 
-    val res : Double
     // we check the threshold
     // if it's greater than the threshold, we keep the result
-    if (Math.abs(computedFt) < parameters.y) {
-        return position.lastPosition
+    var res = if (Math.abs(computedFt) < parameters.y) {
+        position.doNothing = true
+        position.lastPosition
     } else {
-        res = Math.signum(computedFt)
+        position.doNothing = false
+        Math.signum(computedFt)
     }
 
-    // if the sign are the same we need to check the loss
-    if (res == oldFt) {
-        // we compute the diff between price
-        val diff = position.currentPrice - position.lastPositionPrice
-        // if the trend is rising, it means this diff will be positive, currentPrice > lastPositionPrice
-        // if the trend is falling, it means this diff will be negative, currentPrice > lastPositionPrice
-        // we need to check we are in the right direction
-        if ( res * diff > 0.0 ){
-            // it means we have the same sign as the trend
-            position.lastPositionPrice = position.currentPrice
-            position.lastPosition = res
-            position.holdPosition = true
-            return res
-        } else {
-            // we need to check the loss. If big than our rate, we close the position
-            if (Math.abs(diff) > parameters.x * 0.001) {
-                position.holdPosition = false
-                position.lastPosition = res * -1.0
-                return res * -1.0
-            }
-        }
-    } else {
-        // if the sign are different, we update the lastPositionProfit
-        position.lastPositionPrice = position.currentPrice
-        position.holdPosition = true
-    }
+//    // if the sign are the same we need to check the loss
+//    if (res == position.lastPosition) {
+//        // we compute the diff between price
+//        val diff = position.currentPrice - position.lastPositionPrice
+//        // if the trend is rising, it means this diff will be positive, currentPrice > lastPositionPrice
+//        // if the trend is falling, it means this diff will be negative, currentPrice > lastPositionPrice
+//        // we need to check we are in the right direction
+//        if ( res * diff > 0.0 ){
+//            // it means we have the same sign as the trend
+//            position.lastPositionPrice = position.currentPrice
+//            position.lastPosition = res
+//        } else {
+//            // we need to check the loss. If big than our rate, we close the position
+//            if (Math.abs(diff) > parameters.x * 0.005) {
+//                position.closePosition = true
+//            }
+//        }
+//    } else {
+//        // if the sign are different, we update the lastPositionProfit
+//        position.lastPositionPrice = position.currentPrice
+//        position.lastPosition = res
+//    }
 
     return res
 }

@@ -32,7 +32,7 @@ class ARL(private val sizeWindow: Int) {
         // the old value
         ft = arrayOf(Math.signum(0.0))
 
-        position = Position(0.0,0.0, 1.0, true)
+        position = Position(0.0,0.0, 1.0, true, false)
     }
 
 
@@ -54,6 +54,9 @@ class ARL(private val sizeWindow: Int) {
 
         // we compute the p_t, it's an array
         var pt = oldPt.clone()
+
+        var counter = 0
+        var n = 0
 
         // we init the memory of the position
         position.currentPrice = oldPrice
@@ -83,9 +86,9 @@ class ARL(private val sizeWindow: Int) {
             // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
             // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
             // used for effective decision making by the risk and the performance control layer."
-            computedFt = computeFt(t, computedFt)
+            computedFt = computeFt(t, Math.signum(computedFt))
             // we put it in the layer 2
-            ft = ft.plus(computeRiskAndPerformance(Math.signum(computedFt), ft.last(), parameters, position))
+            ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
             // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
             if (train && t % updateThreshold == 0) {
@@ -98,17 +101,26 @@ class ARL(private val sizeWindow: Int) {
 
             // we compute the w_n
             val lastIndex = ft.lastIndex
-            // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
-            pt = if (position.holdPosition) {
-                pt.plus(pt.last() +
-                        (ft[lastIndex - 1] * returns.last() - parameters.delta *
-                                Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
-            } else {
-                pt.plus(pt.last())
-            }
 
+            // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
+            pt = pt.plus(pt.last() + (ft[lastIndex - 1] * returns.last() - 0.0002 *
+                    Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
+
+            if (Math.signum(returns.last()) != 0.0) {
+                    if (Math.signum(returns.last()) == ft[lastIndex - 1]) {
+                        n++
+                        counter++
+                    } else {
+                        n++
+                    }
+            }
         }
 
+        if (!train) {
+            if (counter / n.toDouble() < 100) {
+                print("${(counter / n.toDouble()) * 100},")
+            }
+        }
         // return the p_t
         return pt
     }
