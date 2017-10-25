@@ -75,7 +75,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         if (ft == ftMinusOne) {
             // the updating delta using weights = weights + rho * deltaW
             val res =  Weights(coefficients, givenT + 1, at, bt)
-//            res.oldDiffFt = oldDiffFt
+            res.oldDiffFt = oldDiffFt
             return res
 
         } else {

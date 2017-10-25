@@ -12,7 +12,7 @@ fun main(args : Array<String>) {
 
     myFile.bufferedReader().useLines { lines ->
         lines.forEach {
-            array2.add(it.split("/")[0].split(" ").last().toDouble())
+            array2.add(it.split("/")[1].split(" ")[0].toDouble())
         }
     }
 
@@ -28,10 +28,10 @@ fun main(args : Array<String>) {
 
     while(i < n) {
         println("$i")
-        arl.loop(array2.toDoubleArray().slice(i..i+step), 200)
-        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), 200, p_t)
+        arl.loop(array2.toDoubleArray().slice(i..i+step), true,200)
+        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), false,200, p_t)
         arl.reset()
-        i += stepLearn
+        i += stepLearn - step
     }
 
     figure(1)
@@ -40,11 +40,11 @@ fun main(args : Array<String>) {
     ylabel("p_t")
     title("Run")
 
-    figure(2)
-    plot(array2.slice(copyI..n).toDoubleArray())
-    xlabel("ticks")
-    ylabel("value")
-    title("EURUSD")
+//    figure(2)
+//    plot(array2.slice(copyI..n).toDoubleArray())
+//    xlabel("ticks")
+//    ylabel("value")
+//    title("EURUSD")
 
 
     println("time = ${(System.currentTimeMillis() - time) / 1000}")
