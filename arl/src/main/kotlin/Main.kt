@@ -27,7 +27,7 @@ fun main(args : Array<String>) {
     val n = 100000
 
     while(i < n) {
-        println("$i")
+//        println("$i")
         arl.loop(array2.toDoubleArray().slice(i..i+step), true,200)
         p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), false,200, p_t)
         arl.reset()
@@ -46,7 +46,6 @@ fun main(args : Array<String>) {
 //    ylabel("value")
 //    title("EURUSD")
 
-
-    println("time = ${(System.currentTimeMillis() - time) / 1000}")
+//    println("time = ${(System.currentTimeMillis() - time) / 1000}")
 
 }
