@@ -24,3 +24,7 @@ gradle/
 arl/.gradle/
 gradle-wrapper.properties
 .gradle/*/*.bin
+
+__pycache__/
+*.sublime_project
+*.sublime_workspace
