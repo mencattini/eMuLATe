@@ -19,7 +19,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-def read_csv(filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
+def read_csv(n, filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
     with open(filename) as f:
         elements = []
         # we split each line in ask and bid
@@ -29,11 +29,12 @@ def read_csv(filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
             ask, bid = splited[0], splited[1]
             elements.append(np.array([np.double(ask), np.double(bid)]))
     res = pd.DataFrame(elements, columns=["ask", "bid"])
-    res.to_hdf('EURUSD.hdf', 'eurusd')
+    res.to_hdf(f'EURUSD_{n}.hdf', 'eurusd')
     return res
 
 
-def read_hdf(filename='./EURUSD.hdf'):
+def read_hdf(n):
+    filename = f'./EURUSD_{n}.hdf'
     return pd.read_hdf(filename, key='eurusd')
 
 
@@ -99,7 +100,7 @@ def evaluation_loop(n, model, df, returns, windowSize):
     p_t = np.array([])
 
     # we compile the function with numba
-    compiled_loop = jit(nogil=True)(loop)
+    compiled_loop = jit('f4[:](f4[:],f4[:])', nogil=True)(loop)
 
     for i in tqdm.tqdm(np.arange(m, n, o)):
         # we select the train and test set
@@ -123,7 +124,8 @@ def evaluation_loop(n, model, df, returns, windowSize):
 if __name__ == '__main__':
 
     windowSize = 15
-    n = 1000000
+    # n = 1000000
+    n = 2622129
     model = init_model(windowSize)
     new = False
 
@@ -131,9 +133,9 @@ if __name__ == '__main__':
     # pct_change then we take all the dataframe except the first Nan
     prices = None
     if (new):
-        prices = pd.DataFrame(read_csv())
+        prices = pd.DataFrame(read_csv(n=n))
     else:
-        prices = read_hdf()
+        prices = read_hdf(n=n)
 
     returns = prices.pct_change().fillna(0)
     # update the indexs
