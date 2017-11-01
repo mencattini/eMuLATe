@@ -8,36 +8,18 @@ import pandas as pd
 from functools import reduce
 import tqdm
 from keras.models import Sequential
-from keras.layers import Dense, Lambda
+from keras.layers import Dense
 from keras import optimizers
 import matplotlib.pyplot as plt
 import seaborn as sns
 from keras import backend as K
 from numba import jit
-
+from utils import read_csv, read_hdf
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-def read_csv(n, filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
-    with open(filename) as f:
-        elements = []
-        # we split each line in ask and bid
-        for ele in f.readlines():
-            ask_bid = ele.split(' ')[2]
-            splited = ask_bid.split('/')
-            ask, bid = splited[0], splited[1]
-            elements.append(np.array([np.double(ask), np.double(bid)]))
-    res = pd.DataFrame(elements, columns=["ask", "bid"])
-    res.to_hdf(f'EURUSD_{n}.hdf', 'eurusd')
-    return res
-
-
-def read_hdf(n):
-    filename = f'./EURUSD_{n}.hdf'
-    return pd.read_hdf(filename, key='eurusd')
-
-
+# magic
 def rolling_window(a, window):
     shape = (a.shape[0] - window + 1, window) + a.shape[1:]
     strides = (a.strides[0],) + a.strides
@@ -46,7 +28,6 @@ def rolling_window(a, window):
 
 
 def init_model(N):
-
     # multiple core
     config = tf.ConfigProto(
         intra_op_parallelism_threads=16,
@@ -65,29 +46,59 @@ def init_model(N):
     model.add(Dense(1))
 
     # add a sdg
-    sgd = optimizers.SGD(lr=0.01, decay=1e-5, momentum=0.75, nesterov=True)
+    sgd = optimizers.SGD(lr=0.01, nesterov=True)
 
     model.compile(
-        loss='mean_absolute_percentage_error', optimizer=sgd,
-        metrics=['accuracy']
+        loss='mean_absolute_percentage_error', optimizer=sgd
     )
     return model
 
 
-def loop(test, test_classes):
-        # we apply the sign function because we guess the futur returns
-        y_res = np.sign(
-            np.array(model.predict_on_batch(test)).transpose()[0]
-        )
-        res = np.zeros(test.shape[0] - 1)
+def loop_without_trailing_loss(y_res, test_classes, prices):
+    res = np.zeros(y_res.shape[0] - 1)
+    i = 0
+    # delta * | F_t - F_{t-1} | but vectorized
+    cost = np.abs(y_res[1:] - y_res[0:-1]) * 0.0002
+    # F_{t-1} * r_t but vecotrized
+    for F_t, r_t, c in zip(y_res[0:-1], test_classes, cost):
+        # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
+        res[i] = F_t * r_t - c
+        i += 1
+    return res
+
+
+def loop(y_res, test_classes, prices):
+        res = np.zeros(y_res.shape[0] - 1)
         i = 0
         # delta * | F_t - F_{t-1} | but vectorized
         cost = np.abs(y_res[1:] - y_res[0:-1]) * 0.0002
-        # F_{t-1} * r_t but vecotrized
+        lastPositionPrice = prices[i]
+        currentPrice = prices[i + 1]
+        lastPosition = y_res[i]
+        # F_{t-1} * r_t  - delta * | F_t - F_{t-1}
         for F_t, r_t, c in zip(y_res[0:-1], test_classes, cost):
+            # if the F_t is different from the lastPosition it means we need to
+            # update the lastPositionprice dans the lastPosition
+            if (F_t != lastPosition):
+                lastPosition = F_t
+                lastPositionPrice = currentPrice
+            else:
+                # we need to check the difference
+                diff = currentPrice - lastPositionPrice
+                # if  : diff < 0 and we guess short, diff * -1 > 0
+                #     : diff > 0 and we guess long, diff * +1 > 0
+                # if diff * F_t < 0, it means we did the wrong choice and we
+                # need to controlate our loss
+                if (diff * lastPosition > -0.0005):
+                    F_t *= -1.0
+                if (currentPrice < lastPositionPrice and F_t == -1.0):
+                    lastPositionPrice = currentPrice
+                if (currentPrice > lastPositionPrice and F_t == +1.0):
+                    lastPositionPrice = currentPrice
             # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
             res[i] = F_t * r_t - c
             i += 1
+            currentPrice = prices[i + 1]
         return res
 
 
@@ -100,43 +111,32 @@ def evaluation_loop(n, model, df, returns, windowSize):
     p_t = np.array([])
 
     # we compile the function with numba
-    compiled_loop = jit('f4[:](f4[:],f4[:])', nogil=True)(loop)
+    compiled_loop = jit('f4[:](f4[:],f4[:],f4[:])', nogil=True)(
+        loop_without_trailing_loss
+    )
 
     for i in tqdm.tqdm(np.arange(m, n, o)):
         # we select the train and test set
         train = np.array(df[i - m:i])
         test = np.array(df[i:i + o])
 
-        # model.fit(
-        #     train, returns[i - m + N:i + N], batch_size=o,
-        #     verbose=0, epochs=10
-        # )
         model.train_on_batch(train, returns[i - m:i])
+        # we compute the classes
+        y_res = np.sign(
+            np.array(model.predict_on_batch(test)).transpose()[0]
+        )
         # now we compute the cumulative profit
         p_t = np.append(
             p_t,
-            compiled_loop(test, returns[i + N: i + o + N - 1])
+            compiled_loop(
+                y_res, returns[i + N: i + o + N - 1],
+                prices.iloc[i - 1: i + o].values)
         )
 
     return np.cumsum(p_t)
 
 
-if __name__ == '__main__':
-
-    windowSize = 15
-    # n = 1000000
-    n = 2622129
-    model = init_model(windowSize)
-    new = False
-
-    # we get the dataframe, and on it, we compute the returns using
-    # pct_change then we take all the dataframe except the first Nan
-    prices = None
-    if (new):
-        prices = pd.DataFrame(read_csv(n=n))
-    else:
-        prices = read_hdf(n=n)
-
+def algorithme(prices, windowSize, n, model):
     returns = prices.pct_change().fillna(0)
     # update the indexs
     # TODO correct the code under
@@ -168,3 +168,30 @@ if __name__ == '__main__':
     plt.ylabel("prices")
     plt.tight_layout()
     plt.show()
+
+    return p_t
+
+
+if __name__ == '__main__':
+
+    windowSize = 20
+    model = init_model(windowSize)
+
+    # # n = 1000000
+    n = 2622129
+    new = False
+
+    # we get the dataframe, and on it, we compute the returns using
+    # pct_change then we take all the dataframe except the first Nan
+    prices = None
+    if (new):
+        prices = pd.DataFrame(read_csv(n=n))
+    else:
+        prices = read_hdf(n=n)
+
+    # prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
+    # prices = pd.DataFrame(prices[1].values)
+    # prices.columns = ["ask"]
+    # n = prices.shape[0]
+
+    p_t = algorithme(prices, windowSize, n, model)
