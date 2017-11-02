@@ -57,52 +57,48 @@ def init_model(N):
 def loop_without_trailing_loss(y_res, test_classes, prices):
     res = np.zeros(y_res.shape[0] - 1)
     i = 0
-    # delta * | F_t - F_{t-1} | but vectorized
-    cost = np.abs(y_res[1:] - y_res[0:-1]) * 0.0002
+
     # F_{t-1} * r_t but vecotrized
-    for F_t, r_t, c in zip(y_res[0:-1], test_classes, cost):
+    for F_t, r_t in zip(y_res[1:], test_classes[1:]):
         # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
-        res[i] = F_t * r_t - c
+        res[i] = F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
         i += 1
     return res
 
 
-def loop(y_res, test_classes, prices):
+def loop(y_res, returns, prices):
         res = np.zeros(y_res.shape[0] - 1)
         i = 0
-        # delta * | F_t - F_{t-1} | but vectorized
-        cost = np.abs(y_res[1:] - y_res[0:-1]) * 0.0002
-        lastPositionPrice = prices[i]
-        currentPrice = prices[i + 1]
-        lastPosition = y_res[i]
+
+        maxp_t = res[0]
+        lastPosition = y_res[0]
+        acc_p_t = res[0]
         # F_{t-1} * r_t  - delta * | F_t - F_{t-1}
-        for F_t, r_t, c in zip(y_res[0:-1], test_classes, cost):
-            # if the F_t is different from the lastPosition it means we need to
-            # update the lastPositionprice dans the lastPosition
+        for F_t, r_t in zip(y_res[1:], returns[1:]):
+            # if the position are different we need to update the max cumulated
+            # profit
             if (F_t != lastPosition):
+                maxp_t = acc_p_t
                 lastPosition = F_t
-                lastPositionPrice = currentPrice
             else:
-                # we need to check the difference
-                diff = currentPrice - lastPositionPrice
-                # if  : diff < 0 and we guess short, diff * -1 > 0
-                #     : diff > 0 and we guess long, diff * +1 > 0
-                # if diff * F_t < 0, it means we did the wrong choice and we
-                # need to controlate our loss
-                if (diff * lastPosition > -0.0005):
-                    F_t *= -1.0
-                if (currentPrice < lastPositionPrice and F_t == -1.0):
-                    lastPositionPrice = currentPrice
-                if (currentPrice > lastPositionPrice and F_t == +1.0):
-                    lastPositionPrice = currentPrice
+                # else if the max cumulated is less than the new cumulated
+                # profit we need to update too
+                if (maxp_t >= acc_p_t):
+                    maxp_t = acc_p_t
+                # else we need to control our loss
+                else:
+                    diff = np.abs(maxp_t) - np.abs(acc_p_t)
+                    if (diff > 0.0020):
+                        F_t = 0
+                        y_res[i + 1] = 0
             # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
-            res[i] = F_t * r_t - c
+            res[i] = F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
+            acc_p_t += res[i]
             i += 1
-            currentPrice = prices[i + 1]
         return res
 
 
-def evaluation_loop(n, model, df, returns, windowSize):
+def evaluation_loop(n, model, df, returns, windowSize, prices):
     # we do somes steps of 2000
     m = 2000
     o = 500
@@ -112,7 +108,7 @@ def evaluation_loop(n, model, df, returns, windowSize):
 
     # we compile the function with numba
     compiled_loop = jit('f4[:](f4[:],f4[:],f4[:])', nogil=True)(
-        loop_without_trailing_loss
+        loop
     )
 
     for i in tqdm.tqdm(np.arange(m, n, o)):
@@ -147,7 +143,7 @@ def algorithme(prices, windowSize, n, model):
     df = rolling_window(returns['ask'].values, windowSize)
 
     p_t = evaluation_loop(
-        n, model, df, returns['ask'].values, windowSize
+        n, model, df, returns['ask'].values, windowSize, prices['ask']
     )
 
     sns.set_style("darkgrid")
@@ -177,8 +173,8 @@ if __name__ == '__main__':
     windowSize = 20
     model = init_model(windowSize)
 
-    # # n = 1000000
-    n = 2622129
+    n = 1000000
+    # n = 2622129
     new = False
 
     # we get the dataframe, and on it, we compute the returns using
