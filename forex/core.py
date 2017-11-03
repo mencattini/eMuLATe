@@ -5,11 +5,9 @@ import tensorflow as tf
 tf.set_random_seed(0)
 
 import pandas as pd
-from functools import reduce
 import tqdm
 from keras.models import Sequential
 from keras.layers import Dense
-from keras import optimizers
 import matplotlib.pyplot as plt
 import seaborn as sns
 from keras import backend as K
@@ -40,21 +38,19 @@ def init_model(N):
     model = Sequential()
 
     # without the reccurent layer
-    model.add(Dense(N, input_shape=(N,), activation='tanh'))
-    model.add(Dense(N, activation='tanh'))
-    # the last layers
+    model.add(Dense(N * 5, input_shape=(N,), activation='tanh'))
+    # hidden layer
+    model.add(Dense(N, activation='relu'))
+    # the last layer
     model.add(Dense(1))
 
-    # add a sdg
-    sgd = optimizers.SGD(lr=0.01, nesterov=True)
-
     model.compile(
-        loss='mean_absolute_percentage_error', optimizer=sgd
+        loss='mean_absolute_percentage_error', optimizer='rmsprop'
     )
     return model
 
 
-def loop_without_trailing_loss(y_res, test_classes, prices):
+def loop_without_stop_loss(y_res, test_classes, prices):
     res = np.zeros(y_res.shape[0] - 1)
     i = 0
 
@@ -74,7 +70,9 @@ def loop(y_res, returns, prices):
         lastPosition = y_res[0]
         acc_p_t = res[0]
         # F_{t-1} * r_t  - delta * | F_t - F_{t-1}
-        for F_t, r_t in zip(y_res[1:], returns[1:]):
+        for j in range(1, len(y_res)):
+            F_t = y_res[j]
+            r_t = returns[j]
             # if the position are different we need to update the max cumulated
             # profit
             if (F_t != lastPosition):
@@ -83,14 +81,15 @@ def loop(y_res, returns, prices):
             else:
                 # else if the max cumulated is less than the new cumulated
                 # profit we need to update too
-                if (maxp_t >= acc_p_t):
+                if (maxp_t <= acc_p_t):
                     maxp_t = acc_p_t
                 # else we need to control our loss
                 else:
                     diff = np.abs(maxp_t) - np.abs(acc_p_t)
-                    if (diff > 0.0020):
+                    # diff = maxp_t - acc_p_t
+                    if (diff > 0.005):
                         F_t = 0
-                        y_res[i + 1] = 0
+                        y_res[j] = 0
             # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
             res[i] = F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
             acc_p_t += res[i]
@@ -108,7 +107,7 @@ def evaluation_loop(n, model, df, returns, windowSize, prices):
 
     # we compile the function with numba
     compiled_loop = jit('f4[:](f4[:],f4[:],f4[:])', nogil=True)(
-        loop
+        loop_without_stop_loss
     )
 
     for i in tqdm.tqdm(np.arange(m, n, o)):
@@ -185,9 +184,9 @@ if __name__ == '__main__':
     else:
         prices = read_hdf(n=n)
 
-    # prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
-    # prices = pd.DataFrame(prices[1].values)
-    # prices.columns = ["ask"]
-    # n = prices.shape[0]
+    prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
+    prices = pd.DataFrame(prices[1].values)
+    prices.columns = ["ask"]
+    n = prices.shape[0]
 
     p_t = algorithme(prices, windowSize, n, model)
