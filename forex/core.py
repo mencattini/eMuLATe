@@ -50,51 +50,50 @@ def init_model(N):
     return model
 
 
-def loop_without_stop_loss(y_res, test_classes, prices):
-    res = np.zeros(y_res.shape[0] - 1)
+def loop(y_res, test_classes, prices, pnl):
+    res = np.zeros(y_res.shape[0] - 2)
     i = 0
+    rate = 0.005
 
-    # F_{t-1} * r_t but vecotrized
+    current = pnl
+    max_pnl = pnl
+    last_position = y_res[i]
+    # it's the layer one who only apply the signal
     for F_t, r_t in zip(y_res[1:], test_classes[1:]):
+
+        if F_t != last_position:
+            max_pnl = current
+            last_position = F_t
+        else:
+            diff = max_pnl - current
+            if diff < 0:
+                max_pnl = current
+            elif diff > 0 and diff > rate:
+                F_t = 0
+                y_res[i + 1] = 0
+
         # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
-        res[i] = F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
+        res[i] = current * F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
+        res[i] += current
+        current = res[i]
         i += 1
+
     return res
 
 
-def loop(y_res, returns, prices):
-        res = np.zeros(y_res.shape[0] - 1)
-        i = 0
+def simple_loop(y_res, test_classes, prices, pnl):
+    res = np.zeros(y_res.shape[0] - 2)
+    i = 0
 
-        maxp_t = res[0]
-        lastPosition = y_res[0]
-        acc_p_t = res[0]
-        # F_{t-1} * r_t  - delta * | F_t - F_{t-1}
-        for j in range(1, len(y_res)):
-            F_t = y_res[j]
-            r_t = returns[j]
-            # if the position are different we need to update the max cumulated
-            # profit
-            if (F_t != lastPosition):
-                maxp_t = acc_p_t
-                lastPosition = F_t
-            else:
-                # else if the max cumulated is less than the new cumulated
-                # profit we need to update too
-                if (maxp_t <= acc_p_t):
-                    maxp_t = acc_p_t
-                # else we need to control our loss
-                else:
-                    diff = np.abs(maxp_t) - np.abs(acc_p_t)
-                    # diff = maxp_t - acc_p_t
-                    if (diff > 0.005):
-                        F_t = 0
-                        y_res[j] = 0
-            # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
-            res[i] = F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
-            acc_p_t += res[i]
-            i += 1
-        return res
+    current = pnl
+    for F_t, r_t in zip(y_res[1:], test_classes[1:]):
+        # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
+        res[i] = current * F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
+        res[i] += current
+        current = res[i]
+        i += 1
+
+    return res
 
 
 def evaluation_loop(n, model, df, returns, windowSize, prices):
@@ -103,18 +102,21 @@ def evaluation_loop(n, model, df, returns, windowSize, prices):
     o = 500
     N = windowSize
 
-    p_t = np.array([])
+    p_t = np.array([1])
 
     # we compile the function with numba
-    compiled_loop = jit('f4[:](f4[:],f4[:],f4[:])', nogil=True)(
-        loop_without_stop_loss
+    compiled_loop = jit('f4[:](f4[:],f4[:],f4[:],f4)', nogil=True)(
+        loop
     )
 
     for i in tqdm.tqdm(np.arange(m, n, o)):
+
+        # first part : we treat the data
         # we select the train and test set
         train = np.array(df[i - m:i])
         test = np.array(df[i:i + o])
 
+        # we train our model
         model.train_on_batch(train, returns[i - m:i])
         # we compute the classes
         y_res = np.sign(
@@ -125,10 +127,11 @@ def evaluation_loop(n, model, df, returns, windowSize, prices):
             p_t,
             compiled_loop(
                 y_res, returns[i + N: i + o + N - 1],
-                prices.iloc[i - 1: i + o].values)
+                prices.iloc[i - 1: i + o].values, p_t[-1])
         )
 
-    return np.cumsum(p_t)
+    # return np.cumsum(p_t)
+    return p_t
 
 
 def algorithme(prices, windowSize, n, model):
@@ -184,9 +187,9 @@ if __name__ == '__main__':
     else:
         prices = read_hdf(n=n)
 
-    prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
-    prices = pd.DataFrame(prices[1].values)
-    prices.columns = ["ask"]
-    n = prices.shape[0]
+    # prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
+    # prices = pd.DataFrame(prices[1].values)
+    # prices.columns = ["ask"]
+    # n = prices.shape[0]
 
     p_t = algorithme(prices, windowSize, n, model)
