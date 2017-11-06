@@ -8,11 +8,9 @@ import pandas as pd
 import tqdm
 from keras.models import Sequential
 from keras.layers import Dense
-import matplotlib.pyplot as plt
-import seaborn as sns
 from keras import backend as K
 from numba import jit
-from utils import read_csv, read_hdf
+from utils import read_csv, read_hdf, plot_all
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -53,7 +51,7 @@ def init_model(N):
 def loop(y_res, test_classes, prices, pnl):
     res = np.zeros(y_res.shape[0] - 2)
     i = 0
-    rate = 0.005
+    rate = 0.01
 
     current = pnl
     max_pnl = pnl
@@ -72,21 +70,6 @@ def loop(y_res, test_classes, prices, pnl):
                 F_t = 0
                 y_res[i + 1] = 0
 
-        # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
-        res[i] = current * F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
-        res[i] += current
-        current = res[i]
-        i += 1
-
-    return res
-
-
-def simple_loop(y_res, test_classes, prices, pnl):
-    res = np.zeros(y_res.shape[0] - 2)
-    i = 0
-
-    current = pnl
-    for F_t, r_t in zip(y_res[1:], test_classes[1:]):
         # F_{t-1} * r_t - delta * | F_t - F_{t-1} |
         res[i] = current * F_t * r_t - 0.0002 * np.abs(F_t - y_res[i])
         res[i] += current
@@ -148,25 +131,6 @@ def algorithme(prices, windowSize, n, model):
         n, model, df, returns['ask'].values, windowSize, prices['ask']
     )
 
-    sns.set_style("darkgrid")
-
-    plt.subplot(2, 1, 1)
-    plt.plot(p_t)
-    plt.grid(True)
-    plt.title("$Cumulated_{profit}$")
-    plt.xlabel("ticks")
-    plt.ylabel("profit")
-    plt.tight_layout()
-
-    plt.subplot(2, 1, 2)
-    plt.plot(prices[0:n])
-    plt.grid(True)
-    plt.title("Change EUR/USD")
-    plt.xlabel("ticks")
-    plt.ylabel("prices")
-    plt.tight_layout()
-    plt.show()
-
     return p_t
 
 
@@ -186,10 +150,13 @@ if __name__ == '__main__':
         prices = pd.DataFrame(read_csv(n=n))
     else:
         prices = read_hdf(n=n)
+    title_two = "EUR/USD"
 
     # prices = pd.read_csv('./data/EURCHF.csv', delimiter=';', header=None)
     # prices = pd.DataFrame(prices[1].values)
     # prices.columns = ["ask"]
     # n = prices.shape[0]
+    # title_two = "EUR/CHF"
 
     p_t = algorithme(prices, windowSize, n, model)
+    plot_all(p_t, prices, n, title_two=title_two)
