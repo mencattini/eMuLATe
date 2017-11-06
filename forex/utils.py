@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def read_csv(n, filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
@@ -19,3 +21,25 @@ def read_csv(n, filename='/home/romain/gitFile/eMuLATe/arl/data/EURUSD.dat'):
 def read_hdf(n):
     filename = f'./data/EURUSD_{n}.hdf'
     return pd.read_hdf(filename, key='eurusd')
+
+
+def plot_all(
+        p_t, prices, n, title_one="$Cumulated_{profit}$", title_two="EUR/USD"):
+    sns.set_style("darkgrid")
+
+    plt.subplot(2, 1, 1)
+    plt.plot(p_t)
+    plt.grid(True)
+    plt.title(title_one)
+    plt.xlabel("ticks")
+    plt.ylabel("profit")
+    plt.tight_layout()
+
+    plt.subplot(2, 1, 2)
+    plt.plot(prices[0:n])
+    plt.grid(True)
+    plt.title(title_two)
+    plt.xlabel("ticks")
+    plt.ylabel("prices")
+    plt.tight_layout()
+    plt.show()
