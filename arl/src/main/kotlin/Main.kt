@@ -17,17 +17,17 @@ fun main(args : Array<String>) {
     }
 
     val time = System.currentTimeMillis()
-    val arl = ARL(10)
+    val arl = ARL(20)
 
     var i = 0
     val copyI = i
-    var p_t = arrayOf(0.0)
+    var p_t = arrayOf(1.0)
     val step = 2000
     val stepLearn = 2500
     val n = 100000
 
     while(i < n) {
-//        println("$i")
+        println("$i")
         arl.loop(array2.toDoubleArray().slice(i..i+step), true,200)
         p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), false,200, p_t)
         arl.reset()
@@ -46,6 +46,6 @@ fun main(args : Array<String>) {
 //    ylabel("value")
 //    title("EURUSD")
 
-//    println("time = ${(System.currentTimeMillis() - time) / 1000}")
+    println("time = ${(System.currentTimeMillis() - time) / 1000}")
 
 }
