@@ -32,7 +32,7 @@ class ARL(private val sizeWindow: Int) {
         // the old value
         ft = arrayOf(Math.signum(0.0))
 
-        position = Position(0.0,0.0, 1.0, true, false)
+        position = Position(0.0,0.0, 1.0)
     }
 
 
@@ -45,7 +45,7 @@ class ARL(private val sizeWindow: Int) {
      *
      * @return we return the w_n (cf. article to the meaning and computation)
      */
-    fun loop(prices : List<Double>, train : Boolean, updateThreshold: Int = 1000,oldPt: Array<Double> = arrayOf(0.0)): Array<Double> {
+    fun loop(prices : List<Double>, train : Boolean, updateThreshold: Int = 1000,oldPt: Array<Double> = arrayOf(1.0)): Array<Double> {
 
         // we cast the price, for the compatibility with java
         val pricesCasted = prices.toDoubleArray()
@@ -55,12 +55,10 @@ class ARL(private val sizeWindow: Int) {
         // we compute the p_t, it's an array
         var pt = oldPt.clone()
 
-        var counter = 0
-        var n = 0
-
         // we init the memory of the position
-        position.currentPrice = oldPrice
-        position.lastPositionPrice = pricesCasted[t]
+        position.currentPnl = pt.last()
+        position.maxPnl = pt.last()
+        position.lastPosition = ft.last()
 
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
@@ -73,28 +71,30 @@ class ARL(private val sizeWindow: Int) {
             // store the computedReturn in returns
             returns = returns.plus(computedReturn)
 
-            // update the current profit
-            position.currentPrice = price
-
             // compute the Ft
             var computedFt = computeFt(t)
 
             // update the weights
-            weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
-                    parameters, returns)
+            if (train) {
+                weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
+                        parameters, returns)
 
-            // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
-            // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
-            // used for effective decision making by the risk and the performance control layer."
-            computedFt = computeFt(t, Math.signum(computedFt))
-            // we put it in the layer 2
-            ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
+                // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
+                // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
+                // used for effective decision making by the risk and the performance control layer."
+                computedFt = computeFt(t, Math.signum(computedFt))
+                // we put it in the layer 2
+                ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
-            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            if (train && t % updateThreshold == 0) {
-                parameters = parameters.parallelUpdateParameters(
-                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
-                        pricesCasted.sliceArray(t - updateThreshold + 1..t),weight, sizeWindow, 1.0)
+                // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
+                if (t % updateThreshold == 0) {
+                    parameters = parameters.parallelUpdateParameters(
+                            0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
+                            weight, sizeWindow, 1.0)
+                }
+            } else {
+                // we put it in the layer 2
+                ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
             }
             // increase the givenT size
             t++
@@ -103,24 +103,12 @@ class ARL(private val sizeWindow: Int) {
             val lastIndex = ft.lastIndex
 
             // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
-            pt = pt.plus(pt.last() + (ft[lastIndex - 1] * returns.last() - 0.0002 *
+            pt = pt.plus(pt.last() + (pt.last() * ft[lastIndex - 1] * returns.last() - 0.0002 *
                     Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
 
-            if (Math.signum(returns.last()) != 0.0) {
-                    if (Math.signum(returns.last()) == ft[lastIndex - 1]) {
-                        n++
-                        counter++
-                    } else {
-                        n++
-                    }
-            }
+            position.currentPnl = pt.last()
         }
 
-        if (!train) {
-            if (counter / n.toDouble() < 100) {
-                print("${(counter / n.toDouble()) * 100},")
-            }
-        }
         // return the p_t
         return pt
     }

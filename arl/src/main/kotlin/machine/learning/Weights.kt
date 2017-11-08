@@ -37,6 +37,9 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
      * Some kind of constructor. Build a Weights object with the coefficients.
      *
      * @param coefficients an array of double. This will become our coefficients.
+     * @param index some kind of timestampe
+     * @param at the old A(t)
+     * @param bt the old B(t)
      *
      * @return a new Weight object with the given coefficient.
      */
@@ -72,54 +75,49 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         val at = oldAt + param.eta * deltaAt
         val bt = oldBt + param.eta * deltaBt
 
+        val wMplusOne = this.wMplusOne()
+
         if (ft == ftMinusOne) {
             // the updating delta using weights = weights + rho * deltaW
             val res =  Weights(coefficients, givenT + 1, at, bt)
             res.oldDiffFt = oldDiffFt
             return res
         } else {
+            val div = (ft - ftMinusOne) / (Math.abs(ft - ftMinusOne))
             // the dR_{t} / dF_{t}
-            diffRt = ((-param.delta * (ft - ftMinusOne))
-                    / (Math.abs(ft - ftMinusOne)))
+            diffRt = -param.delta * div
             // the dR_{t} / F_{t-1}
-            diffRtMinusOne = rt + ((param.delta * (ft - ftMinusOne))
-                    / (Math.abs(ft - ftMinusOne)))
+            diffRtMinusOne = rt + param.delta * div
         }
 
         // we start the computation of dF_t / dw_{i,t}
-        // we need to multiple dF_{t-1} / dw_{i,t-1}) * (\delta F_t / \delta F_{t-1})
-        var diffFtMinusOneBis = oldDiffFt.map { it -> it * this.wMplusOne() }
-
         // we need to modify the returns before, so we create a new variable
-        val tmpReturns = returns.reversed().toDoubleArray()
-                // if return.size is smaller than sizeWindow, it means we need to add the absolute value of the diff
-                // else we just add an array of size 0
-                .plus(DoubleArray(Math.abs(minOf((returns.size - sizeWindow + 1), 0))))
-                // we slice to sizeWindow (NOT INCLUDED) and then add the ftMinusOne
-                .sliceArray(0 until sizeWindow).plus(ftMinusOne)
+        // we compute the dF_{t} / dw_{i,t} (where it's partial derivation)
+        val tmpReturns = returns.plus(ftMinusOne).reversed().toDoubleArray()
+//                // if return.size is smaller than sizeWindow, it means we need to add the absolute value of the diff
+//                // else we just add an array of size 0
+//                .plus(DoubleArray(Math.abs(minOf((returns.size - sizeWindow + 1), 0))))
+//                // we slice to sizeWindow (NOT INCLUDED) and then add the ftMinusOne
+//                .sliceArray(0 until sizeWindow - 1).plus(ftMinusOne)
 
-        // dF_t / dw_{i,t}
-        var diffFt = tmpReturns.zip(diffFtMinusOneBis)
-                .map { (first, second) -> first + second }
-        val copyDiffFt = diffFt.toDoubleArray()
-
-        // we need to do : dF_t / dw_{i,t} * dR_t / dF_t
-        diffFt = diffFt.map { it -> it * diffRt }
-
-        // dR_t / dF_{t-1} * dF_{t-1} / dw_{i,t-1}
-        diffFtMinusOneBis = oldDiffFt.map { it -> it * diffRtMinusOne }
+        val diffFt = DoubleArray(oldDiffFt.size)
 
         // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
         val diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3/2.0)
 
-        // diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne)
-        val deltaW = diffFt.zip(diffFtMinusOneBis)
-                .map { (first, second) -> (first + second) * diffDt}.toDoubleArray()
+        // w_{i,t-1} + rho * (diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne))
+        val newCoefficients = DoubleArray(coefficients.size)
+        for (i in coefficients.indices) {
+            // dF_t / dw_{i,t}
+            diffFt[i] = tmpReturns.getDefault(i, 0.0) + oldDiffFt[i] * wMplusOne
+
+            newCoefficients[i] = coefficients[i] + param.rho *
+                    (diffDt * ( diffRt * diffFt[i] + diffRtMinusOne * oldDiffFt[i]))
+        }
+        val copyDiffFt = diffFt.clone()
 
         // the updating delta using weights = weights + rho * deltaW
-        val res = Weights(coefficients.zip(deltaW)
-                .map { (first, second) -> first + param.rho * second }
-                .toDoubleArray(), givenT + 1, at, bt)
+        val res = Weights(newCoefficients, givenT + 1, at, bt)
         // we store the current diffFt as oldDiffFt for the next iteration
         res.oldDiffFt = copyDiffFt
         return res
@@ -167,4 +165,12 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         return res
     }
 
+}
+
+private fun DoubleArray.getDefault(index: Int, d: Double = 0.0): Double {
+    return if (index < this.size) {
+        this[index]
+    } else {
+        d
+    }
 }

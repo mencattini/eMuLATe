@@ -49,38 +49,28 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
 internal fun computeRiskAndPerformance(
         computedFt : Double, parameters: Parameters, position: Position) : Double {
 
+    var res: Double
     // we check the threshold
     // if it's greater than the threshold, we keep the result
-    var res = if (Math.abs(computedFt) < parameters.y) {
-        position.doNothing = true
-        position.lastPosition
+    if (Math.abs(computedFt) < parameters.y) {
+        return Math.signum(0.0)
     } else {
-        position.doNothing = false
-        Math.signum(computedFt)
+        res = Math.signum(computedFt)
     }
 
-//    // if the sign are the same we need to check the loss
-//    if (res == position.lastPosition) {
-//        // we compute the diff between price
-//        val diff = position.currentPrice - position.lastPositionPrice
-//        // if the trend is rising, it means this diff will be positive, currentPrice > lastPositionPrice
-//        // if the trend is falling, it means this diff will be negative, currentPrice > lastPositionPrice
-//        // we need to check we are in the right direction
-//        if ( res * diff > 0.0 ){
-//            // it means we have the same sign as the trend
-//            position.lastPositionPrice = position.currentPrice
-//            position.lastPosition = res
-//        } else {
-//            // we need to check the loss. If big than our rate, we close the position
-//            if (Math.abs(diff) > parameters.x * 0.005) {
-//                position.closePosition = true
-//            }
-//        }
-//    } else {
-//        // if the sign are different, we update the lastPositionProfit
-//        position.lastPositionPrice = position.currentPrice
-//        position.lastPosition = res
-//    }
-
+    // if we change the position we need to update the max pnl and the position
+    if (res != position.lastPosition) {
+        position.maxPnl = position.currentPnl
+        position.lastPosition = res
+        return res
+    } else {
+        // else we need to check the diff
+        val diff = position.maxPnl - position.currentPnl
+        if (diff <= 0.0) {
+            position.maxPnl = position.currentPnl
+        } else if (diff > 0.0 && diff > 0.1) {
+            res = Math.signum(0.0)
+        }
+    }
     return res
 }

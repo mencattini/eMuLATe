@@ -26,7 +26,7 @@ internal class Parameters {
         delta = random.nextDouble()
         eta = random.nextDouble()
         rho = random.nextDouble()
-        x = random.nextDouble()
+        x = 0.01
         y = random.nextDouble()
 
     }
@@ -66,10 +66,9 @@ internal class Parameters {
      *
      * @return the result of the cost function
      */
-    private fun costFunction(a: Double, v: Double, returns: DoubleArray, prices : DoubleArray, weight: Weights,
-                             sizeWindow: Int): Double {
+    private fun costFunction(a: Double, v: Double, returns: DoubleArray, weight: Weights, sizeWindow: Int): Double {
 
-        val rt = getRt(returns,prices,this, weight, sizeWindow)
+        val rt = getRt(returns,this, weight, sizeWindow)
         val sumRtPositive = (rt.filter { it < 0 }).map { it -> it * it }.sum()
         val sumRtNegative = (rt.filter { it > 0 }).map { it -> it * it }.sum()
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
@@ -94,8 +93,7 @@ internal class Parameters {
      *
      * @return a array of double containing the R_t
      */
-    private fun getRt(returns: DoubleArray, prices : DoubleArray, parameters: Parameters, weight: Weights,
-                      sizeWindow: Int): DoubleArray {
+    private fun getRt(returns: DoubleArray, parameters: Parameters, weight: Weights, sizeWindow: Int): DoubleArray {
 
         // it's our index to iterate through the array.
         var t = 1
@@ -104,23 +102,20 @@ internal class Parameters {
         var ft = Array(1,{ Math.signum(0.0)})
         var mutableWeight = weight.copy()
 
+        var pt = Array(1, {1.0})
         // we init the memory of position
-        val position = Position(0.0, 0.0, 1.0, true, false)
-        position.lastPositionPrice = prices[t-1]
-        position.currentPrice = prices[t]
-        var pt = Array(1, {0.0})
+        val position = Position(pt.last(), pt.last(), ft.last())
 
         while (t < returns.size) {
 
-            position.currentPrice = prices[t]
             // we compute the ft
             var computedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns)
 
             // update the weights
-            mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
-                    parameters, returns)
+            // mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
+            //        parameters, returns)
 
-            computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
+            // computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
             // we put it in the second layer
             ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
@@ -129,6 +124,8 @@ internal class Parameters {
 
             // update the pt
             pt = pt.plus(pt.last() + rt[t])
+            // add the current pnl
+            position.currentPnl = pt.last()
 
             // the loop increment
             t++
@@ -151,7 +148,7 @@ internal class Parameters {
         val returnedParameters = Parameters(this.delta, this.eta, this.rho, this.x, this.y)
 
         when (field) {
-            "x" -> returnedParameters.x = centredNormalRandom(this.x, std * 5)
+            "x" -> returnedParameters.x = centredNormalRandom(this.x, std)
             "y" -> returnedParameters.y = centredNormalRandom(this.y, std)
             "eta" -> returnedParameters.eta = centredNormalRandom(this.eta, std)
             "delta" -> returnedParameters.delta = centredNormalRandom(this.delta, std)
@@ -183,11 +180,11 @@ internal class Parameters {
      *
      * @return an optimized parameters
      */
-    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, prices: DoubleArray, weight: Weights,
+    fun parallelUpdateParameters(a: Double, v: Double, returns: DoubleArray, weight: Weights,
                          sizeWindow: Int, std: Double): Parameters {
 
         // we compute the current value of our parameters : it will be the first "best" result
-        var result = this.costFunction(a, v, returns, prices, weight, sizeWindow)
+        var result = this.costFunction(a, v, returns, weight, sizeWindow)
         best = Pair(result, this)
         val executor = Executors.newFixedThreadPool(maxOf(Runtime.getRuntime().availableProcessors(),4))
 
@@ -201,7 +198,7 @@ internal class Parameters {
                     val newParameters = best.second.generateNewParameters(field, std)
 
                     // -the cost function
-                    result = newParameters.costFunction(a, v, returns, prices, weight, sizeWindow)
+                    result = newParameters.costFunction(a, v, returns, weight, sizeWindow)
 
                     // -compare to the "best" and maybe update it
                     @Synchronized if (result > best.first) best = Pair(result, newParameters)
