@@ -1,5 +1,6 @@
 package machine.learning
 
+import java.io.File
 import java.util.*
 
 /**
@@ -17,6 +18,8 @@ class ARL(private val sizeWindow: Int) {
     private var ft: Array<Double> // each element is the result of Math.signum(x)
     private var returns: DoubleArray
     private var position :Position
+    private var savedFt: DoubleArray
+    private var savedPt: DoubleArray
 
     init {
 
@@ -33,6 +36,8 @@ class ARL(private val sizeWindow: Int) {
         ft = arrayOf(Math.signum(0.0))
 
         position = Position(0.0,0.0, 1.0)
+        savedFt = DoubleArray(0)
+        savedPt = DoubleArray(0)
     }
 
 
@@ -64,7 +69,8 @@ class ARL(private val sizeWindow: Int) {
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
-            val computedReturn = price - oldPrice
+            val computedReturn = (price / oldPrice) - 1.0
+//            val computedReturn = price - oldPrice
 
             // keep the price for the next loop
             oldPrice = price
@@ -109,6 +115,12 @@ class ARL(private val sizeWindow: Int) {
             position.currentPnl = pt.last()
         }
 
+//        if (!train) {
+//            saveInFile(
+//                    ft.toDoubleArray().sliceArray(ft.lastIndex - 500..ft.lastIndex),
+//                    pt.toDoubleArray().sliceArray(pt.lastIndex - 500..pt.lastIndex)
+//            )
+//        }
         // return the p_t
         return pt
     }
@@ -117,10 +129,18 @@ class ARL(private val sizeWindow: Int) {
      * Reset the weight and the returns between runs.
      */
     fun reset() {
-        this.weight = Weights(sizeWindow, 0)
+//        this.weight = Weights(sizeWindow, 0)
         this.returns = DoubleArray(0)
         this.ft = arrayOf(Math.signum(0.0))
         this.parameters = Parameters()
+    }
+
+    /**
+     *  Saved in a file the p&l and the exposition to use it later.
+     */
+    private fun saveInFile(savedFt: DoubleArray, savedPt : DoubleArray, fileFt : String="ft.csv", filePt : String = "pt.csv" ) {
+        File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
+        File(filePt).appendText(savedPt.joinToString(separator = "\n"))
     }
 
 
