@@ -68,7 +68,7 @@ internal fun computeRiskAndPerformance(
         val diff = position.maxPnl - position.currentPnl
         if (diff <= 0.0) {
             position.maxPnl = position.currentPnl
-        } else if (diff > 0.0 && diff > 0.1) {
+        } else if (diff > 0.0 && diff > 0.01) {
             res = Math.signum(0.0)
         }
     }
