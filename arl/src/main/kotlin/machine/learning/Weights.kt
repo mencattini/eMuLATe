@@ -29,6 +29,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         // create an array of weight with size of $sizeWindow
         // the weight is defined : (w_{0,M}, vThreshold, w_{M+1})
         coefficients = DoubleArray(sizeWindow, {random.nextDouble()})
+        coefficients[coefficients.lastIndex - 1] = 0.0
         // we need to store the diffFt value for the next update
         oldDiffFt = kotlin.DoubleArray(sizeWindow)
     }
@@ -78,10 +79,8 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         val wMplusOne = this.wMplusOne()
 
         if (ft == ftMinusOne) {
-            // the updating delta using weights = weights + rho * deltaW
-            val res =  Weights(coefficients, givenT + 1, at, bt)
-            res.oldDiffFt = oldDiffFt
-            return res
+            diffRt = 0.0
+            diffRtMinusOne = rt
         } else {
             val div = (ft - ftMinusOne) / (Math.abs(ft - ftMinusOne))
             // the dR_{t} / dF_{t}
@@ -94,11 +93,6 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         // we need to modify the returns before, so we create a new variable
         // we compute the dF_{t} / dw_{i,t} (where it's partial derivation)
         val tmpReturns = returns.plus(ftMinusOne).reversed().toDoubleArray()
-//                // if return.size is smaller than sizeWindow, it means we need to add the absolute value of the diff
-//                // else we just add an array of size 0
-//                .plus(DoubleArray(Math.abs(minOf((returns.size - sizeWindow + 1), 0))))
-//                // we slice to sizeWindow (NOT INCLUDED) and then add the ftMinusOne
-//                .sliceArray(0 until sizeWindow - 1).plus(ftMinusOne)
 
         val diffFt = DoubleArray(oldDiffFt.size)
 

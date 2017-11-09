@@ -111,11 +111,11 @@ internal class Parameters {
             // we compute the ft
             var computedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns)
 
-            // update the weights
-            // mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
-            //        parameters, returns)
-
-            // computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
+//             update the weights
+//             mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
+//                    parameters, returns)
+//
+//             computedFt = computeFt(t, mutableWeight, Math.signum(computedFt), sizeWindow, returns)
             // we put it in the second layer
             ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
