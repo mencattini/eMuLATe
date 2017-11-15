@@ -50,7 +50,8 @@ class ARL(private val sizeWindow: Int) {
      *
      * @return we return the w_n (cf. article to the meaning and computation)
      */
-    fun loop(prices : List<Double>, train : Boolean, updateThreshold: Int = 1000,oldPt: Array<Double> = arrayOf(1.0)): Array<Double> {
+    fun loop(prices : List<Double>, train : Boolean, updateThreshold: Int = 1000,
+             oldPt: Array<Double> = arrayOf(1.0)): Array<Double> {
 
         // we cast the price, for the compatibility with java
         val pricesCasted = prices.toDoubleArray()
@@ -69,8 +70,7 @@ class ARL(private val sizeWindow: Int) {
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
-            val computedReturn = (price / oldPrice) - 1.0
-//            val computedReturn = price - oldPrice
+            val computedReturn = price - oldPrice
 
             // keep the price for the next loop
             oldPrice = price
@@ -85,9 +85,9 @@ class ARL(private val sizeWindow: Int) {
                 weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
                         parameters, returns)
 
-                // cf. article, "since the weight updating is designed to improve the model at each step, it makes sense to
-                // recalculate the trading decision with the most up-to-date version [...] This final trading signal is
-                // used for effective decision making by the risk and the performance control layer."
+                // cf. article, "since the weight updating is designed to improve the model at each step, it makes
+                // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
+                // signal is used for effective decision making by the risk and the performance control layer."
                 computedFt = computeFt(t, Math.signum(computedFt))
                 // we put it in the layer 2
                 ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
@@ -109,18 +109,17 @@ class ARL(private val sizeWindow: Int) {
             val lastIndex = ft.lastIndex
 
             // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
-            pt = pt.plus(pt.last() + (pt.last() * ft[lastIndex - 1] * returns.last() - 0.0002 *
+            pt = pt.plus(pt.last() + ( ft[lastIndex - 1] * returns.last() - 0.0002 *
                     Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
 
+            // we save the p&l and the signal
+            if (!train) {
+                savedFt = savedFt.plus(ft.last())
+                savedPt = savedPt.plus(pt.last())
+            }
+            // update of the current p&l
             position.currentPnl = pt.last()
         }
-
-//        if (!train) {
-//            saveInFile(
-//                    ft.toDoubleArray().sliceArray(ft.lastIndex - 500..ft.lastIndex),
-//                    pt.toDoubleArray().sliceArray(pt.lastIndex - 500..pt.lastIndex)
-//            )
-//        }
         // return the p_t
         return pt
     }
@@ -129,7 +128,7 @@ class ARL(private val sizeWindow: Int) {
      * Reset the weight and the returns between runs.
      */
     fun reset() {
-//        this.weight = Weights(sizeWindow, 0)
+        this.weight = Weights(sizeWindow, 0)
         this.returns = DoubleArray(0)
         this.ft = arrayOf(Math.signum(0.0))
         this.parameters = Parameters()
@@ -138,7 +137,16 @@ class ARL(private val sizeWindow: Int) {
     /**
      *  Saved in a file the p&l and the exposition to use it later.
      */
-    private fun saveInFile(savedFt: DoubleArray, savedPt : DoubleArray, fileFt : String="ft.csv", filePt : String = "pt.csv" ) {
+   fun saveInFile(savedFt: DoubleArray = this.savedFt, savedPt : DoubleArray = this.savedPt, fileFt : String="ft.csv",
+                  filePt : String = "pt.csv" ) {
+//        delete the two files, if they exists
+        if (File(fileFt).exists()) {
+            File(fileFt).delete()
+        }
+        if (File(filePt).exists()) {
+            File(filePt).delete()
+        }
+//        write the vector
         File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
         File(filePt).appendText(savedPt.joinToString(separator = "\n"))
     }
