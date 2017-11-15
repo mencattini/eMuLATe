@@ -83,7 +83,7 @@ class ARL(private val sizeWindow: Int) {
             // update the weights
             if (train) {
                 weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
-                        parameters, returns)
+                        parameters, returns, 5)
 
                 // cf. article, "since the weight updating is designed to improve the model at each step, it makes
                 // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
