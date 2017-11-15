@@ -23,8 +23,8 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
         // create the oldAt and oldBt
         // the default value are different to avoid the division by 0 in weight update
-        oldAt = 1.0
-        oldBt = 0.0
+        oldAt = 0.0
+        oldBt = 0.5
 
         // create an array of weight with size of $sizeWindow
         // the weight is defined : (w_{0,M}, vThreshold, w_{M+1})
