@@ -26,7 +26,7 @@ internal class Parameters {
         delta = random.nextDouble()
         eta = random.nextDouble()
         rho = random.nextDouble()
-        x = 0.01
+        x = random.nextDouble()
         y = random.nextDouble()
 
     }
@@ -69,8 +69,16 @@ internal class Parameters {
     private fun costFunction(a: Double, v: Double, returns: DoubleArray, weight: Weights, sizeWindow: Int): Double {
 
         val rt = getRt(returns,this, weight, sizeWindow)
-        val sumRtPositive = (rt.filter { it < 0 }).map { it -> it * it }.sum()
-        val sumRtNegative = (rt.filter { it > 0 }).map { it -> it * it }.sum()
+        var sumRtNegative = 0.0
+        var sumRtPositive = 0.0
+//        filter the positive and negative element
+        for (ele in rt) {
+            if (ele > 0.0) {
+                sumRtPositive += ele
+            } else if (ele < 0.0) {
+                sumRtNegative += ele
+            }
+        }
         // check if there is a Nan or not, if Nan we just return the neutral element of multiplication
         // we check the denominator
         val sigma = if (sumRtPositive == 0.0) Double.MAX_VALUE else sumRtNegative / sumRtPositive
@@ -100,7 +108,7 @@ internal class Parameters {
         // the array we will return
         val rt = DoubleArray(returns.size)
         var ft = Array(1,{ Math.signum(0.0)})
-        var mutableWeight = weight.copy()
+        val mutableWeight = weight.copy()
 
         var pt = Array(1, {1.0})
         // we init the memory of position
@@ -109,9 +117,9 @@ internal class Parameters {
         while (t < returns.size) {
 
             // we compute the ft
-            var computedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns)
+            val computedFt = computeFt(t, mutableWeight, ft.last(), sizeWindow, returns)
 
-//             update the weights
+////             update the weights
 //             mutableWeight = mutableWeight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), t,
 //                    parameters, returns)
 //
