@@ -22,14 +22,14 @@ internal fun computeFt(givenT: Int, weight: Weights, oldFt: Double, sizeWindow: 
 
     // we get the useful weights and returns
     // we add some 0 to avoid the out of bound array exception.
-    val usefulWeights: DoubleArray = weight.coefficients.sliceArray(0..givenT)
+    val usefulWeights: DoubleArray = weight.coefficients.sliceArray(0..minOf(givenT, sizeWindow - 3))
     val usefulReturns: DoubleArray = returns.plus(DoubleArray(sizeWindow))
             .sliceArray(maxOf(0,givenT - sizeWindow + 3)..givenT)
             .reversedArray()
 
     // we zip the two array together and do the multiplication/sum
-    for ((first,second) in usefulWeights.zip(usefulReturns)) {
-        sum += first * second
+    for (i in 0..usefulWeights.lastIndex){
+        sum += usefulReturns[i] * usefulWeights[i]
     }
 
     return sum
@@ -68,7 +68,7 @@ internal fun computeRiskAndPerformance(
         val diff = position.maxPnl - position.currentPnl
         if (diff <= 0.0) {
             position.maxPnl = position.currentPnl
-        } else if (diff > 0.0 && diff > 0.01) {
+        } else if (diff > 0.0 && diff > 0.005) {
             res = Math.signum(0.0)
         }
     }
