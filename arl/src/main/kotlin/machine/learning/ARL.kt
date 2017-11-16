@@ -18,12 +18,14 @@ class ARL(private val sizeWindow: Int) {
     private var ft: Array<Double> // each element is the result of Math.signum(x)
     private var returns: DoubleArray
     private var position :Position
+
+    // this is for saving or plotting
     private var savedFt: DoubleArray
     private var savedPt: DoubleArray
 
     init {
 
-        val random = Random()
+        val random = Random(0)
 
         parameters = Parameters()
         z = random.nextDouble()
@@ -150,7 +152,6 @@ class ARL(private val sizeWindow: Int) {
         File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
         File(filePt).appendText(savedPt.joinToString(separator = "\n"))
     }
-
 
     /**
      * Compute the Ft layer using weights, vthreshold, returns and old_ft.
