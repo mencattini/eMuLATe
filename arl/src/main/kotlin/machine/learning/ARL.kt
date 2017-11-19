@@ -78,7 +78,7 @@ class ARL(private val sizeWindow: Int) {
             returns = returns.plus(computedReturn)
 
             // compute the Ft
-            var computedFt = computeFt(t)
+            val computedFt = computeFt(t)
 
             // we put it in the layer 2
             ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
@@ -139,7 +139,7 @@ class ARL(private val sizeWindow: Int) {
             var computedFt = computeFt(t)
 
             // update the weights
-                weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt),parameters, returns)
+            weight = weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), parameters, returns)
 
             // cf. article, "since the weight updating is designed to improve the model at each step, it makes
             // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
