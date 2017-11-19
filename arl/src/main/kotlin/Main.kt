@@ -29,13 +29,13 @@ fun main(args : Array<String>) {
     var p_t = arrayOf(1.0)
     val step = 2000
     val stepLearn = 2500
-    val n = 100000
+    val n = 20000
     val updateThreshold = 200
 
     while(i < n) {
         println("$i")
-        arl.loop(array2.toDoubleArray().slice(i..i+step), true,updateThreshold)
-        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+stepLearn), false,updateThreshold, p_t)
+        arl.train(array2.toDoubleArray().slice(i..i+step), updateThreshold, p_t)
+        p_t = arl.test(array2.toDoubleArray().slice(i+step..i+stepLearn), p_t)
         arl.reset()
         i += stepLearn - step
     }
