@@ -1270,12 +1270,83 @@ fournit suffisamment de données pour avoir d'excellent résultats, de plus, nou
 % début du projet  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Projet}
-\newpage
+\subsection{Introduction}
+
+\subsection{Algorithme}
+Dans cette section, pour chacune des parties de l'algorithme, nous allons dans un premier temps expliquer son fonctionnement théorique et ses bases
+mathématiques, puis exposer la manière dont nous avons implémenter ces éléments.
+Une fois l'algorithme détaillé, nous présenterons les résultats pour les différentes variantes, en analysant ce qui à conduit aux valeurs obtenues.
+En guise de conclusion, les points problématiques seront abordés et détaillés afin que nous puissions dans la section suivante proposer des solutions à
+ces derniers.
+
+\subsubsection{\textit{Layer 1}}
+\paragraph{}
+Le rôle du \textit{Layer 1} est de fournir un signal. Dans l'article, ce signal peut avoir comme ensemble de valeurs : $\{-1,+1\}$. Le calcul du dit
+signal suit la formule suivante \cite{fx_trading}:
+$$F_t = sign(\sum_{i=0}^M w_{i,t} r_{t-i} + w_{M+1,t} F_{t-1} + v_t$$
+où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, $w_{i,t}$ est le ième poids de l'itération $t$, $v_t$ est un seuil et
+$F_{t-1}$ le résultat de l'itération $t-1$.
+
+Cette formule mathématique implémente une réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}
+($r_i$). Les poids ont pour but de donner une pondération à chacun des éléments afin de donner le résultat le plus "juste" possible, suivant certains
+critères\footnote{Nous développerons ces critères plus loin.}
+Dans notre cas, le réseau de neurones disposent d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
+\footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisée dans le calcul du signal de $t$. Cette construction permet d'augmenter
+la quantité d'informations disponibles par le réseau afin d'améliorer les résultats.
+Un seuil, $v_t$ est ajouté dans la formule afin de lisser les résultats et d'éviter des variations trop fréquente.
+
+\paragraph{}
+Afin d'obtenir de bons résultats, ils convient de trouver les valeurs de $w_t$ et $v_t$ qui vont maximiser une fonction de coût. L'optimisation choisie
+est une descente du gradient (\ref{section descente du gradient}). La fonction de coût est définie comme cela :
+$$D_t := \frac{d\widehat{S}(t)}{d\eta}|_{\eta=0} = \frac{B_{t-1}\Delta A_t - \frac{1}{2} A_{t-1}\Delta B_t}{(B_{t-1} - A_{t-1}^2)^{\frac{3}{2}}}$$
+
+où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$.Il faut appliquer un développement de Taylor à $\widehat{S}(t)$ en $\eta=0$
+La définition de $\widehat{S}(t)$ est la suivante :
+$$\widehat{S}(t) := \frac{A_t}{B_t}$$
+où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
+De manière intuitive, $A_t$ représente l'espérance et $B_t$ la volatilité. Le but est donc d'obtenir une grand espérance avec peut de risque. La valeur
+théorique maximale de la fonction $\widehat{S}(t)$ doit tendre vers l'infini.
+
+Il reste encore à définir $R_t$, qui quantifie le gain au temps $t$:
+$$R_t := F_{t-1} r_t - \delta |F_t - F_{t-1}|$$
+
+où $\delta$ est le coût de transaction.
+La première partie $F_{t-1} r_t$ estime le gain en fonction de la position et du \textit{return}. Plusieurs cas de figures se présentent :
+\begin{itemize}
+ \item Si $sign(F_{t-1}) = sign(r_t)$, alors la multiplication de ces deux éléments donnera un nombre supérieur ou égal à 0.
+ \item Dans le cas contraire, le résultat sera négatif.
+\end{itemize}
+Si nous avons deviné correctement la direction du cours, alors nous faisons un profit et dans le cas contraire une perte.
+
+La deuxième partie $\delta |F_t - F_{t-1}|$ ajoute les coûts de transactions dans le calcul du profit. Cela découle du fait que prendre une position à
+un coût. Les différents cas sont :
+\begin{itemize}
+ \item Si $F_t = F_{t-1}$ alors la différence est nulle et de même pour le coût de transaction.
+ \item Dans le cas contraire, cela signifie que nous avons dans un premier temps fermé une position, puis ouvert une autre. Il y a deux transactions
+ effectuées et donc $2 \delta$
+\end{itemize}
+Le profit n'est donc pas uniquement dépendant du signal et du \textit{return} mais également du signal de l'itération précédente.
+
+Le profit cumulé est définit comme la somme des profits individuels :
+$$P_T = \sum_{t=0}^T R_t$$
+
+\subsubsection{\textit{Layer 2}}
+\subsubsection{\textit{Layer 3}}
+\subsubsection{Résultats}
+\subsubsection{Points problématiques}
+
+\subsection{Solution}
+\subsubsection{Points problématiques}
+\subsubsection{Remédiations}
+\subsubsection{Résultats}
+
+\subsection{Conclusion}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % début de la bibliographie %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
 \bibliographystyle{plain}
 \nocite{*}
 \bibliography{bibliographie}
