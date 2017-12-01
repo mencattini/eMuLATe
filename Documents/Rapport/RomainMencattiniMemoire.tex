@@ -1304,7 +1304,7 @@ où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$.Il faut
 La définition de $\widehat{S}(t)$ est la suivante :
 $$\widehat{S}(t) := \frac{A_t}{B_t}$$
 où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
-De manière intuitive, $A_t$ représente l'espérance et $B_t$ la volatilité. Le but est donc d'obtenir une grand espérance avec peut de risque. La valeur
+De manière intuitive, $A_t$ représente l'espérance et $B_t$ la volatilité. Le but est donc d'obtenir une grand espérance avec peu de risque. La valeur
 théorique maximale de la fonction $\widehat{S}(t)$ doit tendre vers l'infini.
 
 Il reste encore à définir $R_t$, qui quantifie le gain au temps $t$:
@@ -1329,6 +1329,34 @@ Le profit n'est donc pas uniquement dépendant du signal et du \textit{return} m
 
 Le profit cumulé est définit comme la somme des profits individuels :
 $$P_T = \sum_{t=0}^T R_t$$
+
+\paragraph{}
+Maintenant que nous avons définie toutes les équations, intéressons nous à l'optimisation des poids. La formule de mise à jour, nous donne :
+$$w_{i,t} = w_{i,t-1} + \rho \Delta w_{i,t}$$
+
+Où $\Delta w_{i,t} = \frac{dD_t}{dw_i}$. Donc les poids de l'itération $t$ sont définis en fonction de $t-1$ et de la dérive $D_t$ par rapport aux poids
+$w_i$. Cette dérivée peut s'estimer à partir de:
+$$\frac{dD_t}{dw_i} \approx \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
+
+Cependant $\frac{dF_t}{dw_{i,t}}$ peut également être estimé comme :
+$$\frac{dF_t}{dw_{i,t}} \approx \frac{\delta F_t}{\delta w_{i,t}} + \frac{\delta F_t}{\delta F_{t-1}} \frac{\delta F_{t-1}}{\delta w_{i,t-1}}$$
+
+On remarque que toutes formules sont définies de manières récursives. Cela découle de la structure du réseau de neurones. En effet, comme ce dernier est
+récurrent, et comme l'itération $t-1$ influence celle de $t$, une définition récursive est plus naturelle qu'une définition itérative qui ferait intervenir
+des accumulateurs.
+
+\paragraph{}
+Nous avons expliqué plus tôt, qu'il existe deux versions de la descente du gradient (\ref{section descente du gradient}). Une version normale, ainsi qu'une
+version stochastique.
+Les deux sont équivalentes, tant au niveau des résultats que des problèmes rencontrés. Elles le sont également d'un point de vue mathématique
+\cite{learning_to_trade}.
+L'optimisation peut s'effectuer en version stochastique, avec à chaque itération le calcul de $\Delta w_{i,t}$ comme vu précédemment
+Ou bien en utilisant tout les exemples et avec une somme :
+$$\Delta w_{i,t} = \sum_{t=1}^T \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
+Puis dans tous les cas, il faut mettre à jour par $w_{i,t} = w_{i,t-1} + \rho \Delta w_{i,t}$.
+
+Dans les deux cas, nous pouvons appliquer une boucle d'optimisation, notée \textit{epochs} dans la littérature. Il convient d'effectuer plusieurs fois
+l'optimisation sur l'ensemble entier d'entraînement, afin d'améliorer les résultats.
 
 \subsubsection{\textit{Layer 2}}
 \subsubsection{\textit{Layer 3}}
