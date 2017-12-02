@@ -60,6 +60,39 @@
 % end subsubsubsection %
 %%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%
+% start code %
+%%%%%%%%%%%%%%
+\definecolor{green(colorwheel)(x11green)}{rgb}{0.0, 1.0, 0.0}
+\definecolor{purple(munsell)}{rgb}{0.62, 0.0, 0.77}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=Java,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green},
+  commentstyle=\itshape\color{purple},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{purple},
+}
+
+\lstset{escapechar=@,style=customc}
+
+%%%%%%%%%%%%
+% end code %
+%%%%%%%%%%%%
 
 \geometry{hmargin=3cm}
 
@@ -1279,7 +1312,7 @@ Une fois l'algorithme détaillé, nous présenterons les résultats pour les dif
 En guise de conclusion, les points problématiques seront abordés et détaillés afin que nous puissions dans la section suivante proposer des solutions à
 ces derniers.
 
-\subsubsection{\textit{Layer 1}}
+\subsubsection{Algorithme \textit{Layer 1}}
 \paragraph{}
 Le rôle du \textit{Layer 1} est de fournir un signal. Dans l'article, ce signal peut avoir comme ensemble de valeurs : $\{-1,+1\}$. Le calcul du dit
 signal suit la formule suivante \cite{fx_trading}:
@@ -1357,6 +1390,65 @@ Puis dans tous les cas, il faut mettre à jour par $w_{i,t} = w_{i,t-1} + \rho \
 
 Dans les deux cas, nous pouvons appliquer une boucle d'optimisation, notée \textit{epochs} dans la littérature. Il convient d'effectuer plusieurs fois
 l'optimisation sur l'ensemble entier d'entraînement, afin d'améliorer les résultats.
+
+\subsubsection{Implémentation \textit{Layer 1}}
+
+\paragraph{}
+De part le caractère récursif des équations, il faut définir les valeurs pour $t=0$. Il s'agît d'un choix arbitraire, mais qui se base néanmoins sur des
+éléments concrets. Nous avons donc que :
+\begin{itemize}
+ \item $A_0 = 0$. Le profit moyenne au temps $0$ est nul car aucune transaction n'a été effectuée.
+ \item $B_0 = 0$. La déviation standard est nulle également pour les mêmes raisons que $A_0$.
+ \item $w_{i,0} \in [0,1]$. Les poids sont initialisés de manières aléatoire et uniformément répartis sur l'ensemble $[0,1]$. Il n'y a aucune raison
+ de penser qu'un départ est, à priori, meilleur qu'un autre.
+ \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît plutôt d'un signal \textit{long}, ou
+ \textit{short}.
+ \item $\delta,\rho,\eta,x,y \in [0,1]$. Les métas-paramètres sont tirés aléatoirement dans l'intervalle $[0,1]$, car l'article ne donne aucune
+ indication sur les valeurs optimale. On suppose donc que l'optimisation annule le caractère aléatoire et donne donc des résultats similaires malgré des
+ valeurs initiales différentes.
+\end{itemize}
+
+\paragraph{}
+Nous avons fait le choix de représenter le vecteur $w$ et les \textit{returns} comme un \texttt{Array<Double>}. À partir de là, l'implémentation du signal
+consiste à itérer sur les deux vecteurs, à multiplier les éléments correspondant et à sommer le tout. Nous y ajouterons le seuil $v_t$ ainsi que le 
+résultat de l'itération précédente soit $w_{i,M+1} F_{t-1}$.
+Voici un pseudo code résumant le calcul :
+\begin{lstlisting}
+ acc = 0
+ for(i=0; i < returns.length; i++){
+    acc += w[i] * returns[i]
+ }
+ return acc + vt + w[w.length - 1] * oldFt
+\end{lstlisting}
+
+Afin de créer un code décomposable, nous avons créer des objets avec un objectif métier clair. Un objet \texttt{Weights} est donc instancié, représentant
+les poids. Des méthodes y sont attachées comme celle de mise à jour des poids. Il dispose de plusieurs attributs :
+\begin{itemize}
+ \item $A_{t-1}$ afin d'utiliser le résultat de l'itération précédente dans le calcul de $A_t$.
+ \item $B_{t-1}$ pour les mêmes raisons que $A_{t-1}$.
+ \item $w$ dont nous avons déjà parlé plus haut.
+ \item $\frac{dF_{t-1}}{dw_{i,t-1}}$ pour le calcul de $\frac{dF_{t}}{dw_{i,t}}$.
+\end{itemize}
+
+
+Dans cette dernière, le code implémente directement les équations que nous avons mentionnés plus haut. Nous calculons donc $\Delta w_{i.t}$ puis
+nous mettons à jour les valeurs des poids. La représentation de $w$ et des $returns$ ne change pas. Concernant les autres éléments, 
+$A_t$,$B_t$,$\delta,\rho,\eta$ sont de type \texttt{Double}. Il y a cependant des éléments qui ne sont pas totalement défini, il convient donc de faire 
+un choix. Il y a principalement trois équations posant problèmes :
+\begin{itemize}
+ \item $\frac{dR_t}{F_t} = -\delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ qui n'est pas défini si $F_t = F_{t-1}$.\\
+ \item $\frac{dR_t}{F_{t-1}} = r_t + \delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ non défini pour $F_t = F_{t-1}$.\\
+ \item $\frac{dD_t}{dR_t} = \frac{B_{t-1} - A_{t-1}r_t}{|B_{t-1} - A_{t-1}^2|^{\frac{3}{2}}}$ qui est non défini pour $A_{t-1}^2 >= B_{t-1}$.
+\end{itemize}
+
+Pour résoudre cela, nous avons posé que si $F_t = F_{t-1}$, alors: 
+$$\frac{F_t - F_{t-1}}{|F_t - F_{t-1}|} = 0$$
+Et si $A_{t-1}^2 >= B_{t-1}$, alors il faut que la valeur de $\frac{dD_t}{dR_t}$ soit très basse pour pénaliser cela\footnote{La valeur numérique est à 
+l'appréciation du programme. Cela peut être \texttt{-100} ou \texttt{Double.MIN\_VALUE}}.
+
+La descente du gradient est très sensible au \textit{learning rate}\footnote{$\rho$ dans notre cas.} et dans certains cas, les poids peuvent diverger et
+tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents. Une solution possible pour pallier ce problème 
+consiste à appliquer un facteur $f < 1$ afin d'empêcher les poids de croître trop rapidement et de tendre vers l'infini.
 
 \subsubsection{\textit{Layer 2}}
 \subsubsection{\textit{Layer 3}}
