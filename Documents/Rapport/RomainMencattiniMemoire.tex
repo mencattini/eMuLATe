@@ -63,8 +63,8 @@
 %%%%%%%%%%%%%%
 % start code %
 %%%%%%%%%%%%%%
-\definecolor{green(colorwheel)(x11green)}{rgb}{0.0, 1.0, 0.0}
-\definecolor{purple(munsell)}{rgb}{0.62, 0.0, 0.77}
+\definecolor{green}{rgb}{0.0, 1.0, 0.0}
+\definecolor{purple}{rgb}{0.62, 0.0, 0.77}
 \lstdefinestyle{customc}{
   belowcaptionskip=1\baselineskip,
   breaklines=true,
@@ -1450,7 +1450,124 @@ La descente du gradient est très sensible au \textit{learning rate}\footnote{$\
 tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents. Une solution possible pour pallier ce problème 
 consiste à appliquer un facteur $f < 1$ afin d'empêcher les poids de croître trop rapidement et de tendre vers l'infini.
 
-\subsubsection{\textit{Layer 2}}
+\subsubsection{Algorithme \textit{Layer 2}}
+\paragraph{}
+Nous l'avons vu avec la partie sur le \textit{layer 1}, ce dernier nous donne un signal. Ce signal ne possède que deux valeurs $\{+1,-1\}$. Le
+\textit{layer 2} va utiliser ce signal si certaines conditions sont requises.
+Les deux conditions sont:
+\begin{itemize}
+ \item Le seuil, ou \textit{threshold}.
+ \item Le \textit{stop trailling loss}.
+\end{itemize}
+
+Le premier sert à vérifier la puissance du signal. En effet, la calcul du signal, avant application du signe, renvoie un nombre réel. Cela peut être
+$-0.0005$ comme $+1000$. Le but du seuil est de filtrer les signaux peu puissant. On suppose que si un signal est proche de 0, il ne faut apporter que
+peu de confiance au choix porté par le dit signal. Notre $y$ représente le seuil, il y a deux cas :
+$$|F_t | >= y \rightarrow \text{alors le signal est utilisé}$$
+$$|F_t | < y \rightarrow \text{alors le signal n'est pas utilisé}$$
+
+Il convient d'apporter une petite précision. En annonçant que le signal n'est pas utilisé, cela peut signifier deux choses :
+\begin{itemize}
+ \item Nous gardons la position qui a été ouverte au temps $t-1$.
+ \item Nous ne prenons aucune position.
+\end{itemize}
+
+Cela dépend de la manière dont l'algorithme est construit. L'article ne fournit aucune précision quant à la technique utilisée, c'est donc une choix
+dépendant de l'implémentation. Ne prendre aucune position revient à dire qu'à chaque position prise, nous la fermons, et donc il est possible de ne pas
+se positionner. Au contraire, si nous ne fermons la position que lorsqu'un signal contraire intervient, il est juste de garder la position au temps $t-1$.
+
+Comme tout les métas-paramètres, il est important de trouver une bonne valeur pour $y$. En effet, si le seuil est trop bas, ce dernier n'aura aucun effet 
+et les résultats seront similaires à un algorithme sans seuil. Par contre, si $y$ a une valeur trop élevée, alors cela va bloquer trop de signaux qui
+auraient pu conduire à des gains. La valeur optimale va dépendre des \textit{returns} rencontrés, il n'est donc pas possible d'optimisé à priori.
+
+\paragraph{}
+Le \textit{stop trailing loss} est une sécurité. Cela permet d'éviter de dépasser un certain pourcentage de perte et donc de protéger les gains. C'est un
+mécanisme financier qui a été ajouté afin de compléter la partie informatique.
+
+Lorsqu'on prend une position, il faut mémoriser le profit cumulé. Tant que la position ne change pas, nous allons vérifier ce profit cumulé. Deux cas de
+figure se présentent:
+\begin{itemize}
+ \item S'il augmente. Cela signifie que nous avons fait des gains et qu'il faut remplacer la valeur mémorisé par le nouveau profit cumulé.
+ \item S'il diminue. Nous avons subi des pertes, il faut donc vérifier que ces pertes ne dépassent pas un certain pourcentage.
+\end{itemize}
+
+Si les pertes dépassent le pourcentage, alors nous fermons la position et attendons de recevoir une position différente de celle ayant entraînée les pertes.
+Dans le cas contraire, nous ne faisons rien.
+
+Voici l'effet que peut avoir un \textit{stop loss} sur une courbe de profit:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/stop_loss}
+\caption{Exemple de l'effet d'un \textit{trailing stop loss}.}
+\end{figure}
+
+\paragraph{}
+Nous remarquons dans l'exemple qu'il n'y a pas de grande perte et qu'une perte est souvent suivie d'une période plate. L'application d'un \textit{stop loss}
+peut diminuer les pertes et surtout il empêche des comportements humains problématiques. En effet, il arrive qu'une personne prennent une position, que
+cette dernière commence à lui faire perdre de l'argent, mais qu'il la garde ouverte en espérant que les choses vont changer et s'améliorer. Le \textit{stop loss}
+automatise et empêche ce biais cognitif.
+
+Dans le cadre de notre algorithme, le pourcentage de perte à ne pas dépasser est quantifié par la formule suivante :
+$$loss < x * 0.001$$
+Les pertes doivent être plus faibles que $x$ points de bases. Il faut optimiser $x$, car si sa valeur est trop grande, il n'aura aucun effet sur le profit
+cumulé. Dans le cas contraire, il deviendra presque impossible de faire du profit, car à la moindre perte, le système va bloqué une position qui aurait pu
+engendrer des gains, de plus cela va encourager le système à changer dès que le \textit{stop loss} est déclenché entraînant ainsi une augmentation des
+coûts de transactions.
+
+\subsubsection{Implémentation \textit{Layer 2}}
+\paragraph{}
+L'implémentation du seuil est simple à mettre en place. Le \textit{layer 1} nous renvoie un \texttt{Double}, et il suffit de comparer la valeur avec notre
+$y$. Afin de gérer les métas-paramètres ensemble, nous avons créé un objet \texttt{Parameters} qui contient $\delta,\rho,\eta,x,y$. Le pseudo-code
+du seuil ressemble à :
+
+\begin{lstlisting}
+ ft = computeFt()
+ if (math.abs(ft) < param.y) {
+  /* traitement du signal */
+  }
+\end{lstlisting}
+
+Nous avons mentionné le fait qu'il ait plusieurs manières de traiter le signal lorsqu'il est trop faible. Nous avons fait le choix de
+retourner :
+\begin{lstlisting}
+ ft = computeFt()
+ if (math.abs(ft) < param.y) {
+  ft = 0.0
+  }
+\end{lstlisting}
+De cette manière, en accord avec les équations, cela signifie que nous fermons la position courante. Cela reste cohérent car nous avons
+toujours un coût de transaction :
+$$ \delta |F_t - F_{t-1}| = \delta (1 - 0)$$
+Et nous perdons rien car :
+$$ F_{t-1} r_t - \delta | F_t - F_{t-1}| = 0 - \delta | F_t - 0 |$$
+
+\paragraph{}
+Concernant le \textit{stop loss}, nous avons créé un objet \texttt{Position}, qui va mémoriser la dernière position ainsi que le profit
+cumulé. À partir de cela, voici à quoi ressemble l'implémentation :
+\begin{lstlisting}
+    ft = computeFt()
+ // if we change the position we need to update the max pnl and the position
+    if (ft != position.lastPosition) {
+        position.maxPnl = position.currentPnl
+        position.lastPosition = ft
+        return ft
+    } else {
+        // else we need to check the diff
+        val diff = position.maxPnl - position.currentPnl
+        if (diff <= 0.0) {
+            position.maxPnl = position.currentPnl
+        } else if (diff > 0.0 && diff > params.x * 0.001) {
+            res = Math.signum(0.0)
+        }
+    }
+\end{lstlisting}
+
+Dans la première partie, nous vérifions que la position est la même. Si ce n'est pas le cas, nous avons juste besoin de mettre à jour la nouvelle
+position et le profit cumulé maximum. Sinon, il convient de vérifier.
+
+Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contraire, nous vérifions et appliquons le seuil avec $x * 0.001$.
+À l'instar, du seuil, nous avons choisi de renvoyer un signal neutre, pour les mêmes raisons mathématiques qu'énoncées plus haut.
+
 \subsubsection{\textit{Layer 3}}
 \subsubsection{Résultats}
 \subsubsection{Points problématiques}
