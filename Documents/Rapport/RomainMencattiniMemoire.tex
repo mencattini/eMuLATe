@@ -1569,6 +1569,70 @@ Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contrair
 À l'instar, du seuil, nous avons choisi de renvoyer un signal neutre, pour les mêmes raisons mathématiques qu'énoncées plus haut.
 
 \subsubsection{\textit{Layer 3}}
+\paragraph{}
+Cette dernière couche a pour but d'optimiser les métas-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
+humaine pour trouver les meilleures valeurs possibles.
+
+Les fonctions qui rentrent en compte sont les suivantes :
+\begin{center}
+ $$ \Sigma := \frac{\sum_{i=0}^N (R_i)^2 I (R_i < 0)}{\sum_{i=0}^N (R_i)^2 I (R_i > 0)}$$
+ $$ U(\bar{R}, \Sigma, \nu) := a (1 - \nu) \bar{R} - \nu \Sigma$$
+\end{center}
+
+Où $\bar{R} := \frac{P_N}{N}$ est le profit moyen avec $N$ le nombre d'éléments, $\nu$ l'aversion au risque et $a$ est une constante.
+Dans la formule $\Sigma$, intuitivement on comprend que l'on veut un maximum de $R_i > 0$ et un minimum de $R_i < 0$, ce qui implique que la valeur
+optimale de cette formule vaut $0$. Ceci est confirmé dans la deuxième formule $U$. En effet, on va soustraire $\nu \Sigma$, donc si $\Sigma$ vaut $0$,
+on maximise la fonction de coût. De plus $\bar{R}$ est défini comme le profit moyen, plus il sera grand, plus $U$ sera grand.
+
+La direction optimale a suivre est celle qui va maximiser les profits positifs tout en minimisant les profits négatifs, ce qui est intuitif.
+L'article mentionne d'autres raisons qui appuient ce choix \cite{fx_trading}:
+\begin{enumerate}
+ \item Les stratégies avec un grand risque et de nombreux \textit{returns} négatifs sont pénalisés dans la définition de $\Sigma$.
+ \item Le fait de construire $\Sigma$ comme un ratio permet d'obtenir des résultats similaires même si le volume augmente. Par exemple, pour une même
+ stratégie qui serait stable, si l'on calcule avec 1'000 ou avec 1'000'000, le ratio sera similaire\footnote{De part notre hypothèse d'une stratégie stable}.
+\end{enumerate}
+
+Le but étant de maximiser $U$, la fonction de coût devient :
+$$\max\limits_{\delta, \eta, \rho, x, y} U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$$
+
+Avec, pour rappel, $\delta$ le coût de transaction, $\eta$ le paramètre d'adaptation, $\rho$ le paramètre d'apprentissage, $x$ le \textit{stop trailling
+loss} et $y$ le seuil. Malheureusement, cette fonction est trop complexe qui être optimisé de manière analytique. Il faut recourir à des heuristiques.
+L'article en propose une qui s'exprime de sous cette forme :
+$$\max\limits_{\delta} \max\limits_{\eta} \max\limits_{\rho} \max\limits_{x} \max\limits_{y} U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$$
+
+Il s'agît d'une recherche aléatoire composante par composante. Ils fixent quatre paramètres puis ils tirent 15 valeurs aléatoires normalement distribuées
+autour de la valeur initiale, puis ils évaluent la fonction pour chacune des 15 valeurs et prennent la meilleur. Puis l'optimisation reprend avec le 
+paramètre suivant. C'est une formule assez simple, qui a le mérite d'être peu coûteuse en ressources de calculs.
+
+\paragraph{}
+Comme pour le \textit{Layer 2}, l'implémentation du \textit{Layer 3} reprend fidèlement les équations proposées. Voici la manière dont fonctionne
+l'optimisation :
+\begin{enumerate}
+ \item Nous sélectionne un intervalle de \textit{returns}.
+ \item Nous fixons 4 paramètres parmi les 5.
+ \item Nous tirons une valeur aléatoire normalement distribuée centrée sur la valeur initiale.
+ \item Pour tout l'intervalle, nous lançons le \textit{Layer 1 \& 2} avec les métas-paramètres.
+ \item Nous récupérons les valeurs importantes et nous calculons $U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$.
+ \item Nous stockons le résultat.
+ \item Si nous avons terminé les 15 tirages, nous fixons la nouvelle valeur du paramètre avec le meilleur résultat\footnote{i.e: la meilleure valeur de 
+ $U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$ parmi celles stockées du point 6.} et retournons au point 2. Sinon nous reprenons au point 3.
+\end{enumerate}
+
+Une fois que les cinq paramètres ont été optimisés, nous pouvons mettre à jour les nouveaux paramètres et reprendre l'entraînement du \textit{Layer 1}.
+Les paramètres, initialement, ont une valeur aléatoire $\in [0,1]$ car nous n'avons aucune indication sur leur valeur optimale. Concernant la génération
+de nombres aléatoires :
+$$\mathcal{N}(\mu,\sigma)$$
+
+Où, $\mu$ vaut la valeur initiale du paramètre et $\sigma = 1$. Ce sont des valeurs arbitraires. Nous estimons que chercher des valeurs avec une déviation
+standard de 1 permet d'explorer l'espace tout en éviter d'avoir des changements trop brutaux.
+
+Dans l'implémentation, les paramètres sont réunis ensemble dans une classe et c'est cette classe qui disposent des méthodes pour optimiser et mettre à 
+jour les valeurs. De plus, par le caractère décorrélé des calculs pour les 15 tirages aléatoires, nous avons construit cela avec des \textit{Thread}. Cela
+permet d'avoir de meilleur performance, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
+paramètre donné, et il suffit juste de synchroniser le moment
+où tout les \textit{Thread} ont terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas une perte de
+performance. Il est donc possible de gagner un facteur $fac$ plus ou moins équivalent au nombre de cœurs engagés dans le calcul.
+
 \subsubsection{Résultats}
 \subsubsection{Points problématiques}
 
