@@ -1633,12 +1633,72 @@ paramètre donné, et il suffit juste de synchroniser le moment
 où tout les \textit{Thread} ont terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas une perte de
 performance. Il est donc possible de gagner un facteur $fac$ plus ou moins équivalent au nombre de cœurs engagés dans le calcul.
 
-\subsubsection{Résultats}
 \subsubsection{Points problématiques}
+\paragraph{}
+Durant l'implémentation, nous nous sommes trouvés confrontés à plusieurs problèmes algorithmiques. Dans cette section, nous allons vous les détailler et
+également vous présenter les solutions appliquées ou envisagées.
 
-\subsection{Solution}
-\subsubsection{Points problématiques}
-\subsubsection{Remédiations}
+\paragraph{}
+Le principal problème, qui nous empêche de pouvoir faire des résultats, est que les poids du réseau de neurones divergent durant la descente du gradient.
+Au bout de quelques centaines d'itérations, les poids croissent rapidement et deviennent tous \texttt{NaN}. Voici deux exemples de \textit{runs} afin de
+montrer le comportement des poids :
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{images/run_1}
+\caption{Exemple de la divergence des valeurs des poids pour une \textit{run} standard de l'algorithme. Où l'axe des abscisses représente l'itération et
+l'axe des ordonnées la valeur.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/run_2}
+\caption{Autre exemple de la divergence des valeurs des poids pour une \textit{run} standard de l'algorithme.}
+\end{figure}
+
+Ce phénomène peut avoir pour cause un \textit{learning rate}\footnote{Dans notre cas, il s'agît de $\rho$.} trop grand. En effet, si ce dernier a une
+valeur trop importante, à chaque itération la valeur risque de croître et donc de diverger. Une solution intuitive consisterait à diminuer le taux afin
+d'éviter cela. Nous avons donc tenté cette méthode qui s'est révélée être infructueuse. Pour toutes les valeurs testées, pour la plupart comprises
+$\in [1^{-5},1^{-2}]$, l'algorithme avait deux comportements\footnote{Les valeurs sont indicatives mais cela peut varier.}:
+\begin{itemize}
+ \item Pour les valeurs plus petites que $1^{-3}$, le taux d'apprentissage était trop faible et les valeurs des poids ne changeait pas.
+ \item Pour les valeurs plus grandes que $1^{-3}$, nous retrouvions un comportement divergeant.
+\end{itemize}
+
+L'article faisait mention d'un facteur $f < 1$ permettant d'éviter ces problèmes \cite{fx_trading}. Il est possible de multiplier les poids, lorsqu'il 
+dépasse une certaine valeur par le dît facteur, afin d'endiguer une croissance trop rapide. Le pseudo-code correspondant ressemble à cela :
+\begin{lstlisting}
+ for weight in weights
+     if abs(weight) > some_threashold
+         weight = weight * f
+     endif
+ endfor
+\end{lstlisting}
+
+Ici encore, il y a un choix à faire sur la valeur de $f$, nous avons donc testé pour plusieurs cas. Il ressort deux cas de figures :
+\begin{itemize}
+ \item Si $f$ a une valeur trop petite, alors les poids n'ont pas le temps de croître. Ils auront donc tendance à stagner ou à tendre vers $0$.
+ \item Dans le cas contraire, la multiplication ne fait pas assez diminuer la valeur des poids et ils tendent toujours vers l'infini.
+\end{itemize}
+
+Nous avons également tenté de combiner ces deux techniques en espérant que leur application conjointes permettent d'éviter ces problèmes, mais les
+résultats n'ont pas changé des situations mentionnées précédemment.
+\paragraph{}
+En essayant d'autres outils afin de voir si le problème persiste, nous nous sommes rendus compte qu'en utilisant une bibliothèque reconnue de réseaux de 
+neurones, cette divergence existait également. Donc pour des données similaires, avec un algorithme d'optimisation similaire mais un réseau de neurones
+différent et une fonction de coût différente, nous arrivons au même problème.
+Nous sommes donc parti de l'hypothèse que le problème se trouvait dans la méthode d'optimisation, soit la descente du gradient. En changeant de méthode
+dans la bibliothèque, nous avons obtenu des résultats\footnote{i.e: Les valeurs des poids ne divergeaient plus.} plutôt bon.
+
+Les algorithmes ayant données satisfactions sont \cite{keras}:
+\begin{itemize}
+ \item Adagrad.
+ \item Adadelta.
+ \item RMSProp.
+\end{itemize}
+
+  Nous avons donc lu la documentation et les publications afin de comprendre le fonctionnement de ces algorithmes. Et \textit{in fine}, trouver les 
+  différences avec la descente du gradient qui pourraient expliquer les écarts de résultats.
+
 \subsubsection{Résultats}
 
 \subsection{Conclusion}
