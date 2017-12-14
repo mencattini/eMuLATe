@@ -14,8 +14,10 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
     var coefficients : DoubleArray
     private var oldDiffFt : DoubleArray
-    private var oldAt : Double
-    private var oldBt : Double
+    var oldAt : Double
+    var oldBt : Double
+    private var magnitude : DoubleArray
+    private var rho : DoubleArray
 
     init {
         // we init the value with random
@@ -24,7 +26,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         // create the oldAt and oldBt
         // the default value are different to avoid the division by 0 in weight update
         oldAt = 0.0
-        oldBt = 0.5
+        oldBt = 0.0
 
         // create an array of weight with size of $sizeWindow
         // the weight is defined : (w_{0,M}, vThreshold, w_{M+1})
@@ -32,6 +34,8 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         coefficients[coefficients.lastIndex - 1] = 0.0
         // we need to store the diffFt value for the next update
         oldDiffFt = kotlin.DoubleArray(sizeWindow)
+        magnitude = kotlin.DoubleArray(sizeWindow, {1.0})
+        rho = DoubleArray(sizeWindow, {0.01})
     }
 
     /**
@@ -58,72 +62,68 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
      * @param rt is the returns at time t
      * @param ft is equal to F(t)
      * @param ftMinusOne is equal to F(t-1)
-     * @param givenT is the current time.
      * @param param a parameters object which contains the used values
      * @param returns is the array of previous returns.
      *
      * @return a new Weights object with the new coefficients.
      */
     fun updateWeights(rt: Double, ftMinusOne: Double, ft: Double,
-                      givenT: Int, param : Parameters, returns: DoubleArray, epochs: Int): Weights {
+                      param : Parameters, returns: DoubleArray) {
 
-        var currentWeight = this.copy()
+        val oldAt = this.oldAt
+        val oldBt = this.oldBt
+        val oldDiffFt = this.oldDiffFt.clone()
 
-        for (j in 0.rangeTo(epochs)) {
+        val diffRt: Double
+        val diffRtMinusOne: Double
 
-            val oldAt = currentWeight.oldAt
-            val oldBt = currentWeight.oldBt
-            val oldDiffFt = currentWeight.oldDiffFt.clone()
+        // we compute At, Bt, deltaAt and deltaBt
+        val deltaAt = (rt - oldAt)
+        val deltaBt = (rt * rt - oldBt)
+        val at = oldAt + param.eta * deltaAt
+        val bt = oldBt + param.eta * deltaBt
 
-            val diffRt: Double
-            val diffRtMinusOne: Double
+        val wMplusOne = this.wMplusOne()
 
-            // we compute At, Bt, deltaAt and deltaBt
-            val deltaAt = (rt - oldAt)
-            val deltaBt = (rt * rt - oldBt)
-            val at = oldAt + param.eta * deltaAt
-            val bt = oldBt + param.eta * deltaBt
-
-            val wMplusOne = currentWeight.wMplusOne()
-
-            if (ft == ftMinusOne) {
-                diffRt = 0.0
-                diffRtMinusOne = rt
-            } else {
-                val div = (ft - ftMinusOne) / (Math.abs(ft - ftMinusOne))
-                // the dR_{t} / dF_{t}
-                diffRt = -param.delta * div
-                // the dR_{t} / F_{t-1}
-                diffRtMinusOne = rt + param.delta * div
-            }
-
-            // we start the computation of dF_t / dw_{i,t}
-            // we need to modify the returns before, so we create a new variable
-            // we compute the dF_{t} / dw_{i,t} (where it's partial derivation)
-            val tmpReturns = returns.plus(ftMinusOne).reversed().toDoubleArray()
-
-            val diffFt = DoubleArray(oldDiffFt.size)
-
-            // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
-            val diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3 / 2.0)
-
-            // w_{i,t-1} + rho * (diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne))
-            val newCoefficients = DoubleArray(currentWeight.coefficients.size)
-            for (i in currentWeight.coefficients.indices) {
-                // dF_t / dw_{i,t}
-                diffFt[i] = tmpReturns.getDefault(i, 0.0) + oldDiffFt[i] * wMplusOne
-
-                newCoefficients[i] = currentWeight.coefficients[i] + param.rho *
-                        (diffDt * (diffRt * diffFt[i] + diffRtMinusOne * oldDiffFt[i]))
-            }
-            val copyDiffFt = diffFt.clone()
-
-            // the updating delta using weights = weights + rho * deltaW
-            currentWeight = Weights(newCoefficients, givenT + 1, at, bt)
-            // we store the current diffFt as oldDiffFt for the next iteration
-            currentWeight.oldDiffFt = copyDiffFt
+        if (ft == ftMinusOne) {
+            diffRt = 0.0
+            diffRtMinusOne = rt
+        } else {
+            val div = (ft - ftMinusOne) / (Math.abs(ft - ftMinusOne))
+            // the dR_{t} / dF_{t}
+            diffRt = -param.delta * div
+            // the dR_{t} / F_{t-1}
+            diffRtMinusOne = rt + param.delta * div
         }
-        return currentWeight
+
+        // we start the computation of dF_t / dw_{i,t}
+        // we need to modify the returns before, so we create a new variable
+        // we compute the dF_{t} / dw_{i,t} (where it's partial derivation)
+        val tmpReturns = returns.plus(ftMinusOne).reversed().toDoubleArray()
+
+        val diffFt = DoubleArray(oldDiffFt.size)
+
+        // according to article, the derivation is dDt / dRt = (B_{t-1} - A_{t-1} * R_t) / (B_{t-1} - A_{t-1}^2)^3/2
+        var diffDt = (oldBt - oldAt * rt) / Math.pow(Math.abs(oldBt - oldAt * oldAt), 3 / 2.0)
+        if (diffDt.isNaN()) diffDt = -100.0
+
+        // w_{i,t-1} + rho * (diffDt * (diffRt * diffFt + diffRtMinusOne * diffFtMinusOne))
+        val newCoefficients = DoubleArray(this.coefficients.size)
+        for (i in this.coefficients.indices) {
+            // dF_t / dw_{i,t}
+            diffFt[i] = tmpReturns.getDefault(i, 0.0) + oldDiffFt[i] * wMplusOne
+
+            val tmp = (diffDt * (diffRt * diffFt[i] + diffRtMinusOne * oldDiffFt[i]))
+            magnitude[i] += Math.pow(tmp, 2.0)
+            newCoefficients[i] = this.coefficients[i] + rho[i] * tmp
+        }
+
+        this.coefficients = newCoefficients.clone()
+        this.oldAt = at
+        this.oldBt = bt
+        // we store the current diffFt as oldDiffFt for the next iteration
+        this.oldDiffFt = diffFt.clone()
+        this.rho = rho.zip(magnitude).map { (first, second) -> first / second }.toDoubleArray()
     }
 
     /**

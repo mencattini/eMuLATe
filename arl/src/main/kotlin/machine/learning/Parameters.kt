@@ -23,11 +23,11 @@ internal class Parameters {
         // we init the value with random
         val random = Random()
 
-        delta = random.nextDouble()
-        eta = random.nextDouble()
-        rho = random.nextDouble()
-        x = random.nextDouble()
-        y = random.nextDouble()
+        delta = 0.001
+        eta = 0.001
+        rho = 0.01
+        x = 0.005
+        y = 0.0001
 
     }
 

@@ -25,6 +25,9 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+    compile group: "koma", name:"core", version:"0.10"
+    // Optional, uses EJML's optimized routines for matrix operations
+    compile group: "koma", name:"backend-matrix-ejml", version: "0.10"
 }
 
 compileKotlin {

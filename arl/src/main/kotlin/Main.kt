@@ -23,7 +23,7 @@ fun main(args : Array<String>) {
     }
 
     val time = System.currentTimeMillis()
-    val arl = ARL(20)
+    val arl = ARL(5)
 
     var i = 0
     var p_t = arrayOf(1.0)

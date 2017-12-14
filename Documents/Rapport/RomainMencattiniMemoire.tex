@@ -1698,6 +1698,22 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
 
   Nous avons donc lu la documentation et les publications afin de comprendre le fonctionnement de ces algorithmes. Et \textit{in fine}, trouver les 
   différences avec la descente du gradient qui pourraient expliquer les écarts de résultats.
+  
+  En lisant les sources des algorithmes sus-mentionnés, nous nous sommes rendus compte de deux éléments très important. Il s'agît de variantes de la
+  descente du gradient et surtout, ils ont pour point commun d'avoir un taux d'apprentissage variables.
+  
+  En effet, dans la descente du gradient, le taux d'apprentissage est fixé pour une \textit{run} donnée, ce qui nous a posé les problèmes expliqués précédemment.
+  Pour ces algorithmes, le taux d'apprentissage est modifié à chaque itération d'une \textit{run} permettant plus de flexibilité, un apprentissage plus 
+  rapide et de diminuer le risque de divergence.
+  \begin{itemize}
+   \item Pour le RMSProp, il faut diviser le taux d'apprentissage par la moyenne des magnitudes des précédents gradients pour chaque poids \cite{rmsprop}.
+   \item L'article sur l'Adadelta mentionne le fait que si l'on utilise \cite{adadelta}:
+   $$\Delta x_t = H_t^{-1}g_t$$
+   où $H_t^{-1}$ est l'inverse de la matrice Hessienne et $g_t$ le gradient, à l'itération $t$. Cela donne le poids optimale pour des problèmes quadratiques.
+   Le coût de calcul étant trop important, l'article montre comment approximer cela en utilisant des heuristiques.
+   \item Pour l'algorithme Adagrad, le taux d'apprentissage est calculé à partir des paramètres.
+  \end{itemize}
+
 
 \subsubsection{Résultats}
 
