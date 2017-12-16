@@ -18,6 +18,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
     var oldBt : Double
     private var magnitude : DoubleArray
     private var rho : DoubleArray
+    private val epsilon : Double
 
     init {
         // we init the value with random
@@ -34,8 +35,10 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         coefficients[coefficients.lastIndex - 1] = 0.0
         // we need to store the diffFt value for the next update
         oldDiffFt = kotlin.DoubleArray(sizeWindow)
+        // rmsprop
         magnitude = kotlin.DoubleArray(sizeWindow, {1.0})
         rho = DoubleArray(sizeWindow, {0.01})
+        epsilon = 0.01
     }
 
     /**
@@ -114,7 +117,9 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
             diffFt[i] = tmpReturns.getDefault(i, 0.0) + oldDiffFt[i] * wMplusOne
 
             val tmp = (diffDt * (diffRt * diffFt[i] + diffRtMinusOne * oldDiffFt[i]))
-            magnitude[i] += Math.pow(tmp, 2.0)
+
+            // cf. http://ruder.io/optimizing-gradient-descent/index.html#rmsprop
+            magnitude[i] = magnitude[i] + 0.1 * Math.pow(tmp, 2.0)
             newCoefficients[i] = this.coefficients[i] + rho[i] * tmp
         }
 
@@ -123,7 +128,8 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
         this.oldBt = bt
         // we store the current diffFt as oldDiffFt for the next iteration
         this.oldDiffFt = diffFt.clone()
-        this.rho = rho.zip(magnitude).map { (first, second) -> first / second }.toDoubleArray()
+        // cf. http://ruder.io/optimizing-gradient-descent/index.html#rmsprop
+        this.rho = rho.zip(magnitude).map { (first, second) -> first / Math.sqrt(second + epsilon) }.toDoubleArray()
     }
 
     /**

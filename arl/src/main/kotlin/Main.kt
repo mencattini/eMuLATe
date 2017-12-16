@@ -23,13 +23,13 @@ fun main(args : Array<String>) {
     }
 
     val time = System.currentTimeMillis()
-    val arl = ARL(5)
+    val arl = ARL(20)
 
     var i = 0
     var p_t = arrayOf(1.0)
     val step = 2000
     val stepLearn = 2500
-    val n = 20000
+    val n = 30000
     val updateThreshold = 200
 
     while(i < n) {
