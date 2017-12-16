@@ -2,8 +2,7 @@
 Machine Learning Automatic Trading
 
 ## To correct :
-* make working the _stop trailing loss_
-* make working the program
+* implemente the 3rd layer.
 
 ## Example :
 
@@ -27,21 +26,22 @@ fun main(args : Array<String>) {
         }
     }
 
-    val time = System.currentTimeMillis()
-    val arl = ARL(10)
+        val time = System.currentTimeMillis()
+    val arl = ARL(20)
 
     var i = 0
-    var p_t = arrayOf(0.0)
+    var p_t = arrayOf(1.0)
     val step = 2000
-    val n = 100001
+    val stepLearn = 2500
+    val n = 100000
+    val updateThreshold = 200
 
     while(i < n) {
         println("$i")
-        arl.loop(array2.toDoubleArray().slice(i..i+step), 100)
-        p_t = arl.loop(array2.toDoubleArray().slice(i+step..i+step+500), 100, p_t)
+        arl.train(array2.toDoubleArray().slice(i..i+step), updateThreshold, p_t)
+        p_t = arl.test(array2.toDoubleArray().slice(i+step..i+stepLearn), p_t)
         arl.reset()
-        i += step
-
+        i += stepLearn - step
     }
 
     figure(1)
