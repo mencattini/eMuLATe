@@ -1714,7 +1714,24 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
    \item Pour l'algorithme Adagrad, le taux d'apprentissage est calculé à partir des paramètres.
   \end{itemize}
 
-
+  Il nous a semblé que l'algorithme RMSProp était le plus simple à mettre en place. Nous avons donc appliqué les formules suivantes \cite{rmsprop_algo} :
+  $$E[g^2]_t = 0.9 E[g^2]_{t-1} + 0.1 g^2_t$$
+  où $g$ est le gradient et $E[g^2]_t$ l'espérance du carré du gradient au temps $t$. À partir de cela :
+  $$\theta_{t+1} = \theta_t + \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t$$
+  Nous avons donc un taux d'apprentissage qui varie en fonction de résultats précédemment obtenu, ce qui pourrait résoudre le problème rencontré avec la
+  descente du gradient dans sa version simple.
+  
+  Après avoir implémenté, cet algorithme, nous nous retrouvions également avec des poids qui divergeaient. En effet, de part les facteurs $0.9$ et $0.1$ 
+  le soucis persistaient car l'espérance $E[g^2]_t$ n'était pas suffisamment grande pour compenser la croissance des poids. Nous avons donc changé les 
+  coefficients et testé plusieurs combinaisons. Nous avons obtenu de bons résultats avec $1$ et $0.1$.
+  $$E[g^2]_t = E[g^2]_{t-1} + 0.1 g^2_t$$
+  
+  La partie intéressante de cette méthode est la manière dont elle accélère l'apprentissage. En effet, si $E[g^2]_t < 1$, on a des changements minimes 
+  qui risquent de prendre du temps pour converger\footnote{Avec la version classique de la descente du gradient.}. Cependant en divisant $\eta$ par ce
+  nombre, on va augmenter la "quantité de changement" rendant la convergence plus rapide. À contrario, si $E[g^2]_t > 1$, nous avons des changements 
+  conséquents et donc un risque de divergence\footnote{Également avec la version classique de la descente du gradient.}. Pour éviter cela, par la division,
+  nous diminuons l'impact de ces modifications, diminuant \textit{de facto} le risque de divergence.
+  
 \subsubsection{Résultats}
 
 \subsection{Conclusion}
