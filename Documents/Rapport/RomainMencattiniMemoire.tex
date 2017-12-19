@@ -1732,6 +1732,33 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   conséquents et donc un risque de divergence\footnote{Également avec la version classique de la descente du gradient.}. Pour éviter cela, par la division,
   nous diminuons l'impact de ces modifications, diminuant \textit{de facto} le risque de divergence.
   
+  \paragraph{}
+  Pour ce paragraphe, nous sommes dans un état où la descente du gradient et le \textit{Layer 2} fonctionnent. Nous nous intéressons donc à la couche 
+  d'optimisation des métas-paramètres\footnote{Aussi noté hyperparamètres dans la littérature.}. La liste de ces derniers est la suivante :
+  \begin{itemize}
+   \item $\rho$ le taux d'apprentissage.
+   \item $\eta$ le paramètre d'adaptation.
+   \item $\delta$ le coût de transaction.
+   \item $x$ le \textit{trailing stop loss}.
+   \item $y$ le seuil.
+  \end{itemize}
+
+  Comme mentionné précédemment, l'optimisation de $\rho$ perds de son intérêt de par l'utilisation de l'algorithme RMSProp conjointement à la descente du
+  gradient. De plus, il paraît étonnant d'optimiser le coût de transaction $\delta$. Cette valeur ne dépend pas d'un processus d'optimisation, il est
+  étrange de vouloir la modifier.
+  
+  À partir de là, nous allons travailler uniquement sur $\eta,x,$ et $y$. En utilisant l'algorithme présenté plus haut, nous avons eu des problèmes
+  de signal nul ou de NaN. Cela peut varier d'une \textit{run} à l'autre. Ces phénomènes arrivent car dans le premier cas le seuil et/ou le \textit{stop
+  loss} sont trop élevés ne laissant aucun signal être accepté, et dans le second cas, les valeurs sont également trop grande, car qui provoque des erreurs
+  de calculs en chaîne entraînant des poids divergeant malgré l'algorithme du RMSProp.
+  
+  Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt que d'utiliser un tirage aléatoire. Pour $t>0$ cependant, il
+  faut modifier la déviation standard. Les nouvelles mesures sont calculés :
+  $$x_{t+1} = N(\mu, \sigma)$$
+  où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risque de
+  sortir de la zone d'attraction de l'optimum.
+  
+  
 \subsubsection{Résultats}
 
 \subsection{Conclusion}
