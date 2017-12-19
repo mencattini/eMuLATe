@@ -29,7 +29,7 @@ fun main(args : Array<String>) {
     var p_t = arrayOf(1.0)
     val step = 2000
     val stepLearn = 2500
-    val n = 30000
+    val n = 50000
     val updateThreshold = 200
 
     while(i < n) {

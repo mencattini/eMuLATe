@@ -148,12 +148,11 @@ class ARL(private val sizeWindow: Int) {
             // we put it in the layer 2
             ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
 
-//            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-//            if (t % updateThreshold == 0) {
-//                parameters = parameters.parallelUpdateParameters(
-//                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t),
-//                        weight, sizeWindow, 1.0)
-//            }
+            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
+            if (t % updateThreshold == 0) {
+                parameters = parameters.parallelUpdateParameters(
+                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t), weight, sizeWindow)
+            }
             // increase the givenT size
             t++
 
