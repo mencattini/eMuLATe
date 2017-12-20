@@ -1568,11 +1568,19 @@ position et le profit cumulé maximum. Sinon, il convient de vérifier.
 Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contraire, nous vérifions et appliquons le seuil avec $x * 0.001$.
 À l'instar, du seuil, nous avons choisi de renvoyer un signal neutre, pour les mêmes raisons mathématiques qu'énoncées plus haut.
 
-\subsubsection{\textit{Layer 3}}
+\subsubsection{Algorithme \textit{Layer 3}}
 \paragraph{}
 Cette dernière couche a pour but d'optimiser les métas-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
-humaine pour trouver les meilleures valeurs possibles.
+humaine pour trouver les meilleures valeurs possibles. C'est une solution assez courante dans le domaine du \textit{machine learning}. Cette méthode est
+souvent opposée à celle de la \textit{grid search} \cite{grid_vs_random}:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{images/grid_vs_random}
+\caption{Comparaison entre la méthode d'optimisation \textit{grid search} et celle de \textit{random search}}
+\end{figure}
 
+En moyenne, le maximaux locaux sont mieux explorés avec la méthode de recherche aléatoire. Pour mettre en place cet algorithme, il faut définir une
+fonction de coût, afin d'évaluer la qualité d'une solution.
 Les fonctions qui rentrent en compte sont les suivantes :
 \begin{center}
  $$ \Sigma := \frac{\sum_{i=0}^N (R_i)^2 I (R_i < 0)}{\sum_{i=0}^N (R_i)^2 I (R_i > 0)}$$
@@ -1626,6 +1634,8 @@ $$\mathcal{N}(\mu,\sigma)$$
 Où, $\mu$ vaut la valeur initiale du paramètre et $\sigma = 1$. Ce sont des valeurs arbitraires. Nous estimons que chercher des valeurs avec une déviation
 standard de 1 permet d'explorer l'espace tout en éviter d'avoir des changements trop brutaux.
 
+\subsubsection{Implémentation \textit{Layer 3}}
+\paragraph{}
 Dans l'implémentation, les paramètres sont réunis ensemble dans une classe et c'est cette classe qui disposent des méthodes pour optimiser et mettre à 
 jour les valeurs. De plus, par le caractère décorrélé des calculs pour les 15 tirages aléatoires, nous avons construit cela avec des \textit{Thread}. Cela
 permet d'avoir de meilleur performance, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
@@ -1733,7 +1743,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   nous diminuons l'impact de ces modifications, diminuant \textit{de facto} le risque de divergence.
   
   \paragraph{}
-  Pour ce paragraphe, nous sommes dans un état où la descente du gradient et le \textit{Layer 2} fonctionnent. Nous nous intéressons donc à la couche 
+  Nous supposons, pour ce paragraphe être dans un état où la descente du gradient et le \textit{Layer 2} fonctionnent. Nous nous intéressons donc à la couche 
   d'optimisation des métas-paramètres\footnote{Aussi noté hyperparamètres dans la littérature.}. La liste de ces derniers est la suivante :
   \begin{itemize}
    \item $\rho$ le taux d'apprentissage.
@@ -1753,14 +1763,117 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   de calculs en chaîne entraînant des poids divergeant malgré l'algorithme du RMSProp.
   
   Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt que d'utiliser un tirage aléatoire. Pour $t>0$ cependant, il
-  faut modifier la déviation standard. Les nouvelles mesures sont calculés :
+  faut modifier la déviation standard. Cette dernière, si la valeur est trop grande, risque de faire diverger les résultats de l'optimum.
+  Les nouvelles mesures sont calculés :
   $$x_{t+1} = N(\mu, \sigma)$$
   où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risque de
   sortir de la zone d'attraction de l'optimum.
-  
-  
+ 
+ Nous soupçonnons le fait que les paramètres $\eta$ et $\delta$ ont un impact trop grand dans le calcul de $A_t$ et $B_t$ ce qui peut entraîner les
+ problèmes de poids. Pour éviter cela, nous avons fixé une valeur très faible, de l'ordre de $1e-3$, ce qui fait disparaître le problème.
+ De plus, malgré l'optimisation, les meilleurs résultats en moyenne sont obtenus avec les valeurs initiales pour $x$ et $y$. Ces paramètres ,lorsque 
+ $x$ devient grand et $y$ petit n'ont peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
+ De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche de solution. Si la déviation 
+ standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats et si elle est trop petite, nous restons dans
+ la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
+ Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
+ 
 \subsubsection{Résultats}
+ \paragraph{}
+ Afin de montrer l'aspect aléatoire des résultats, nous allons, pour chaque jeu de données, montrer deux exemples de \textit{runs}. Nous avons choisi 
+ deux paires de monnaies différentes à des époques différentes afin de montrer sur des exemples très différents.
+ 
+ Les graphiques présentent trois éléments :
+ \begin{enumerate}
+  \item Le cours de change afin de visualiser la tendance.
+  \item Le signal. Cela permet de voir si le signal correspond à la tendance du cours ou de voir si le signal est nul.
+  \item Le profit cumulé.
+ \end{enumerate}
 
+
+ 
+ \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/eurusd_2000_2001_1.png}
+\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2001, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+\footnotemark$, x = 0.005, y=0.0001$.}
+\end{figure}
+\footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
+
+ \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/eurusd_2000_2001_2.png}
+\caption[Blup]{Deuxième \textit{run} du cours EUR/USD entre le 01.01.2000 et le 01.01.2001, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test,
+une optimisation des paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{figure}
+
+\paragraph{}
+D'après ces deux exemples, les résultats peuvent parier d'une \textit{run} à l'autre. Cela affecte le signal et par extension le profit cumulé. Il a peu
+de moyen où le signal est nul à cause du \textit{stop trailing loss}. Cela provient du fait que si la valeur de $x$ est trop grande, nous ne dépassons
+jamais ce seuil et donc le signal n'est pas nul et si $x$ est trop grand nous ne prenons presque jamais de position. Nous avons un problème récurrent
+qui concerne la valeur des métas-paramètres.
+
+\begin{figure}[H]
+\centering
+\includegraphics[]{images/res/eurchf_1.png}
+\caption[Blup]{Cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{figure}
+
+ \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/eurchf_2.png}
+\caption[Blup]{Cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{figure}
+
+\paragraph{}
+Dans cet exemple, nous avons une tendance à la baisse avec un pic à un moment. Ce pic peut provenir d'une erreur dans les données. Nous pouvons confirmer
+les supposition faîtes précédemment à savoir que :
+\begin{itemize}
+ \item Il y a de l'aléatoire entre plusieurs \textit{runs} pour de mêmes données.
+ \item Le \textit{stop trailing loss} a de la peine à se déclencher.
+\end{itemize}
+
+Concernant l'aléatoire, ce phénomène provient de l'initialisation des poids. Ces derniers étant générés via un \texttt{Random}, cela entraîne des
+différences entre deux générations.
+ 
+ \paragraph{}
+ Nous avons voulu observer l'évolution de \textit{Sharpe ratio} pour des valeurs de $\eta$ diverses, afin de voir si le ratio est optimisé et l'impact
+ du paramètre $\eta$ dans ce ratio. Les graphiques suivants sont calculés à partir du cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec 
+ $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \rho=0.01, x = 0.005, y=0.0001$. Nous n'avons pris en compte 
+les résultats de la première itération d'apprentissage. Soit $t=0..2000$.
+
+
+  \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/exemple_eta_0001}
+\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\end{figure}
+
+  \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/exemple_eta_0005}
+\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\end{figure}
+
+  \begin{figure}[H]
+\centering
+\includegraphics[]{images/res/exemple_eta_too_big}
+\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\end{figure}
+ 
+ \paragraph{}
+ Ces graphiques nous montrent que si $\eta$ est trop grand, il y a d'énormes variations dans le \textit{Sharpe ratio} en plus de ne pas voir d'optimisation
+ du dite ratio. Cette amplitude a un effet directe sur les poids, ce qui entraînera une divergence des poids. Si le \textit{Sharpe ratio} est trop grand
+ l'ajout du gradient sera trop important et le risque de \texttt{NaN} sera important.
+ 
+ On remarque également que si la valeur est faible,i.e: $< 1e-3$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
+ plus la courbe sera lissée.
+
+ 
 \subsection{Conclusion}
 
 
