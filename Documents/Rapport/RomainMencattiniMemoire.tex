@@ -1905,6 +1905,37 @@ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B
 
  
 \subsection{Conclusion}
+\paragraph{}
+Comme mentionné dans l'introduction, le but de ce projet était d'implémenter l'algorithme, de le faire fonctionner, de le tester et de trouver des pistes
+d'amélioration.
+
+L'implémentation a été compliqué à cause du manque d'informations dans l'article. L'algorithme n'y est que très peu décrit et, mis à part certaines 
+équations, il n'y a aucun pseudo-code pour le comprendre. Il s'agît juste de descriptions vagues sur le fonctionnement et l'idée du programme. À partir de
+cela, nous avons dû grandement interpréter et nous baser sur d'autres recherches théoriques afin de combler les manques. Il nous a fallu faire des compromis
+afin de faire fonctionner le programme, ce qui explique les divergences rencontrées avec l'idée initiale.
+
+Ces divergences peuvent être prises comme des améliorations. En effet, l'implémentation initiale ne marchait pas et c'est grâce à ces idées que nous avons
+réussi à obtenir des résultats. Nous pensons principalement aux variantes de la descente du gradient qui ont permises de diminuer les risques de
+\texttt{Nan}.
+
+\paragraph{}
+En terme de résultats, contrairement à l'article, nous avons effectué nos mesures sur plusieurs cours à des périodes différentes. Un des gros problèmes
+provient des différences entre deux \textit{runs}. Il est compliqué de dire si l'algorithme est performant ou non, car cela varie énormément. De plus,
+l'optimisation et la recherche de solutions sont ardues à cause de ce phénomène. Il nous est impossible de dire après un bon profit si cela est du à la
+chance ou non, et réciproquement avec les mauvais résultats.
+
+On peut noté que malgré cela, l'algorithme trouve toujours le moyen de faire des profits indépendamment de la tendance ou des résultats précédant, ce
+qui est une satisfaction. En effet, ce phénomène implique qu'il y a effectivement apprentissage et que le réseau est capables sous certaines conditions
+de réussir à produire et interpréter un signal correctement. Afin
+d'améliorer le programme, il faudrait comprendre ce qui provoquer ces profits locaux et le généraliser afin d'obtenir un profit cumulé global croissant, ce qui
+n'est pas forcément le cas actuellement. En comprenant, le phénomène local de ce gain, on pourrait changer l'approche de l'algorithme et en accroître les
+performances.
+
+En fixant les métas-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}}, le \textit{stop trailing loss} est moins visible
+que sur d'autres exemples. Ce qui nous permet de mentionner un problème récurrent dans ce projet : de part le manque d'information, les valeurs initiales
+de tout les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{Nan}. Le caractère
+empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous permet pas d'avoir des valeurs standards fonctionnant avec n'importe quel
+algorithme. Cela revient donc à tester plusieurs valeurs en espérant qu'une fonctionnera.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
