@@ -1306,13 +1306,16 @@ fournit suffisamment de données pour avoir d'excellent résultats, de plus, nou
 \subsection{Introduction}
 \paragraph{}
 Le but de ce projet est d'implémenter l'algorithme présenté dans l'article \textit{"An automated fx trading system using adaptive
-reinforcement learning"} \cite{fx_trading}. Ce dernier n'est pas totalement décrit car l'article
+reinforcement learning"} \cite{fx_trading}. Notre question de recherche consiste à mesurer et voir si cette proposition fonctionne ou non. Le cas
+échéant comprendre les raisons de ces résultats puis proposer des améliorations pour le faire fonctionner ou augmenter ces performances.
+
+L'algorithme n'est pas totalement décrit car l'article
 est un \textit{proof of concept} et n'a pas vocation d'être publié comme une nouvelle méthode de \textit{trading}. Il s'agît plus d'une piste 
 éventuelle de recherches. Il faudra donc
 interpréter les éléments et interpoler ceux manquants. Une fois, le programme créé, nous le testerons sur des données réelles afin d'estimer s'il est
 utilisable ou non d'après des critères de \textit{back-testing}.Toutes les notions économiques, mathématiques et scientifiques nécessaires à la 
-compréhension sont décrites dans l'état de l'art précédant cette partie. Néanmoins, les équations importantes seront répétées et exposées à nouveaux dans
-un soucis de rigueur scientifique.
+compréhension sont décrites dans l'état de l'art précédant cette partie. Néanmoins, les équations importantes seront introduites ou exposées à nouveaux
+dans un soucis de rigueur scientifique et pour mieux comprendre les implications.
 
 Cet algorithme est composé de trois parties. La première qui constitue le cœur du \textit{machine learning} présent, se base sur un réseau de neurones
 à une couche et utilisant la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
@@ -1937,6 +1940,32 @@ de tout les paramètres sont extrêmement difficiles à trouver. La moindre peti
 empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous permet pas d'avoir des valeurs standards fonctionnant avec n'importe quel
 algorithme. Cela revient donc à tester plusieurs valeurs en espérant qu'une fonctionnera.
 
+\paragraph{}
+Concernant la question de recherche, nous n'avons pas été capable de faire fonctionner l'idée originale. Cependant nous avons pu saisir les raisons ou 
+éléments qui empêchaient son fonctionnement. Nous avons ensuite proposer des améliorations reposant sur ces constations. Ces dernières ont permis 
+d'améliorer les performances de l'algorithme tout en reposant sur des bases mathématiques.
+
+\paragraph{}
+Concernant les pistes pour des recherches futures, nous en voyons plusieurs :
+\begin{itemize}
+ \item Améliorer les métas-paramètres.
+ \item Intégrer une version alternative de la descente du gradient.
+ \item Proposer un réseau multi-couche.
+\end{itemize}
+
+Concernant les métas-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
+une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de métas-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
+RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance global.
+
+En utilisant, une version alternative de la descente du gradient, comme le RMSProp, le Adagrad ou le Adadelta, nous pourrions éviter certain soucis
+inhérent à la descente du gradient. Cette dernière est une méthode ancienne et toutes celles proposées sont des améliorations qui tendent à pallier les
+problèmes de la descente du gradient. De plus, cela pourrait avoir des effets bénéfiques sur l'ensemble du programme en diminuant le nombre de paramètres
+et donc la complexité interne de l'algorithme, sans faire de concession en terme de performances.
+
+La construction d'un réseau de neurones n'est pas une science exacte. Cependant, le fait d'ajouter une ou plusieurs couches permettrait d'augmenter la 
+vitesse d'apprentissage de ce dernier et de diminuer les erreurs. En sacrifiant du temps de calcul, car un réseau de neurones à plusieurs couches est plus
+lent qu'un autre à une seule couche, on pourrait deviner la direction plus aisément. De plus avec les gains de vitesse des propositions précédentes, les
+performances resteront bonnes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % début de la bibliographie %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
