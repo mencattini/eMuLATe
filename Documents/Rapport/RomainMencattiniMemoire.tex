@@ -1304,6 +1304,33 @@ fournit suffisamment de données pour avoir d'excellent résultats, de plus, nou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Projet}
 \subsection{Introduction}
+\paragraph{}
+Le but de ce projet est d'implémenter l'algorithme présenté dans l'article \textit{"An automated fx trading system using adaptive
+reinforcement learning"} \cite{fx_trading}. Ce dernier n'est pas totalement décrit car l'article
+est un \textit{proof of concept} et n'a pas vocation d'être publié comme une nouvelle méthode de \textit{trading}. Il s'agît plus d'une piste 
+éventuelle de recherches. Il faudra donc
+interpréter les éléments et interpoler ceux manquants. Une fois, le programme créé, nous le testerons sur des données réelles afin d'estimer s'il est
+utilisable ou non d'après des critères de \textit{back-testing}.Toutes les notions économiques, mathématiques et scientifiques nécessaires à la 
+compréhension sont décrites dans l'état de l'art précédant cette partie. Néanmoins, les équations importantes seront répétées et exposées à nouveaux dans
+un soucis de rigueur scientifique.
+
+Cet algorithme est composé de trois parties. La première qui constitue le cœur du \textit{machine learning} présent, se base sur un réseau de neurones
+à une couche et utilisant la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
+à partir de fonctions de coût utilisant au mieux les données économiques à dispositions. La deuxième couche utilise les éléments financiers afin de
+déterminer si le signal obtenu par la couche une doit être utilisé ou non et comment limiter les risques et pertes. La dernière partie va permettre de
+réduire l'influence humaine en optimisant les métas-paramètres. Ces derniers sont des paramètres qui conditionnent le comportement du réseau de neurones,
+de la descente du gradient et de la deuxième couche. Ils ne varient pas 
+à l'intérieur des dîtes parties et sont modifiés dans la troisième couche. Cela permet au programme d'avoir plus de flexibilité et d'adaptabilité par
+rapport au temps et aux nouveaux éléments rencontrés.
+
+De part le caractère empirique du projet, nous avons dû chercher et expérimenter afin de comprendre, d'implémenter, d'interpoler et de corriger
+les bouts d'algorithmes présentés dans le \textit{proof of concept} \cite{fx_trading}. Nous allons donc découper l'article de manière à pouvoir 
+expliquer l'idée de l'article mais également les problèmes et nos améliorations.
+Dans un premier temps, nous expliquerons chacune des trois couches avec une partie présentant l'idée et une autre pour la manière dont nous l'avons
+implémentée. Ensuite, nous parlerons des problèmes rencontrés ainsi que les remédiations ou les pistes de solutions que nous avons trouvé.
+Puis, nous présenterons les résultats, ainsi que certaines métriques afin d'expliquer les performances ainsi que le comportement de l'algorithme. Pour
+finir, nous conclurons notre rapport en synthétisant les idées, les problèmes et les résultats et en proposant des améliorations ou des pistes pour 
+des recherches futures.
 
 \subsection{Algorithme}
 Dans cette section, pour chacune des parties de l'algorithme, nous allons dans un premier temps expliquer son fonctionnement théorique et ses bases
@@ -1845,24 +1872,27 @@ différences entre deux générations.
  $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \rho=0.01, x = 0.005, y=0.0001$. Nous n'avons pris en compte 
 les résultats de la première itération d'apprentissage. Soit $t=0..2000$.
+Pour rappel le \textit{Sharpe ratio} se calcule de la manière suivante :
+$$\widehat{S}(t) := \frac{A_t}{B_t}$$
+où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
 
 
   \begin{figure}[H]
 \centering
 \includegraphics[]{images/res/exemple_eta_0001}
-\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
 
   \begin{figure}[H]
 \centering
 \includegraphics[]{images/res/exemple_eta_0005}
-\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
 
   \begin{figure}[H]
 \centering
 \includegraphics[]{images/res/exemple_eta_too_big}
-\caption[Blup]{Évolution du \textit{Sharpe raito} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
  
  \paragraph{}
