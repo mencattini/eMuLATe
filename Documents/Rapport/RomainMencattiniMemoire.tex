@@ -1306,41 +1306,43 @@ fournit suffisamment de données pour avoir d'excellent résultats, de plus, nou
 \subsection{Introduction}
 \paragraph{}
 Le but de ce projet est d'implémenter l'algorithme présenté dans l'article \textit{"An automated fx trading system using adaptive
-reinforcement learning"} \cite{fx_trading}. Notre question de recherche consiste à mesurer et voir si cette proposition fonctionne ou non. Le cas
-échéant comprendre les raisons de ces résultats puis proposer des améliorations pour le faire fonctionner ou augmenter ces performances.
+reinforcement learning"} \cite{fx_trading}. Notre question de recherche consiste à déterminer et à mesurer si les propositions informatiques
+fonctionnent ou non et, le cas
+échéant, de comprendre les raisons de ces résultats puis proposer des améliorations pour le faire fonctionner ou augmenter ces performances.
 
 L'algorithme n'est pas totalement décrit car l'article
-est un \textit{proof of concept} et n'a pas vocation d'être publié comme une nouvelle méthode de \textit{trading}. Il s'agît plus d'une piste 
+est un \textit{proof of concept} et n'a pas vocation à être publié comme une nouvelle méthode de \textit{trading}. Il s'agît plutôt d'une piste 
 éventuelle de recherches. Il faudra donc
-interpréter les éléments et interpoler ceux manquants. Une fois, le programme créé, nous le testerons sur des données réelles afin d'estimer s'il est
-utilisable ou non d'après des critères de \textit{back-testing}.Toutes les notions économiques, mathématiques et scientifiques nécessaires à la 
+interpréter les éléments et interpoler ceux manquants. Une fois le programme créé, nous le testerons sur des données réelles afin d'estimer s'il est
+utilisable ou non d'après des critères de \textit{back-testing}. Toutes les notions économiques, mathématiques et scientifiques nécessaires à la 
 compréhension sont décrites dans l'état de l'art précédant cette partie. Néanmoins, les équations importantes seront introduites ou exposées à nouveaux
 dans un soucis de rigueur scientifique et pour mieux comprendre les implications.
 
 Cet algorithme est composé de trois parties. La première qui constitue le cœur du \textit{machine learning} présent, se base sur un réseau de neurones
-à une couche et utilisant la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
-à partir de fonctions de coût utilisant au mieux les données économiques à dispositions. La deuxième couche utilise les éléments financiers afin de
+à une couche construite de manière à utiliser la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
+à partir de fonctions de coût utilisant au mieux les données économiques à dispositions. La deuxième couche utilise des notions financiers afin de
 déterminer si le signal obtenu par la couche une doit être utilisé ou non et comment limiter les risques et pertes. La dernière partie va permettre de
 réduire l'influence humaine en optimisant les métas-paramètres. Ces derniers sont des paramètres qui conditionnent le comportement du réseau de neurones,
-de la descente du gradient et de la deuxième couche. Ils ne varient pas 
+de la descente du gradient et de la deuxième couche. Comme le taux d'apprentissage $\rho$, le \textit{stop loss} $x$, etc.\footnote{Tous les métas-paramètres
+seront introduits et expliqués dans la section suivante.} Ils ne varient pas 
 à l'intérieur des dîtes parties et sont modifiés dans la troisième couche. Cela permet au programme d'avoir plus de flexibilité et d'adaptabilité par
 rapport au temps et aux nouveaux éléments rencontrés.
 
-De part le caractère empirique du projet, nous avons dû chercher et expérimenter afin de comprendre, d'implémenter, d'interpoler et de corriger
+À cause du caractère empirique du projet, nous avons dû chercher et expérimenter afin de comprendre, d'implémenter, d'interpoler et de corriger
 les bouts d'algorithmes présentés dans le \textit{proof of concept} \cite{fx_trading}. Nous allons donc découper l'article de manière à pouvoir 
-expliquer l'idée de l'article mais également les problèmes et nos améliorations.
-Dans un premier temps, nous expliquerons chacune des trois couches avec une partie présentant l'idée et une autre pour la manière dont nous l'avons
-implémentée. Ensuite, nous parlerons des problèmes rencontrés ainsi que les remédiations ou les pistes de solutions que nous avons trouvé.
-Puis, nous présenterons les résultats, ainsi que certaines métriques afin d'expliquer les performances ainsi que le comportement de l'algorithme. Pour
+expliquer l'idée mais également les problèmes et nos améliorations.
+Dans un premier temps, nous exposerons chacune des trois couches avec une partie présentant le concept mathématique et une autre pour la manière dont nous
+l'avons implémentée. Ensuite, nous parlerons des problèmes rencontrés ainsi que les remédiations ou les pistes de solutions que nous avons trouvé.
+Puis, nous présenterons les résultats, ainsi que certaines métriques afin d'expliquer les performances et le comportement de l'algorithme. Pour
 finir, nous conclurons notre rapport en synthétisant les idées, les problèmes et les résultats et en proposant des améliorations ou des pistes pour 
 des recherches futures.
 
 \subsection{Algorithme}
 Dans cette section, pour chacune des parties de l'algorithme, nous allons dans un premier temps expliquer son fonctionnement théorique et ses bases
 mathématiques, puis exposer la manière dont nous avons implémenter ces éléments.
-Une fois l'algorithme détaillé, nous présenterons les résultats pour les différentes variantes, en analysant ce qui à conduit aux valeurs obtenues.
-En guise de conclusion, les points problématiques seront abordés et détaillés afin que nous puissions dans la section suivante proposer des solutions à
-ces derniers.
+Une fois l'algorithme détaillé, nous présenterons les problèmes rencontrés ainsi que les remédiations proposées. Après nous passerons à l'analyse des
+résultats pour les différentes variantes afin de saisir les causes et les conséquences de nos choix.
+
 
 \subsubsection{Algorithme \textit{Layer 1}}
 \paragraph{}
@@ -1351,15 +1353,15 @@ où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, 
 $F_{t-1}$ le résultat de l'itération $t-1$.
 
 Cette formule mathématique implémente une réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}
-($r_i$). Les poids ont pour but de donner une pondération à chacun des éléments afin de donner le résultat le plus "juste" possible, suivant certains
-critères\footnote{Nous développerons ces critères plus loin.}
-Dans notre cas, le réseau de neurones disposent d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
-\footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisée dans le calcul du signal de $t$. Cette construction permet d'augmenter
-la quantité d'informations disponibles par le réseau afin d'améliorer les résultats.
-Un seuil, $v_t$ est ajouté dans la formule afin de lisser les résultats et d'éviter des variations trop fréquente.
+($r_i$). Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
+critères\footnote{Nous développerons ces critères plus loin.}.
+Dans notre cas, le réseau de neurones dispose d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
+\footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisé dans le calcul du signal de $t$. Cette construction permet d'augmenter
+la quantité d'information disponible par le réseau afin d'améliorer les résultats.
+Un seuil, $v_t$, est ajouté dans la formule afin de lisser les résultats et d'éviter des variations trop fréquentes.
 
 \paragraph{}
-Afin d'obtenir de bons résultats, ils convient de trouver les valeurs de $w_t$ et $v_t$ qui vont maximiser une fonction de coût. L'optimisation choisie
+Afin d'obtenir de bons résultats, il convient de trouver les valeurs de $w_t$ et $v_t$ qui vont maximiser une fonction de coût. L'optimisation choisie
 est une descente du gradient (\ref{section descente du gradient}). La fonction de coût est définie comme cela :
 $$D_t := \frac{d\widehat{S}(t)}{d\eta}|_{\eta=0} = \frac{B_{t-1}\Delta A_t - \frac{1}{2} A_{t-1}\Delta B_t}{(B_{t-1} - A_{t-1}^2)^{\frac{3}{2}}}$$
 
@@ -1379,7 +1381,7 @@ La première partie $F_{t-1} r_t$ estime le gain en fonction de la position et d
  \item Si $sign(F_{t-1}) = sign(r_t)$, alors la multiplication de ces deux éléments donnera un nombre supérieur ou égal à 0.
  \item Dans le cas contraire, le résultat sera négatif.
 \end{itemize}
-Si nous avons deviné correctement la direction du cours, alors nous faisons un profit et dans le cas contraire une perte.
+Si nous devinons correctement la direction du cours, alors nous faisons un profit et dans le cas contraire une perte.
 
 La deuxième partie $\delta |F_t - F_{t-1}|$ ajoute les coûts de transactions dans le calcul du profit. Cela découle du fait que prendre une position à
 un coût. Les différents cas sont :
@@ -1388,7 +1390,7 @@ un coût. Les différents cas sont :
  \item Dans le cas contraire, cela signifie que nous avons dans un premier temps fermé une position, puis ouvert une autre. Il y a deux transactions
  effectuées et donc $2 \delta$
 \end{itemize}
-Le profit n'est donc pas uniquement dépendant du signal et du \textit{return} mais également du signal de l'itération précédente.
+Le profit n'est pas uniquement dépendant du signal et du \textit{return} mais également du signal de l'itération précédente.
 
 Le profit cumulé est définit comme la somme des profits individuels :
 $$P_T = \sum_{t=0}^T R_t$$
@@ -1401,7 +1403,7 @@ Où $\Delta w_{i,t} = \frac{dD_t}{dw_i}$. Donc les poids de l'itération $t$ son
 $w_i$. Cette dérivée peut s'estimer à partir de:
 $$\frac{dD_t}{dw_i} \approx \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
 
-Cependant $\frac{dF_t}{dw_{i,t}}$ peut également être estimé comme :
+Avec $\frac{dF_t}{dw_{i,t}}$ qui peut également être estimé comme :
 $$\frac{dF_t}{dw_{i,t}} \approx \frac{\delta F_t}{\delta w_{i,t}} + \frac{\delta F_t}{\delta F_{t-1}} \frac{\delta F_{t-1}}{\delta w_{i,t-1}}$$
 
 On remarque que toutes formules sont définies de manières récursives. Cela découle de la structure du réseau de neurones. En effet, comme ce dernier est
@@ -1418,23 +1420,25 @@ Ou bien en utilisant tout les exemples et avec une somme :
 $$\Delta w_{i,t} = \sum_{t=1}^T \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
 Puis dans tous les cas, il faut mettre à jour par $w_{i,t} = w_{i,t-1} + \rho \Delta w_{i,t}$.
 
-Dans les deux cas, nous pouvons appliquer une boucle d'optimisation, notée \textit{epochs} dans la littérature. Il convient d'effectuer plusieurs fois
-l'optimisation sur l'ensemble entier d'entraînement, afin d'améliorer les résultats.
+Dans les deux cas, nous pouvons appliquer une boucle d'optimisation, notée \textit{epochs} dans la littérature. Cette dernière permet d'appliquer plusieurs
+fois la descente du gradient afin d'améliorer les résultats. Si la descente du gradient est notée $\widehat{g}$ et $w$ nos poids cela revient à faire :
+$$\widehat{g}(\widehat{g}(...\widehat{g}(w)))$$
+Mathématiquement la descente va tendre vers un optimum et en chaînant les dérivations cela permet d'accélérer le phénomène.
 
 \subsubsection{Implémentation \textit{Layer 1}}
 
 \paragraph{}
 De part le caractère récursif des équations, il faut définir les valeurs pour $t=0$. Il s'agît d'un choix arbitraire, mais qui se base néanmoins sur des
-éléments concrets. Nous avons donc que :
+éléments concrets. Nous avons :
 \begin{itemize}
  \item $A_0 = 0$. Le profit moyenne au temps $0$ est nul car aucune transaction n'a été effectuée.
  \item $B_0 = 0$. La déviation standard est nulle également pour les mêmes raisons que $A_0$.
  \item $w_{i,0} \in [0,1]$. Les poids sont initialisés de manières aléatoire et uniformément répartis sur l'ensemble $[0,1]$. Il n'y a aucune raison
  de penser qu'un départ est, à priori, meilleur qu'un autre.
- \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît plutôt d'un signal \textit{long}, ou
+ \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît plutôt d'un signal \textit{long} ou
  \textit{short}.
  \item $\delta,\rho,\eta,x,y \in [0,1]$. Les métas-paramètres sont tirés aléatoirement dans l'intervalle $[0,1]$, car l'article ne donne aucune
- indication sur les valeurs optimale. On suppose donc que l'optimisation annule le caractère aléatoire et donne donc des résultats similaires malgré des
+ indication sur les valeurs optimale. On suppose donc que l'optimisation annule le caractère aléatoire et donne des résultats similaires malgré des
  valeurs initiales différentes.
 \end{itemize}
 
@@ -1451,20 +1455,20 @@ Voici un pseudo code résumant le calcul :
  return acc + vt + w[w.length - 1] * oldFt
 \end{lstlisting}
 
-Afin de créer un code décomposable, nous avons créer des objets avec un objectif métier clair. Un objet \texttt{Weights} est donc instancié, représentant
+Afin de produire un code décomposable, nous avons créé des objets avec un objectif métier clair. Un objet \texttt{Weights} est donc instancié, représentant
 les poids. Des méthodes y sont attachées comme celle de mise à jour des poids. Il dispose de plusieurs attributs :
 \begin{itemize}
- \item $A_{t-1}$ afin d'utiliser le résultat de l'itération précédente dans le calcul de $A_t$.
- \item $B_{t-1}$ pour les mêmes raisons que $A_{t-1}$.
- \item $w$ dont nous avons déjà parlé plus haut.
- \item $\frac{dF_{t-1}}{dw_{i,t-1}}$ pour le calcul de $\frac{dF_{t}}{dw_{i,t}}$.
+ \item $A_{t-1}$ afin d'utiliser le résultat de l'itération précédente dans le calcul de $A_t$, noté \texttt{Weights.oldAt}.
+ \item $B_{t-1}$ pour les mêmes raisons que $A_{t-1}$, \texttt{Weights.oldBt}.
+ \item $w$ dont nous avons déjà parlé plus haut, \texttt{Weights.coefficients}.
+ \item $\frac{dF_{t-1}}{dw_{i,t-1}}$ pour le calcul de $\frac{dF_{t}}{dw_{i,t}}$, \texttt{Weights.oldFt}.
 \end{itemize}
 
-
-Dans cette dernière, le code implémente directement les équations que nous avons mentionnés plus haut. Nous calculons donc $\Delta w_{i.t}$ puis
+\paragraph{}
+Le code implémente directement les équations que nous avons mentionnées plus haut. Nous calculons donc $\Delta w_{i.t}$ puis
 nous mettons à jour les valeurs des poids. La représentation de $w$ et des $returns$ ne change pas. Concernant les autres éléments, 
 $A_t$,$B_t$,$\delta,\rho,\eta$ sont de type \texttt{Double}. Il y a cependant des éléments qui ne sont pas totalement défini, il convient donc de faire 
-un choix. Il y a principalement trois équations posant problèmes :
+un choix. Ces trois équations posant problèmes sont:
 \begin{itemize}
  \item $\frac{dR_t}{F_t} = -\delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ qui n'est pas défini si $F_t = F_{t-1}$.\\
  \item $\frac{dR_t}{F_{t-1}} = r_t + \delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ non défini pour $F_t = F_{t-1}$.\\
@@ -1492,7 +1496,7 @@ Les deux conditions sont:
 
 Le premier sert à vérifier la puissance du signal. En effet, la calcul du signal, avant application du signe, renvoie un nombre réel. Cela peut être
 $-0.0005$ comme $+1000$. Le but du seuil est de filtrer les signaux peu puissant. On suppose que si un signal est proche de 0, il ne faut apporter que
-peu de confiance au choix porté par le dit signal. Notre $y$ représente le seuil, il y a deux cas :
+peu de confiance à la direction initiée par le dit signal. Notre $y$ représente le seuil, il y a deux cas :
 $$|F_t | >= y \rightarrow \text{alors le signal est utilisé}$$
 $$|F_t | < y \rightarrow \text{alors le signal n'est pas utilisé}$$
 
@@ -1521,8 +1525,8 @@ figure se présentent:
  \item S'il diminue. Nous avons subi des pertes, il faut donc vérifier que ces pertes ne dépassent pas un certain pourcentage.
 \end{itemize}
 
-Si les pertes dépassent le pourcentage, alors nous fermons la position et attendons de recevoir une position différente de celle ayant entraînée les pertes.
-Dans le cas contraire, nous ne faisons rien.
+Si les pertes dépassent effectivement le pourcentage, alors nous fermons la position et attendons de recevoir une position différente de celle ayant
+entraînée les pertes. Dans le cas contraire, nous ne faisons rien.
 
 Voici l'effet que peut avoir un \textit{stop loss} sur une courbe de profit:
 \begin{figure}[H]
@@ -1535,13 +1539,15 @@ Voici l'effet que peut avoir un \textit{stop loss} sur une courbe de profit:
 Nous remarquons dans l'exemple qu'il n'y a pas de grande perte et qu'une perte est souvent suivie d'une période plate. L'application d'un \textit{stop loss}
 peut diminuer les pertes et surtout il empêche des comportements humains problématiques. En effet, il arrive qu'une personne prennent une position, que
 cette dernière commence à lui faire perdre de l'argent, mais qu'il la garde ouverte en espérant que les choses vont changer et s'améliorer. Le \textit{stop loss}
-automatise et empêche ce biais cognitif.
+automatise et empêche ce biais cognitif. Néanmoins cela peut causer d'autres soucis. Lorsqu'une grande baisse survient, le cour descend,
+déclenchant le \textit{stop loss}, ce qui va revenir à fermer la position et si de nombreux algorithmes réagissent comme cela, le cour va 
+continuer de descendre à cause de la vente simultanée de nombreuses positions créant ainsi un cercle vicieux.
 
 Dans le cadre de notre algorithme, le pourcentage de perte à ne pas dépasser est quantifié par la formule suivante :
 $$loss < x * 0.001$$
 Les pertes doivent être plus faibles que $x$ points de bases. Il faut optimiser $x$, car si sa valeur est trop grande, il n'aura aucun effet sur le profit
 cumulé. Dans le cas contraire, il deviendra presque impossible de faire du profit, car à la moindre perte, le système va bloqué une position qui aurait pu
-engendrer des gains, de plus cela va encourager le système à changer dès que le \textit{stop loss} est déclenché entraînant ainsi une augmentation des
+engendrer des gains à terme, de plus cela va encourager le système à changer dès que le \textit{stop loss} est déclenché entraînant ainsi une augmentation des
 coûts de transactions.
 
 \subsubsection{Implémentation \textit{Layer 2}}
@@ -1609,7 +1615,7 @@ souvent opposée à celle de la \textit{grid search} \cite{grid_vs_random}:
 \caption{Comparaison entre la méthode d'optimisation \textit{grid search} et celle de \textit{random search}}
 \end{figure}
 
-En moyenne, le maximaux locaux sont mieux explorés avec la méthode de recherche aléatoire. Pour mettre en place cet algorithme, il faut définir une
+En moyenne, les maximaux locaux sont mieux explorés avec la méthode de recherche aléatoire. Pour mettre en place cet algorithme, il faut définir une
 fonction de coût, afin d'évaluer la qualité d'une solution.
 Les fonctions qui rentrent en compte sont les suivantes :
 \begin{center}
@@ -1622,7 +1628,7 @@ Dans la formule $\Sigma$, intuitivement on comprend que l'on veut un maximum de 
 optimale de cette formule vaut $0$. Ceci est confirmé dans la deuxième formule $U$. En effet, on va soustraire $\nu \Sigma$, donc si $\Sigma$ vaut $0$,
 on maximise la fonction de coût. De plus $\bar{R}$ est défini comme le profit moyen, plus il sera grand, plus $U$ sera grand.
 
-La direction optimale a suivre est celle qui va maximiser les profits positifs tout en minimisant les profits négatifs, ce qui est intuitif.
+La direction optimale à suivre est celle qui va maximiser les profits positifs tout en minimisant les profits négatifs, ce qui est intuitif.
 L'article mentionne d'autres raisons qui appuient ce choix \cite{fx_trading}:
 \begin{enumerate}
  \item Les stratégies avec un grand risque et de nombreux \textit{returns} négatifs sont pénalisés dans la définition de $\Sigma$.
@@ -1670,7 +1676,7 @@ Dans l'implémentation, les paramètres sont réunis ensemble dans une classe et
 jour les valeurs. De plus, par le caractère décorrélé des calculs pour les 15 tirages aléatoires, nous avons construit cela avec des \textit{Thread}. Cela
 permet d'avoir de meilleur performance, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
 paramètre donné, et il suffit juste de synchroniser le moment
-où tout les \textit{Thread} ont terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas une perte de
+où tout les \textit{Thread} ont terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas de perte de
 performance. Il est donc possible de gagner un facteur $fac$ plus ou moins équivalent au nombre de cœurs engagés dans le calcul.
 
 \subsubsection{Points problématiques}
@@ -1679,7 +1685,7 @@ Durant l'implémentation, nous nous sommes trouvés confrontés à plusieurs pro
 également vous présenter les solutions appliquées ou envisagées.
 
 \paragraph{}
-Le principal problème, qui nous empêche de pouvoir faire des résultats, est que les poids du réseau de neurones divergent durant la descente du gradient.
+Le principal problème, qui nous empêche d'obtenir des résultats, est que les poids du réseau de neurones divergent durant la descente du gradient.
 Au bout de quelques centaines d'itérations, les poids croissent rapidement et deviennent tous \texttt{NaN}. Voici deux exemples de \textit{runs} afin de
 montrer le comportement des poids :
 \begin{figure}[H]
@@ -1739,8 +1745,8 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   Nous avons donc lu la documentation et les publications afin de comprendre le fonctionnement de ces algorithmes. Et \textit{in fine}, trouver les 
   différences avec la descente du gradient qui pourraient expliquer les écarts de résultats.
   
-  En lisant les sources des algorithmes sus-mentionnés, nous nous sommes rendus compte de deux éléments très important. Il s'agît de variantes de la
-  descente du gradient et surtout, ils ont pour point commun d'avoir un taux d'apprentissage variables.
+  En lisant les sources des algorithmes sus-mentionnés, nous nous sommes rendus compte de deux éléments très importants. Il s'agît de variantes de la
+  descente du gradient et surtout, ils ont pour point commun d'avoir un taux d'apprentissage variable.
   
   En effet, dans la descente du gradient, le taux d'apprentissage est fixé pour une \textit{run} donnée, ce qui nous a posé les problèmes expliqués précédemment.
   Pour ces algorithmes, le taux d'apprentissage est modifié à chaque itération d'une \textit{run} permettant plus de flexibilité, un apprentissage plus 
@@ -1757,7 +1763,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   Il nous a semblé que l'algorithme RMSProp était le plus simple à mettre en place. Nous avons donc appliqué les formules suivantes \cite{rmsprop_algo} :
   $$E[g^2]_t = 0.9 E[g^2]_{t-1} + 0.1 g^2_t$$
   où $g$ est le gradient et $E[g^2]_t$ l'espérance du carré du gradient au temps $t$. À partir de cela :
-  $$\theta_{t+1} = \theta_t + \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t$$
+  $$\theta_{t+1} = \theta_t + \frac{\rho}{\sqrt{E[g^2]_t + \epsilon}} g_t$$
   Nous avons donc un taux d'apprentissage qui varie en fonction de résultats précédemment obtenu, ce qui pourrait résoudre le problème rencontré avec la
   descente du gradient dans sa version simple.
   
@@ -1767,7 +1773,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   $$E[g^2]_t = E[g^2]_{t-1} + 0.1 g^2_t$$
   
   La partie intéressante de cette méthode est la manière dont elle accélère l'apprentissage. En effet, si $E[g^2]_t < 1$, on a des changements minimes 
-  qui risquent de prendre du temps pour converger\footnote{Avec la version classique de la descente du gradient.}. Cependant en divisant $\eta$ par ce
+  qui risquent de prendre du temps pour converger\footnote{Avec la version classique de la descente du gradient.}. Cependant en divisant $\rho$ par ce
   nombre, on va augmenter la "quantité de changement" rendant la convergence plus rapide. À contrario, si $E[g^2]_t > 1$, nous avons des changements 
   conséquents et donc un risque de divergence\footnote{Également avec la version classique de la descente du gradient.}. Pour éviter cela, par la division,
   nous diminuons l'impact de ces modifications, diminuant \textit{de facto} le risque de divergence.
@@ -1788,22 +1794,22 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   étrange de vouloir la modifier.
   
   À partir de là, nous allons travailler uniquement sur $\eta,x,$ et $y$. En utilisant l'algorithme présenté plus haut, nous avons eu des problèmes
-  de signal nul ou de NaN. Cela peut varier d'une \textit{run} à l'autre. Ces phénomènes arrivent car dans le premier cas le seuil et/ou le \textit{stop
+  de signal nul ou de \texttt{NaN}. Cela peut varier d'une \textit{run} à l'autre. Ces phénomènes arrivent car dans le premier cas le seuil et/ou le \textit{stop
   loss} sont trop élevés ne laissant aucun signal être accepté, et dans le second cas, les valeurs sont également trop grande, car qui provoque des erreurs
   de calculs en chaîne entraînant des poids divergeant malgré l'algorithme du RMSProp.
   
   Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt que d'utiliser un tirage aléatoire. Pour $t>0$ cependant, il
   faut modifier la déviation standard. Cette dernière, si la valeur est trop grande, risque de faire diverger les résultats de l'optimum.
-  Les nouvelles mesures sont calculés :
-  $$x_{t+1} = N(\mu, \sigma)$$
-  où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risque de
+  Les nouvelles mesures sont calculées :
+  $$x_{t+1} = \mathcal{N}(\mu, \sigma)$$
+  où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risquer de
   sortir de la zone d'attraction de l'optimum.
  
  Nous soupçonnons le fait que les paramètres $\eta$ et $\delta$ ont un impact trop grand dans le calcul de $A_t$ et $B_t$ ce qui peut entraîner les
  problèmes de poids. Pour éviter cela, nous avons fixé une valeur très faible, de l'ordre de $1e-3$, ce qui fait disparaître le problème.
- De plus, malgré l'optimisation, les meilleurs résultats en moyenne sont obtenus avec les valeurs initiales pour $x$ et $y$. Ces paramètres ,lorsque 
- $x$ devient grand et $y$ petit n'ont peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
- De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche de solution. Si la déviation 
+ De plus, malgré l'optimisation, les meilleurs résultats en moyenne sont obtenus avec les valeurs initiales pour $x$ et $y$. Ces paramètres, lorsque 
+ $x$ devient grand et $y$ petit n'ont que peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
+ De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la dite recherche. Si la déviation 
  standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats et si elle est trop petite, nous restons dans
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
  Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
@@ -1839,8 +1845,8 @@ une optimisation des paramètres toute les $200$ itérations durant la phase d'a
 \end{figure}
 
 \paragraph{}
-D'après ces deux exemples, les résultats peuvent parier d'une \textit{run} à l'autre. Cela affecte le signal et par extension le profit cumulé. Il a peu
-de moyen où le signal est nul à cause du \textit{stop trailing loss}. Cela provient du fait que si la valeur de $x$ est trop grande, nous ne dépassons
+D'après ces deux exemples, les résultats peuvent varier d'une \textit{run} à l'autre. Cela affecte le signal et par extension le profit cumulé. Il a peu
+de moment où le signal est nul à cause du \textit{stop trailing loss}. Cela provient du fait que si la valeur de $x$ est trop grande, nous ne dépassons
 jamais ce seuil et donc le signal n'est pas nul et si $x$ est trop grand nous ne prenons presque jamais de position. Nous avons un problème récurrent
 qui concerne la valeur des métas-paramètres.
 
@@ -1912,14 +1918,14 @@ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B
 Comme mentionné dans l'introduction, le but de ce projet était d'implémenter l'algorithme, de le faire fonctionner, de le tester et de trouver des pistes
 d'amélioration.
 
-L'implémentation a été compliqué à cause du manque d'informations dans l'article. L'algorithme n'y est que très peu décrit et, mis à part certaines 
+L'implémentation a été compliquée à cause du manque d'information dans l'article. L'algorithme n'y est que très peu décrit et, mis à part certaines 
 équations, il n'y a aucun pseudo-code pour le comprendre. Il s'agît juste de descriptions vagues sur le fonctionnement et l'idée du programme. À partir de
 cela, nous avons dû grandement interpréter et nous baser sur d'autres recherches théoriques afin de combler les manques. Il nous a fallu faire des compromis
 afin de faire fonctionner le programme, ce qui explique les divergences rencontrées avec l'idée initiale.
 
 Ces divergences peuvent être prises comme des améliorations. En effet, l'implémentation initiale ne marchait pas et c'est grâce à ces idées que nous avons
 réussi à obtenir des résultats. Nous pensons principalement aux variantes de la descente du gradient qui ont permises de diminuer les risques de
-\texttt{Nan}.
+\texttt{NaN}.
 
 \paragraph{}
 En terme de résultats, contrairement à l'article, nous avons effectué nos mesures sur plusieurs cours à des périodes différentes. Un des gros problèmes
@@ -1927,7 +1933,7 @@ provient des différences entre deux \textit{runs}. Il est compliqué de dire si
 l'optimisation et la recherche de solutions sont ardues à cause de ce phénomène. Il nous est impossible de dire après un bon profit si cela est du à la
 chance ou non, et réciproquement avec les mauvais résultats.
 
-On peut noté que malgré cela, l'algorithme trouve toujours le moyen de faire des profits indépendamment de la tendance ou des résultats précédant, ce
+On peut noter que malgré cela, l'algorithme trouve toujours le moyen de faire des profits indépendamment de la tendance ou des résultats précédant, ce
 qui est une satisfaction. En effet, ce phénomène implique qu'il y a effectivement apprentissage et que le réseau est capables sous certaines conditions
 de réussir à produire et interpréter un signal correctement. Afin
 d'améliorer le programme, il faudrait comprendre ce qui provoquer ces profits locaux et le généraliser afin d'obtenir un profit cumulé global croissant, ce qui
@@ -1936,14 +1942,14 @@ performances.
 
 En fixant les métas-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}}, le \textit{stop trailing loss} est moins visible
 que sur d'autres exemples. Ce qui nous permet de mentionner un problème récurrent dans ce projet : de part le manque d'information, les valeurs initiales
-de tout les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{Nan}. Le caractère
+de tout les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{NaN}. Le caractère
 empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous permet pas d'avoir des valeurs standards fonctionnant avec n'importe quel
 algorithme. Cela revient donc à tester plusieurs valeurs en espérant qu'une fonctionnera.
 
 \paragraph{}
 Concernant la question de recherche, nous n'avons pas été capable de faire fonctionner l'idée originale. Cependant nous avons pu saisir les raisons ou 
 éléments qui empêchaient son fonctionnement. Nous avons ensuite proposer des améliorations reposant sur ces constations. Ces dernières ont permis 
-d'améliorer les performances de l'algorithme tout en reposant sur des bases mathématiques.
+d'améliorer les performances de l'algorithme tout en reposant sur des bases mathématiques solides.
 
 \paragraph{}
 Concernant les pistes pour des recherches futures, nous en voyons plusieurs :
@@ -1953,7 +1959,7 @@ Concernant les pistes pour des recherches futures, nous en voyons plusieurs :
  \item Proposer un réseau multi-couche.
 \end{itemize}
 
-Concernant les métas-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
+Pour les métas-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
 une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de métas-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
 RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance global.
 
