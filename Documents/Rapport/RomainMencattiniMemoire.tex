@@ -182,30 +182,20 @@ De même pour un \textit{trading plan}.
 \end{itemize}
 
 \paragraph{}
-\todo[inline]{Faire la distinction entre automatisation et machine learning.}
 Ces éléments ont, en partie, favorisé l'émergence et l'utilisation d'algorithmes dans la finance. 
 En 2014 aux États-Unis, 84\% des transactions étaient accomplies par des algorithmes \cite{real_investors}. 
-Ce qui représente environ 100'000 réalisations, ou \textit{ticks}, par secondes \cite{real_investors}.
+Ce qui représente environ 100'000 réalisations, ou \textit{ticks}, par secondes \cite{real_investors}. L'informatique a engendré une automatisation très importante des transactions.
 Durant l'évolution de l'outil informatique, le monde de la finance en a suivi les améliorations afin de perfectionner 
-leurs algorithmes. On retrouve donc des méthodes d'optimisations poussées ainsi que les récentes découvertes 
+leurs algorithmes. L'automatisation mise à part, on retrouve des méthodes d'optimisations poussées ainsi que les récentes découvertes 
 de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. 
 Des propositions de plus en plus pointues dans les deux domaines voient le jour. 
-L'algorithme qui sera au coeur de ce projet en fait partie. 
+L'algorithme qui sera au cœur de ce projet en fait partie. 
 Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
 
 \paragraph{}Afin d'approcher aux mieux ces notions, nous allons discuter des éléments nécessaires à leur compréhension.
 Nous allons en premier lieu traiter le domaine financier ainsi que ces outils. Puis nous parlerons de 
-plusieurs méthodes de \textit{ML}.
-Voici celles qui vont être développées dans cet état de l'art:
-\todo[inline]{Enlever la liste de l'intro ou bien reformuler.}
-\begin{itemize}
-\item Les réseaux de neurones.
-\item Les arbres de décision.
-\item Les algorithmes \textit{SVM} \cite{wikipedia_svm}.
-\item \textit{Logistic Regression}.
-\item \textit{Naive Bayes}.
-\item Descente du Gradient \cite{wikipedia_descente_du_gradient} ainsi que sa version dite stochastique \cite{descente_du_gradient_stochastique}.
-\end{itemize}
+plusieurs méthodes de \textit{ML}. Il est compliqué d'être exhaustif tant les méthodes sont nombreuses et disposent de variations complexes. Les algorithmes choisis présenterons un large panel de techniques et constitueront une introduction complète au domaine. Ces derniers comprendront les réseaux de neurones, les arbres de décision, le \textit{Support Vector Machine}\cite{wikipedia_svm}, les classifieurs \textit{Naive Bayes} ainsi que la descente du gradient \cite{wikipedia_descente_du_gradient} et sa version dite stochastique \cite{descente_du_gradient_stochastique}.
+
 
 Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}, en évaluant leur performances.
 
@@ -215,7 +205,12 @@ Finalement, nous lierons les deux domaines en montrant comment adapter les modè
 \subsubsection{\textit{FOREX}}
 
 \paragraph{}
-\todo[inline]{Ajouter une définition du FOREX}
+Avant de parler du \textit{FOREX}, il convient d'en donner une définition \cite{forex_definition} :
+\begin{center}
+	"\textit{Forex (FX) is the market in which currencies are traded. The forex market is the largest, most liquid market in the world [...]. It includes all of the currencies in the world. There is no central marketplace for currency exchange; trade is conducted over the counter. The forex market is open 24 hours a day, five days a week, except for holidays, and currencies are traded worldwide among the major financial centers of London, New York, Tokyo, Zürich, Frankfurt, Hong Kong, Singapore, Paris and Sydney.[...] any person, firm or country may participate in this market.}"
+\end{center}
+Ce marché permet de faire des transactions sur toutes les monnaies. Il n'y a pas de place centrale, les échanges pouvant être conduits par les pays. Précision importante, chaque personne peut participer au \textit{FOREX}.
+
 Afin d'appréhender le fonctionnement du \textit{FOREX}, il est important de mentionner certaines décisions historiques. Ces dernières ayant façonné le marché des devises actuel.
 
 \paragraph{}
@@ -255,7 +250,7 @@ Ainsi dans le cas contraire, on parlera d'une dépréciation.
 
 La mondialisation a facilité ce marché. En effet, toutes devises étant accessibles depuis 
 n'importe où, il devient donc possible d'avoir des marchés avec des devises plus exotiques.
-\todo[inline]{Regarder et ajouter le différentiel d'intérêt, i.e le carry}
+Il devient par exemple possible de vendre une monnaie avec un faible taux d'intérêt puis utiliser les fonds générés par la vente pour investir dans une monnaie avec un meilleur taux d'intérêt. Le but étant de capturer le différentiel d'intérêt \cite{currency_carry_trade}.
 
 \paragraph{}
 Les principaux acteurs financiers sont \cite{marche_des_changes}:
@@ -336,17 +331,15 @@ Il est également utilisé comme marge par les \textit{broker}\cite{wikipedia_br
 \subsubsection{Introduction}
 \paragraph{}
 T. Mitchell a donné une définition formelle \cite{mitchell}:
-\todo[inline]{Vérifier citation}
 \begin{center}
 "\textit{A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and
-performance measure $P$ is its performance at tasks in $T$, as measured by $P$, improves with experience $E$}"
+performance measure $P$ if its performance at tasks in $T$, as measured by $P$, improves with experience $E$}"
 \end{center}
 
-\todo[inline]{Relire et corriger si cela n'a pas de sens.}
-On a donc une tâche $T$ à accomplir, où $T$ peut consister à trier des images ou à reconnaître des motifs.
-La mesure de la réussite de cette tâche $T$ est nommée $P$. C'est-à-dire la qualité du résultat du programme pour 
-la tâche donnée, $T$. Si le programme améliore son résultat $P$ pour la tâche $T$ grâce à l'expérience $E$. 
-Il s'agit d'un programme de \textit{machine learning}. L'expérience peut être vue comme une phase d'entraînement
+Cette citation signifie que si nous disposons d'une tâche $T$ à accomplir. $T$ peut consister à trier des images ou à reconnaître des motifs.
+La mesure de la réussite de $T$ est nommée $P$. C'est-à-dire la qualité du résultat pour 
+la tâche donnée, $T$. Si le programme améliore $P$ pour la tâche $T$ grâce à l'expérience $E$. 
+Il s'agit d'un programme de \textit{machine learning}. L'expérience $E$ peut être vue comme une phase d'entraînement
 ou comme le fait de retenir les réponses après avoir accompli la tâche.
 
 \paragraph{}
@@ -374,7 +367,7 @@ et après avoir retourné le résultat, nous lui dirons si c'est juste ou faux. 
 optimisera en conséquence ses réponses.
 
 \paragraph{}
-Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte afin de minimiser les risques de sur-apprentissage\footnote{Le sur-apprentissage consiste à apprendre par coeur la tâche, plutôt que d'apprendre les principes pour réaliser la tâche.}, et de maximiser la qualité de nos données.
+Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte afin de minimiser les risques de sur-apprentissage\footnote{Le sur-apprentissage consiste à apprendre par cœur la tâche, plutôt que d'apprendre les principes pour réaliser la tâche.}, et de maximiser la qualité de nos données.
 Pour ce faire il faut:\label{astuce ensemble d'entraînement}
 \begin{itemize}
 \item Représenter la population générale. Donc si le but est du traitement de la langue, 
@@ -396,15 +389,28 @@ consiste à optimiser les dits paramètres.
 
 \subsubsection{\textit{Logistic Regression}} \label{section régression logistique}
 \paragraph{}
-\todo[inline]{Ajouter une explication de pourquoi -> "régression pour trouver une fonction" et du comment -> "les équations permettent de trouver cette fonction"}
 Une régression en statistique consiste à analyser la relation entre une variable par rapport à un ensemble d'autres 
-\cite{wikipedia_regression}. On veut estimer la probabilité conditionnelle, en se basant sur des variables et 
-en utilisant \todo[inline]{Mettre un exemple de distribution logistique.} une distribution logistique cumulative. Cette dernière a une forme semblable à une distribution Gaussienne, 
+\cite{wikipedia_regression}. De manière plus simple, l'objectif est d'interpoler au mieux les données à partir des éléments connus; il s'agît d'une analyse prédictive. Afin d'atteindre cet objectif, plusieurs techniques sont possibles comme l'utilisation de l'analyse numérique avec des outils comme les splines\cite{spline_schoenberg_isaac} ou une approche plus statistique avec des variables aléatoires et des probabilités conditionnelles. C'est de cette dernière dont il est question.
+
+On veut estimer la probabilité conditionnelle, en se basant sur des variables et 
+en utilisant une distribution logistique cumulative\footnote{Source : \url{https://upload.wikimedia.org/wikipedia/commons/e/e9/Logisticpdfunction.png}}:
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.75]{images/logistic_distribution}
+	\caption{Exemple de distribution logistique.}
+\end{figure}
+
+D'un point de vue mathématique, la densité de probabilité est donnée par :
+$$f(x; \mu,s) = \frac{e^{-\frac{x-\mu}{s}}} {s\left(1+e^{-\frac{x-\mu}{s}}\right)^2}
+=\frac{1}{s\left(e^{\frac{x-\mu}{2s}}+e^{-\frac{x-\mu}{2s}}\right)^2}$$
+Les probabilités cumulées par :
+$$F(x; \mu, s) = \frac{1}{1+e^{-\frac{x-\mu}{s}}} = \frac12 + \frac12 \;\operatorname{tanh}\!\left(\frac{x-\mu}{2s}\right)$$
+
+Cette dernière a une forme semblable à une distribution Gaussienne, 
 mais avec des queues épaisses et donc une \textit{kurtosis} plus élevée. La \textit{kurtosis} étant définie comme suit:
-\todo[inline]{Définir $\mu_4$}
-\begin{center}
-$Kurt(X) = \frac{\mu_4}{\sigma^4}$, où $\mu_4$ est le quatrième moment centré et $\sigma^4$ la variance au carré. 
-\end{center}
+$$Kurt(X) = E\left[\left(\frac{X - \mu}{\sigma}\right)\right]$$
+Où $\mu$ est la moyenne mathématique et $\sigma$ la déviation standard. 
+
 Le but est de modéliser: $P(Y=1 | X=x)$ comme fonction de x. Nous voulons donc savoir quelle est la probabilité que 
 la classe\footnote{Dans ce cas, la classe désigne une réalisation de la variable aléatoire $Y$.} $Y$ vaille $1$ sachant que $X$ vaut $x$.
 
@@ -475,16 +481,15 @@ Afin de construire l'arbre à partir de l'ensemble d'entraînement, il existe pl
 Un des plus connus est le \textit{ID3} \cite{id3}. Il s'agit d'une méthode de type \textit{greedy}.
 
 À chaque itération, il faut:
-\todo[inline]{Préciser qu'il faut reconstruire l'arbre à chaque entraînement.}
 \begin{itemize}
  \item effectuer un test statistique\footnote{Il vise à vérifier la quantité d'information gagnée pour 
  la classification \cite{id3}.} afin de trouver l'attribut le plus discriminant.
  \item utiliser cet attribut comme nœud.
  \item retourner au premier point, tant que l'ensemble des attributs n'est pas vide.
 \end{itemize}
+Nous allons construire l'arbre de manière \textit{top-down} en utilisant ,à chaque pas, le meilleur attribut, selon notre test statistique. La construction de l'arbre constitue la phase d'entraînement. Si de nouvelles données viennent s'ajouter, il devient nécessaire de construire un nouvel arbre, soit une nouvelle phase d'entraînement.
 
-Nous allons construire l'arbre de manière \textit{top-down} en utilisant ,à chaque pas, le meilleur attribut, selon notre test
-statistique.
+La phase de classification consiste à parcourir l'arbre en appliquant les prédicats à l'instance que nous désirons classifier. Une fois arrivé a une feuille, nous avons un résultat.
 
 
 \subsubsection{\textit{Naive Bayes}}\label{section naive bayes}
@@ -553,10 +558,10 @@ pour notre algorithme, d'un rond et dans l'autre d'un carré}
 
 \paragraph{}
 Notre fonction est:
-\todo[inline]{Définir $w,x,b$}
 \begin{center}
 $f(x) = (w \cdot x) + b$
 \end{center}
+Où $x$ est le vecteur\footnote{i.e notre instance.}, $w$ est le vecteur normal à l'hyperplan et $b$ l'ordonnée à l'origine.
 Le but est de maximiser la distance entre les points les plus proches de l'hyper-plan, tout en pénalisant 
 les points mal classés. Il n'est pas toujours possible de séparer les données de dimensions $n$, 
 il conviendra donc d'augmenter la dimension afin d'obtenir une dimension $m > n$ plus discriminante. 
@@ -598,8 +603,7 @@ Afin de diminuer l'erreur et optimiser au mieux notre classifieur.
 
 \subsubsection{Réseaux de neurones}
 \paragraph{}
-\todo[inline]{Ajouter ref pour la première phrase. Ça vient de wiki.}
-Tout comme les algorithmes génétiques s'inspirent de la sélection naturelle dans un but d'optimisation,
+Tout comme les algorithmes génétiques s'inspirent de la sélection naturelle\cite{algorithme_genetique} dans un but d'optimisation,
 les réseaux de neurones se basent sur un modèle formel de neurones
 \footnote{Neurones formels: \url{http://www.peoi.org/Courses/Coursesfr/neural/neural3.html}} afin de copier la capacité 
 d'apprentissage des êtres vivants.
@@ -690,22 +694,17 @@ Contrairement à $x,y$ qui seront optimisés par la troisième couche, le param�
 La couche d'optimisation dynamique est la troisième couche. Cette dernière va, à chaque itération, optimiser les paramètres suivants :
 $x,y,\eta,\delta,\rho$.
 
-Pour ce faire elle va utiliser \cite{fx_trading}:
-\todo[inline]{Ajouter une phrase qui explique que c'est les rendements positifs sur les rendements négatifs.}
+Afin de conduire à bien l'optimisation, il fallu définir une fonction de coût\cite{fx_trading}:
 $$\Sigma := \frac{\sum_{i=0}^N (R_i)^2 I(R_i < 0)}{\sum_{i=0}^N (R_i)^2 I(R_i > 0)}$$
 $$ U(\overline{R},\Sigma,\upsilon) := a\cdot(1-\upsilon)\cdot \overline{R} - \upsilon \cdot \Sigma$$
 
 ,où $R_i := W_i - W{i-1}$ est le rendement au temps $i$ avec $W_i$ le profit cumulé, $\overline{R} := \frac{W_N}{N}$ est le profit moyen
 avec $N$ qui est le nombre d'intervalle, $a$ une constante et $\upsilon$ l'aversion au risque.
+Ces équations semblent complexes, néanmoins $\Sigma$ représente les \textit{returns} négatifs sur les positifs.
 
 Ces équations ont été construites de manière à posséder ces propriétés \cite{fx_trading}:
 \begin{itemize}
  \item Une stratégie négative implique un risque très élevé afin d'éviter de soudaines et importantes pertes.
- 
- \item \todo[inline]{Réécrire.}Avec la définition de $\Sigma$, un large total de \textit{trading} défavorable\footnote{Calculé par :
- $\sum_{i=0}^N (R_i)^2 I(R_i < 0)$.} par rapport à l'impact total des opérations favorable\footnote{Calculé par :
- $\sum_{i=0}^N (R_i)^2 I(R_i > 0)$.} conduit à un risque important même si le profit reste le même. Cela favorise un système
- qui augmente de manière monotone ses profits plutôt qu'un autre plus irrégulier.
  
  \item La mesure $\Sigma$ pénalise uniquement les stratégies négatives et pas les stratégies positives. 
 \end{itemize}
@@ -714,8 +713,8 @@ La fonction à optimiser est donc :
 $$\max_{\delta, \eta, \rho, x, y} U(\overline{R};\Sigma: \delta, \eta, \rho, x, y; \upsilon)$$
 
 Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces derniers peuvent être optimisés de la manière voulue.
-\todo[inline]{Reformuler la phrase dessous, l'idée est "on a plusieurs manière d'optimiser, c'est un problème classique", ajouter une transition plus smooth avec la descente du gradient, genre "d'ailleurs afin d'optimiser les réseaux de neurones on peut utiliser la descente du gradient".}
-L'article ne creuse pas cette fois et utilise une recherche aléatoire composante par composante.
+\\
+Les réseaux de neurones peuvent être optimisés de plusieurs manières. L'une d'entre elle est la descente du gradient.
 
 \subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
@@ -912,8 +911,7 @@ comme les réseaux de neurones n'aient pas de valeurs.
 
 \subsubsubsection{Introduction}
 \paragraph{}
-\todo[inline]{Rephraser pour éviter la confusion avec auteur == Romain ?}
-L'auteur a appliqué l'algorithme sur le marché des actions \cite{machine_learning_automated_trading}
+Cet article montre un exemple d'application sur le marché des actions \cite{machine_learning_automated_trading}
 \footnote{Ou \textit{Stock market.}}. Après avoir essayé deux approches :
 \begin{itemize}
 \item L'approche individuelle.
@@ -1129,8 +1127,7 @@ L'ensemble procure de meilleurs résultats.
 
 \subsubsubsection{Introduction}
 \paragraph{}
-\todo[inline]{Rephraser.}
-Cet article a principalement exploré la technique de la descente du gradient 
+Un autre exemple d'article utilisant les techniques de \textit{machine learning}. Ce dernier ayant principalement exploré la technique de la descente du gradient 
 (voir \ref{section descente du gradient}) et plus précisément de sa version probabiliste ou
 \textit{stochastic gradient descent} \cite{descente_du_gradient_stochastique}.
 
@@ -1304,9 +1301,7 @@ En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples ar
 éléments peut introduire des exceptions. Ce qui implique de reconstruire l'arbre, ce cas pouvant être très lourd en termes
 de calculs, il convient donc de l'éviter.
 
-\todo[inline]{Ajouter le "à quoi", après "peut être une solution", une solution à quoi ?}
-\todo[inline]{Nuancer le propos, et dire que c'est UNE solution possible, mais qu'elle est juste d'un point de vue mathématique.}
-Le classifieur \textit{Naive Bayes} aurait pu être une solution car ce dernier peut classifier les données non linéaires,
+Le classifieur \textit{Naive Bayes} aurait pu être une méthode de classification efficace\footnote{i.e: Deviner si le cours va monter, descendre ou stagner.}car ce dernier peut classifier les données non linéaires,
 ne présente pas de problème de sur-apprentissage et est adapté pour un apprentissage \textit{online}. Il suffit de rajouter le
 dernier exemple dans l'équation pour mettre à jour l'apprentissage. La raison qui nous a poussé à choisir les réseaux de neurones 
 plutôt que l'algorithme de \textit{Naive Bayes} est que ce dernier a des performances limitées sur un grand ensemble de données.
@@ -1316,8 +1311,9 @@ Si l'on prend des petits jeux de données, \textit{Naive Bayes} est très effica
 Cependant si l'ensemble grandit, ces performances plafonnent, ce qui n'est pas le cas du \textit{Neural Nets} dont les
 résultats augmentent à mesure que le nombre de données disponibles croît.
 
-Au vu des raisons susmentionnées, un algorithme de réseau de neurones nous semblait le meilleur choix, car le \textit{FOREX} nous
+Au vu des raisons susmentionnées, un algorithme de réseau de neurones nous semblait un choix raisonnable tant pour les spécifications mathématiques que pour la manière de l'utiliser. Car le \textit{FOREX} nous
 fournit suffisamment de données pour avoir d'excellent résultats, de plus, nous ne sommes pas limités par une classification linéaire.
+Le cas échéant, si les réseaux de neurones ne fournissent pas de résultats suffisants, il sera possible de réorienter notre choix sur une autre méthode. Cela nous laisse des pistes de recherches tant en cas de succès que d'échec.
 
 
 \newpage
@@ -1370,13 +1366,10 @@ résultats pour les différentes variantes afin de saisir les causes et les cons
 \paragraph{}
 Le rôle du \textit{Layer 1} est de fournir un signal. Dans l'article, ce signal peut avoir comme ensemble de valeurs : $\{-1,+1\}$. Le calcul du dit
 signal suit la formule suivante \cite{fx_trading}:
-\todo[inline]{Définir $M$, préciser pourquoi $w_{i,t}$}
 $$F_t = sign(\sum_{i=0}^M w_{i,t} r_{t-i} + w_{M+1,t} F_{t-1} + v_t)$$
-où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, $w_{i,t}$ est le ième poids de l'itération $t$, $v_t$ est un seuil et
-$F_{t-1}$ le résultat de l'itération $t-1$.
+où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, $w_{i,t}$ est le ième poids de l'itération $t$, $v_t$ est un seuil et $F_{t-1}$ le résultat de l'itération $t-1$.
 
-Cette formule mathématique implémente un réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}
-($r_i$). Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
+Cette formule mathématique implémente un réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}($r_i$). La notation des poids, soit $w_{i,t}$, prend en compte l'itération courrante. En effet, $w_{i,t}$ n'est pas forcément équivalent à $w_{i,t+1}$. Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
 critères\footnote{Nous développerons ces critères plus loin.}.
 Dans notre cas, le réseau de neurones dispose d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
 \footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisé dans le calcul du signal de $t$. Cette construction permet d'augmenter
@@ -1384,17 +1377,19 @@ la quantité d'information disponible par le réseau afin d'améliorer les résu
 Un seuil, $v_t$, est ajouté dans la formule afin de lisser les résultats et d'éviter des variations trop fréquentes.
 
 \paragraph{}
-\todo[inline]{Inverser définition de $S$ et la dévirée de $S$.}
 Afin d'obtenir de bons résultats, il convient de trouver les valeurs de $w_t$ et $v_t$ qui vont maximiser une fonction de coût. L'optimisation choisie
-est une descente du gradient (\ref{section descente du gradient}). La fonction de coût est définie comme cela :
-$$D_t := \frac{d\widehat{S}(t)}{d\eta}|_{\eta=0} = \frac{B_{t-1}\Delta A_t - \frac{1}{2} A_{t-1}\Delta B_t}{(B_{t-1} - A_{t-1}^2)^{\frac{3}{2}}}$$
-
-où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$.Il faut appliquer un développement de Taylor à $\widehat{S}(t)$ en $\eta=0$
-La définition de $\widehat{S}(t)$ est la suivante :
+est une descente du gradient (\ref{section descente du gradient}).
+Soit $\widehat{S}(t)$ définit comme :
 $$\widehat{S}(t) := \frac{A_t}{B_t}$$
 où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
 De manière intuitive, $A_t$ représente l'espérance et $B_t$ la volatilité. Le but est donc d'obtenir une grand espérance avec peu de risque. La valeur
 théorique maximale de la fonction $\widehat{S}(t)$ doit tendre vers l'infini.
+
+La fonction de coût est définie comme suit :
+$$D_t := \frac{d\widehat{S}(t)}{d\eta}|_{\eta=0} = \frac{B_{t-1}\Delta A_t - \frac{1}{2} A_{t-1}\Delta B_t}{(B_{t-1} - A_{t-1}^2)^{\frac{3}{2}}}$$
+
+où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$.Il faut appliquer un développement de Taylor à $\widehat{S}(t)$ en $\eta=0$
+
 
 Il reste encore à définir $R_t$, qui quantifie le gain au temps $t$:
 $$R_t := F_{t-1} r_t - \delta |F_t - F_{t-1}|$$
@@ -1425,22 +1420,21 @@ $$w_{i,t} = w_{i,t-1} + \rho \Delta w_{i,t}$$
 
 Où $\Delta w_{i,t} = \frac{dD_t}{dw_i}$. Donc les poids de l'itération $t$ sont définis en fonction de $t-1$ et de la dérivé $D_t$ par rapport aux poids
 $w_i$. Cette dérivée peut s'estimer à partir de:
-\todo[inline]{Chercher des justifications, s'il y en a.}
 $$\frac{dD_t}{dw_i} \approx \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
 
-\todo[inline]{Chercher la justification de la simplification.}
 Avec $\frac{dF_t}{dw_{i,t}}$ qui peut également être estimé comme :
 $$\frac{dF_t}{dw_{i,t}} \approx \frac{\delta F_t}{\delta w_{i,t}} + \frac{\delta F_t}{\delta F_{t-1}} \frac{\delta F_{t-1}}{\delta w_{i,t-1}}$$
+
+Ces deux équations sont approximées sur la base d'une optimisation\cite{learning_to_trade}. Cette dernière consiste à ne prendre en compte que le dernier retour $R_t$. Cela permet de construire un système très rapide et réactif permettant ainsi d'optimiser le programme en continue, au fil des nouvelles données.
 
 On remarque que toutes les formules sont définies de manières récursives. Cela découle de la structure du réseau de neurones. En effet, comme ce dernier est
 récurrent, et comme l'itération $t-1$ influence celle de $t$, une définition récursive est plus naturelle qu'une définition itérative qui ferait intervenir
 des accumulateurs.
 
 \paragraph{}
-\todo[inline]{Montrer la référence qui dit cette hypothèse d'équivalence.}
 Nous avons expliqué plus tôt, qu'il existe deux versions de la descente du gradient (\ref{section descente du gradient}). Une version normale, ainsi qu'une
 version stochastique.
-Les deux sont équivalentes, tant au niveau des résultats que des problèmes rencontrés. Elles le sont également d'un point de vue mathématique
+Les deux sont équivalentes, tant au niveau des résultats que des problèmes rencontrés\cite{learning_to_trade}. Elles le sont également d'un point de vue mathématique
 \cite{learning_to_trade}.
 L'optimisation peut s'effectuer en version stochastique, avec à chaque itération le calcul de $\Delta w_{i,t}$ comme vu précédemment
 Ou bien en utilisant tous les exemples et avec une somme :
@@ -1507,9 +1501,12 @@ $$\frac{F_t - F_{t-1}}{|F_t - F_{t-1}|} = 0$$
 Et si $A_{t-1}^2 >= B_{t-1}$, alors il faut que la valeur de $\frac{dD_t}{dR_t}$ soit très basse pour pénaliser cela\footnote{La valeur numérique est à 
 l'appréciation du programme. Cela peut être \texttt{-100} ou \texttt{Double.MIN\_VALUE}}.
 
-La descente du gradient est très sensible au \textit{learning rate}\footnote{$\rho$ dans notre cas.} et dans certains cas, les poids peuvent diverger et
-tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents \todo{Ajouter une ref}. Une solution possible pour pallier ce problème 
-consiste à appliquer un facteur $f < 1$ afin d'empêcher les poids de croître trop rapidement et de tendre vers l'infini. \todo{Expliquer en quoi ça aide, et citer l'article}
+La descente du gradient est très sensible au \textit{learning rate}\footnote{$\rho$ dans notre cas.}. C'est un des paramètres critiques en vue d'un algorithme efficient\cite{no_more_pesky_learning_rate}. Dans certains cas, les poids peuvent diverger et
+tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents\cite{no_more_pesky_learning_rate}. Une solution possible pour pallier ce problème 
+consiste à appliquer un facteur $f < 1$ afin d'empêcher les poids de croître trop rapidement et de tendre vers l'infini.
+La technique du gradient consiste à :
+$$w_{t+1} = w_{t} + \rho dw_{t}$$
+À cause l'addition, $w$ peut devenir arbitrairement grand\footnote{Dans le pire des cas, la croissance est exponentielle en doublant à chaque itération.}. Pour limiter cela, si les poids dépassent un certain seuil, nous multiplions les composantes problématiques de $w_{t+1}$ par $f$, ce qui aura pour conséquence de réduire leur valeur.
 
 \subsubsection{Algorithme \textit{Layer 2}}
 \paragraph{}
@@ -1634,7 +1631,7 @@ Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contrair
 \subsubsection{Algorithme \textit{Layer 3}}
 \paragraph{}
 Cette dernière couche a pour but d'optimiser les métas-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
-humaine pour trouver les meilleures valeurs possibles. C'est une solution assez courante dans le domaine du \textit{machine learning} \todo{Ajouter une ref.}. Cette méthode est
+humaine pour trouver les meilleures valeurs possibles. C'est une solution assez courante dans le domaine du \textit{machine learning}\cite{automated_hyperparamters}. Cette méthode est
 souvent opposée à celle de la \textit{grid search} \cite{grid_vs_random}:
 \begin{figure}[H]
 \centering
@@ -1690,22 +1687,29 @@ l'optimisation :
 \end{enumerate}
 
 Une fois que les cinq paramètres ont été optimisés, nous pouvons mettre à jour les nouveaux paramètres et reprendre l'entraînement du \textit{Layer 1}.
-Les paramètres ont initialement une valeur aléatoire $\in [0,1]$ car nous n'avons aucune indication sur leur valeur optimale. \todo[inline]{Réécrire la partie ci-dessous} Concernant la génération
-de nombres aléatoires :
+Les paramètres ont initialement une valeur aléatoire $\in [0,1]$ car nous n'avons aucune indication sur leur valeur optimale. Nous avons donc choisi d'utiliser une distribution gaussienne :
 $$\mathcal{N}(\mu,\sigma)$$
 
-Où, $\mu$ vaut la valeur initiale du paramètre et $\sigma = 1$. Ce sont des valeurs arbitraires. Nous estimons que chercher des valeurs avec une déviation
+Où, $\mu$ est égale à la valeur initiale du paramètre et $\sigma = 1$. Ce sont des valeurs arbitraires. Nous estimons que chercher des valeurs avec une déviation
 standard de 1 permet d'explorer l'espace tout en évitant d'avoir des changements trop brutaux.
 
 \subsubsection{Implémentation \textit{Layer 3}}
 \paragraph{}
-\todo[inline]{Étoffer un peu cette partie.}
 Dans l'implémentation, les paramètres sont réunis dans une classe et c'est cette classe qui dispose des méthodes pour optimiser et mettre à 
 jour les valeurs. De plus, par le caractère décorrélé des calculs pour les 15 tirages aléatoires, nous avons construit cela avec des \textit{Thread}. Cela
 permet d'avoir de meilleur performance, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
 paramètre donné, et il suffit juste de synchroniser le moment
 où les \textit{Thread} auront terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas de perte de
 performance. Il est donc possible de gagner un facteur $fac$ plus ou moins équivalent au nombre de cœurs engagés dans le calcul.
+
+Afin de donner une idée du gain, utilisons des valeurs fictives. Soit le calcul pour un jeu de valeur $t$ qui vaut $1$, la comparaison afin de trouver la meilleur valeur $comp$ vaut $0.5$.
+Pour $m$ paramètres et $n$ tirages, cela donne dans notre cas $m=5$ et $n=15$:
+$$m n (t + comp) = 5 * 15 * (1 + 0.5) = 112.5$$
+
+Imaginons maintenant l'exemple avec $processus=4$ en parallèles. Cela nous donne :
+$$ \frac{m n}{processus} (t + comp) + \epsilon = \frac{5 * 15}{4} * (1 + 0.5) = 28.125$$
+Où $\epsilon$ est notre mécanisme de synchronisation, ce dernier reste négligeable de part la nature décorrélée des calculs.
+Le gain est très important tout en étant facilement \textit{scalable}. En effet, l'ordonnancement des tâches est opéré par la machine virtuelle Java, ce sont donc des considérations hauts niveaux ne nécessitant pas de grande connaissances en parallélisme.
 
 \subsubsection{Points problématiques}
 \paragraph{}
@@ -1757,7 +1761,7 @@ Nous avons également tenté de combiner ces deux techniques en espérant que le
 résultats n'ont pas changé des situations mentionnées précédemment.
 \paragraph{}
 En essayant d'autres outils afin de voir si le problème persiste, nous nous sommes rendus compte qu'en utilisant une bibliothèque reconnue de réseaux de 
-neurones \todo{Citer Keras et Tensorflow}, cette divergence existait également. Donc pour des données similaires, avec un algorithme d'optimisation similaire mais un réseau de neurones
+neurones\cite{keras}, cette divergence existait également. Donc pour des données similaires, avec un algorithme d'optimisation similaire mais un réseau de neurones
 différent et une fonction de coût différente, nous arrivons au même problème.
 Nous sommes donc parti de l'hypothèse que le problème se trouvait dans la méthode d'optimisation, soit la descente du gradient. En changeant de méthode
 dans la bibliothèque, nous avons obtenu des résultats\footnote{i.e: Les valeurs des poids ne divergeaient plus.} plutôt bon.
@@ -1827,8 +1831,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   
   Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt que d'utiliser un tirage aléatoire. Pour $t>0$ cependant, il
   faut modifier la déviation standard. Cette dernière, si la valeur est trop grande, risque de faire diverger les résultats de l'optimum.
-  \todo[inline]{Reformuler la partie ci-dessous, et ptetr mettre une \~ sur le =.}
-  Les nouvelles mesures sont calculées :
+  Les nouvelles valeurs des paramètres sont calculées de manière aléatoire suivant une distribution gaussienne:
   $$x_{t+1} = \mathcal{N}(\mu, \sigma)$$
   où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risquer de
   sortir de la zone d'attraction de l'optimum.
@@ -1837,8 +1840,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
  problèmes de poids. Pour éviter cela, nous avons fixé une valeur très faible, de l'ordre de $10^{-3}$, ce qui fait disparaître le problème.
  De plus, malgré l'optimisation, les meilleurs résultats en moyenne sont obtenus avec les valeurs initiales pour $x$ et $y$. Ces paramètres, lorsque 
  $x$ devient grand et $y$ petit n'ont que peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
- De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche. Si la déviation 
- standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats \todo{Détailler le "très mauvais"} et si elle est trop petite, nous restons dans
+ De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche. Si la déviation standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats\footnote{i.e: Un profit cumulé pouvant atteindre des valeurs aberrante comme des pertes de l'ordre de 100 unités.} et si elle est trop petite, nous restons dans
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
  Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
  
