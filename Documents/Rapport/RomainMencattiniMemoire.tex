@@ -964,7 +964,7 @@ $$\textit{TR} = \frac{\textit{TP} + \textit{TN}}{\textit{TP} + \textit{TN} + \te
 \end{itemize}
 
 \subsubsubsection{Résultats}
-\todo[inline]{Dans les tableaux, détailler les algorithmes.}
+Cet article a pour avantage de tester de nombreux algorithmes et techniques. En analysant les résultats, des pistes peuvent être mises en évidences. Nous pourrons également déterminer un ordre de grandeur concernant la précision pour un problème donné.
 \paragraph{}
 Les résultats proviennent de l'article suivant \cite{machine_learning_automated_trading} :
 
@@ -1174,7 +1174,7 @@ Cela quantifie la différence entre le résultat calculé et le résultat réel 
 
 \subsubsubsection{Résultats}
 \paragraph{}
-\todo[inline]{Ajouter de la précision dans la légende des tableaux pour les algos.}
+Tout comme l'article précédent, l'analyse des résultats et des algorithmes utilisés peuvent conduire à des pistes de recherches.
 Le but est de calculer un taux de change à partir de données. Pour obtenir ces résultats précis, l'auteur a pris le
 \textit{Singapore Hedge Fund FOREX Data Set} ainsi que le \textit{Capital K FOREX Data Set}. Les dates ainsi que la fréquence
 ne sont pas précisées dans l'article.
@@ -1844,7 +1844,52 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
  Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
  
-  \todo[inline]{Avant les résultats ajouter un pseudo-code résumant le tout}
+
+\paragraph{}
+Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma global du programme :
+  \begin{lstlisting}
+ // initialization part
+ delta, rho, eta, x, y = Random()
+ weights = Random()
+ F[0] = 0		// the vector of signal
+ t = 1			// the time
+ oldPrice = prices[0]	// the current prices
+ returns[0] = 0		// init the vector of return
+ 
+ // training phase with 2000 steps
+ for price in prices[1:2001]:
+ 	// computing the return
+ 	r = price - oldPrice
+ 	oldPrice = price
+ 	returns[t] = r
+ 	// compute the signal
+ 	F[t] = computedFt(t, w, F[t-1], returns, x, y)
+ 	// update the weights
+ 	w = updateWeights(returns[t-1], F[t-1], F[t], delta, rho, eta, x, y, returns)
+ 	// recompute the F[t] with new best weights
+ 	F[t] = computedFt(t, w, F[t-1], returns, x, y)
+ 	// if we reach the time to update parameters
+ 	if (t % 500 == 0):
+ 		delta, rho, eta, x, y = updateParameters(returns, w)
+ 	t++
+ 
+ // for the testing phase, or the production phase
+ t = 1
+ pnl[0] = 0
+ // clean returns and F
+ F[0] = 0
+ returns[0] = 0
+ // the loop with index right after the training phase
+ for price in prices[2001:2501]:
+ 	r = price - oldPrice
+ 	oldPrice = price
+ 	returns[t] = r
+ 	F[t] = computedFt(t, w, F[t-1], returns, x, y)
+ 	pnl[t] = pnl[t-1] + (F[t-1] * returns[t-1] - delta * |F[t-1] - F[t]|)
+ 
+ return pnl
+  \end{lstlisting}
+ 
 \subsubsection{Résultats}
  \paragraph{}
  \todo[inline]{Refaire tous les graphiques.}
