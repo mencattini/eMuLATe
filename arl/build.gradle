@@ -1,8 +1,8 @@
-group 'com.my.project.arl'
+group 'com.my.project'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
+    ext.kotlin_version = '1.2.21'
 
     repositories {
         mavenCentral()
@@ -16,18 +16,12 @@ apply plugin: 'kotlin'
 
 repositories {
     mavenCentral()
-    maven {
-        url "http://dl.bintray.com/kyonifer/maven"
-        jcenter()
-    }
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
-    compile group: "koma", name:"core", version:"0.10"
-    // Optional, uses EJML's optimized routines for matrix operations
-    compile group: "koma", name:"backend-matrix-ejml", version: "0.10"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 }
 
 compileKotlin {
@@ -35,14 +29,4 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-// add the folder
-sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin/'
-    test.kotlin.srcDirs += 'src/test/kotlin/'
-}
-
-jar {
-    exclude("MainKt.class", "Programme.class")
 }
