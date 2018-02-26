@@ -14,11 +14,11 @@ fun main(args : Array<String>) {
 //            array2.add(it.split("/")[1].split(" ")[0].toDouble())
 //        }
 //    }
-    val myFile = File("data/EURUSD_2000_2001.csv").inputStream()
+    val myFile = File("data/EURUSD_2000_2001_1m_bar.csv").inputStream()
     val array2 : ArrayList<Double> = arrayListOf()
     myFile.bufferedReader().useLines {
         lines -> lines.forEach {
-            array2.add(it.split(" ")[1].split(";")[1].toDouble())
+            array2.add(it.split(";")[1].toDouble())
         }
     }
 
