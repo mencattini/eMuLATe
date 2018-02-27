@@ -1866,12 +1866,7 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  
 \subsubsection{Résultats}
  \paragraph{}
- \todo[inline]{Refaire tous les graphiques.}
- \todo[inline]{Ajouter le grain des données.}
- \todo[inline]{Comparer les signaux entre eux sur deux runs.}
-  \todo[inline]{Prendre les exemples déjà fait, mais décomposer en plusieurs graphiques (par ex diviser en 5, pour bien tout voir)}
- Afin de montrer l'aspect aléatoire des résultats, nous allons, pour chaque jeu de données, montrer deux exemples de \textit{runs}. Nous avons choisi 
- deux paires de monnaies différentes à des époques différentes afin de montrer sur des exemples très différents.
+ Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet,nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est de une mesure tout les minutes.
  
  Les graphiques présentent trois éléments :
  \begin{enumerate}
@@ -1880,57 +1875,67 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
   \item Le profit cumulé.
  \end{enumerate}
 
-
+Afin de mieux discerner les éléments importants, nous avons décomposer les  données en cinq graphiques différents, rendant l'ensemble plus lisible.
  
  \begin{figure}[H]
 \centering
-\includegraphics[]{images/res/eurusd_2000_2001_1.png}
-\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2001, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_0to_10000}
+\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
-\footnotemark$, x = 0.005, y=0.0001$.}
+\footnotemark$, x = 0.005, y=0.0001$. Pour les 10000 premières minutes.}
 \end{figure}
 \footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
 
  \begin{figure}[H]
 \centering
-\includegraphics[]{images/res/eurusd_2000_2001_2.png}
-\caption[Blup]{Deuxième \textit{run} du cours EUR/USD entre le 01.01.2000 et le 01.01.2001, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test,
-une optimisation des paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
-\end{figure}
-
-\paragraph{}
-D'après ces deux exemples, les résultats peuvent varier d'une \textit{run} à l'autre. Cela affecte le signal et par extension le profit cumulé. Il a peu
-de moment où le signal est nul à cause du \textit{stop trailing loss}. Cela provient du fait que si la valeur de $x$ est trop grande, nous ne dépassons
-jamais ce seuil et donc le signal n'est pas nul et si $x$ est trop grand nous ne prenons presque jamais de position. Nous avons un problème récurrent
-qui concerne la valeur des métas-paramètres.
-
-\begin{figure}[H]
-\centering
-\includegraphics[]{images/res/eurchf_1.png}
-\caption[Blup]{Cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_10000to_20000}
+\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 10000 à 20000.}
 \end{figure}
 
  \begin{figure}[H]
-\centering
-\includegraphics[]{images/res/eurchf_2.png}
-\caption[Blup]{Cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\centering
+	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_20000to_30000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 20000 à 30000.}
 \end{figure}
 
+ \begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_30000to_40000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 30000 à 40000.}
+\end{figure}
+
+ \begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_40000to_50000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 40000 à 50000.}
+\end{figure}
+
+
 \paragraph{}
-Dans cet exemple, nous avons une tendance à la baisse avec un pic à un moment. Ce pic peut provenir d'une erreur dans les données. Nous pouvons confirmer
-les suppositions faîtes précédemment à savoir que :
+Il peut y avoir, entre différentes \textit{runs}, des différences significatives. Nous allons prendre un exemple simple afin d'expliquer l'origine du problème.
+
+De part l'initialisation aléatoire, pour trois poids, nous avons :
 \begin{itemize}
- \item Il y a de l'aléatoire entre plusieurs \textit{runs} pour de mêmes données.
- \item Le \textit{stop trailing loss} a de la peine à se déclencher.
+	\item Durant la \textit{run} 1, $w_1=0.5,w_2=0.1,w_3=0.1$.
+	\item Durant la \textit{run} 2, $w_1=0.1,w_2=0.1,w_3=0.5$.
 \end{itemize}
 
-Concernant l'aléatoire, ce phénomène provient de l'initialisation des poids. Ces derniers étant générés via un \texttt{Random}, cela entraîne des
-différences entre deux générations.
+Pour des \textit{returns} valant $r_1=0.3,r_2=-0.1,r_3=-0.4$. Nous avons pour $sign(\sum_{i=1}^{3}w_i * r_i)$:
+\begin{itemize}
+	\item Pour la \textit{run} 1, $0.5 * 0.3 + 0.1 * -0.1 + 0.1 * -0.4 = 0.1$.
+	\item Pour la \textit{run} 2, $0.1 * 0.3 + 0.1 * -0.1 + 0.5 * -0.4 = -0.18$.
+\end{itemize}
+
+Ce que nous voulons montrer par cet exemple simple, c'est que pour de mêmes données, soit nos $r_i$, les différences des $w_i$ peuvent entraîner des changements en terme de décision et donc de profit.
+
+De plus, la méthode d'optimisation ne garantit pas de trouver le minimum global. Il est donc fortement possible que les directions d'optimisations ne soient pas pareilles conduisant ainsi à des situations similaires. Afin de trouver des résultats identiques d'une fois à l'autre, il faut fixer l'aléatoire de la classe \textit{Random}.
+ 
  
  \paragraph{}
- \todo[inline]{Faire plusieurs boucles d'optimisation, genre 100, et ploter à chaque fin, le sharpe ratio.}
  Nous avons voulu observer l'évolution de \textit{Sharpe ratio} pour diverses valeurs de $\eta$, afin de voir si le ratio est optimisé et l'impact
  du paramètre $\eta$ dans ce ratio. Les graphiques suivants sont calculés à partir du cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec 
  $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
@@ -1967,8 +1972,26 @@ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B
  On remarque également que si la valeur est faible,i.e: $< 10^{-3}$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
  plus la courbe sera lissée.
 
+Dans le premier graphique, nous apercevons difficilement les valeurs finales pour une boucle d'optimisation, voici un autre exemple de ratio ainsi qu'un zoom afin de mieux discerner les valeurs :
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{images/res/Sharpe_ratio_evolution_big}
+	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\end{figure} 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{images/res/Sharpe_ratio_evolution_small}
+	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+\end{figure} 
+
+Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
+
+
+\subsection{Performances}
+\paragraph{}
  \todo[inline]{Avant la conclusion ajouter une discussion des performances et du temps: temps de calcul, phases d'optimisations, temps,...}
+ 
 \subsection{Conclusion}
 \paragraph{}
 Comme mentionné dans l'introduction, le but de ce projet était d'implémenter l'algorithme, de le faire fonctionner, de le tester et de trouver des pistes
