@@ -1986,6 +1986,81 @@ Dans le premier graphique, nous apercevons difficilement les valeurs finales pou
 
 Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
 
+\paragraph{}
+Afin de voir comment se comportent nos algorithmes sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse est que sur la longueur il risque d'y avoir des pertes. En effet en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
+
+Pour rendre l'ensemble plus lisible et en extraire plus d'informations, une représentation sous forme de tableau a été préférée.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+			années & p\&l maximum & p\&l minimum & \textit{draw down} & rendement annuel & moyenne & variance\\
+			\hline
+			2006 & 1.04435 & 0.91196 & 0.13239 & -0.07740 & 0.97623 & 0.00105 \\
+			\hline
+			2007 & 0.97928 & 0.71251 & 0.26676 & -0.19620 & 0.86670 & 0.00507 \\
+			\hline
+			2008 & 0.73903 & 0.07646 & 0.66256 & -0.64044 & 0.47697 & 0.03970 \\
+			\hline
+			2009 & 0.09112 & -0.48141 & 0.57254 & -0.52019 & -0.28840 & 0.01787 \\
+			\hline
+			2010 & -0.42842 & -0.90814 & 0.47971 & -0.44661 & -0.66108 & 0.02037 \\	
+			\hline
+	\end{tabular}
+\caption{Voici les résultats obtenus pour la paire USD/JPY de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		années & p\&l maximum & p\&l minimum & \textit{draw down} & rendement annuel & moyenne & variance\\
+		\hline
+		2006 & 1.00560 & 0.78576 & 0.21984 & -0.21201 & 0.90489 & 0.00158\\
+		\hline
+		2007 & 0.80567 & 0.70319 & 0.10248 & -0.05821 & 0.75386 & 0.00044\\
+		\hline
+		2008 & 0.74465 & 0.10837 & 0.63627 & -0.59090 & 0.58869 & 0.02516\\
+		\hline
+		2009 & 0.14138 & -0.16014 & 0.30153 & -0.28239 & -0.04353 & 0.00394\\
+		\hline
+		2010 & -0.07795 & -0.21814 & 0.14019 & -0.01866 & -0.15094 & 0.00088\\
+		\hline
+	\end{tabular}
+\caption{Voici les résultats obtenus pour la paire EUR/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		années & p\&l maximum & p\&l minimum & \textit{draw down} & rendement annuel & moyenne & variance\\
+		\hline
+		2006 & 1.02154 & 0.95109 & 0.07045 & 0.00317 & 0.9941 & 0.00022\\
+		\hline
+		2007 & 1.00618 & 0.88179 & 0.12439 & -0.07847 & 0.93689 & 0.00103\\
+		\hline
+		2008 & 0.95243 & 0.09822 & 0.85421 & -0.80625 & 0.69615 & 0.05249\\
+		\hline
+		2009 & 0.12142 & -0.43983 & 0.56125 & -0.54487 & -0.29155 & 0.01631\\
+		\hline
+		2010 & -0.42646 & -0.97334 & 0.54688 & -0.53332 & -0.62805 & 0.01729\\
+		\hline
+	\end{tabular}
+	\caption{Voici les résultats obtenus pour la paire GBP/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{table}
+
+Premier élément intéressant, la variance la plus élevée se trouve à chaque fois durant l'année 2008. Cela semble cohérent avec la crise financière de 2008 entraînant ainsi une plus grande volatilité.
+
+De plus, notre hypothèse initiale est vérifié par la moyenne des p\&l. Cette dernière diminue en fil des années, conséquence de la faiblesse du programme sur de longue période.
+
+Concernant les autres mesures, il est difficile d'en apprendre quelque chose excepté le fait que le programme perd de l'argent et que l'année 2008 est la pire de ce point de vue.
+
+Il est intéressant de remarquer que la p\&l maximale de l'année $n+1$ est toujours supérieur à la p\&l minimale de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
 
 \subsubsection{Performances}
 \paragraph{}
