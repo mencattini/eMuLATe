@@ -99,7 +99,8 @@ class ARL(private val sizeWindow: Int) {
             position.currentPnl = pt.last()
         }
         // return the p_t
-        return pt
+        val diff = pt.size - oldPt.size
+        return pt.sliceArray(pt.lastIndex - diff..pt.lastIndex)
     }
 
     /**
@@ -180,17 +181,23 @@ class ARL(private val sizeWindow: Int) {
     }
 
     /**
-     *  Saved in a file the p&l and the exposition to use it later.
+     * Init the logging by removing old files.
      */
-   fun saveInFile(fileFt : String="ft.csv", filePt : String = "pt.csv", fileAt : String = "at.csv", fileBt : String = "bt.csv") {
-//        delete the two files, if they exists
+    fun initLogging(fileFt: String="ft.csv", filePt : String = "pt.csv"){
         if (File(fileFt).exists()) File(fileFt).delete()
         if (File(filePt).exists()) File(filePt).delete()
-        if (File(fileAt).exists()) File(fileAt).delete()
-        if (File(fileBt).exists()) File(fileBt).delete()
+    }
+    /**
+     *  Saved in a file the p&l and the exposition to use it later.
+     */
+   fun saveInFile(fileFt : String="ft.csv", filePt : String = "pt.csv") {
 //        write the vector
+        File(fileFt).appendText("\n")
+        File(filePt).appendText("\n")
         File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
         File(filePt).appendText(savedPt.joinToString(separator = "\n"))
+        savedFt = DoubleArray(0)
+        savedPt = DoubleArray(0)
     }
 
 
