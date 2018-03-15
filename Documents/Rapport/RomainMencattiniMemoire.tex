@@ -116,7 +116,6 @@
 % début l'introduction     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-\todo[inline]{Faire que l'intro ait une longueur d'une page au moins.}
 \paragraph{}
 Ces dernières années, avec l'augmentation de la puissance de calcul et des données à dispositions, l'intelligence artificielle et son sous-domaine le \textit{machine learning} ont connu une forte croissance. Que ce soit avec la victoire d'une machine face à un humain au jeu de Go \cite{deepmind}, ou bien lorsque des programme de Microsoft et Alibab sont capable de mieux lire qu'un être humain \cite{microsoft_reading}, les progrès permettent de dépasser les humains dans des tâches dont on n'imaginait difficilement qu'elles puissent être réalisées par des machines.
 
@@ -1988,9 +1987,30 @@ Dans le premier graphique, nous apercevons difficilement les valeurs finales pou
 Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
 
 
-\subsection{Performances}
+\subsubsection{Performances}
 \paragraph{}
- \todo[inline]{Avant la conclusion ajouter une discussion des performances et du temps: temps de calcul, phases d'optimisations, temps,...}
+Le but final est de construire un programme capable d'apprendre et d'effectuer des opérations sur le marché des changes de manière automatique. Il convient de s'intéresser à la performance. En effet, même dans le cas où un algorithme serait capable de trouver la bonne direction à 100\%, si cette opération était trop lente cela ne servirait à rien. Nous allons donc réaliser plusieurs mesures dans le but de découvrir les périodes possible de \textit{trading}.
+
+\paragraph{}
+Pour 100 étapes de \textit{backtesting} avec 2000 éléments d'apprentissages et 500 de test, le programme prend en moyenne 16.76725s\footnote{La moyenne porte sur 100 différentes \textit{runs}}.
+
+D'après cette mesure,  nous pouvons d'utiliser ce programme pour du \textit{trading} de l'ordre de la minute. Qu'en est-t-il d'un temps plus court ?
+
+Avec des mesures plus précises sur les sous-parties du programme, nous obtenons, pour 1000 entraînements avec 2000 éléments, 0.12158s en moyenne. On peut considérer que la partie de test est négligeable, car le calcul, à partir des poids est très simple. Ceci est confirmé par le fait qu'il a été impossible d'obtenir un temps avec la fonction \lstinline|System.currentTimeMillis()|, l'exécution est donc souvent plus courte qu'une milliseconde.
+Nous pouvons donc envisager de faire des opérations chaque seconde.
+
+\paragraph{}
+Sur les 0.12158s en moyenne, il est intéressant de savoir quelle partie coûte le plus en terme de calcul.
+Pour les mêmes paramètres que précédemment, nous avons :
+\begin{itemize}
+	\item La mise à jour des poids prend $8.3e-05$s.
+	\item Le calcul du signal prend $2.55e-05$s\footnote{Cela confirme que le calcul du signal est négligeable dans le cadre d'un \textit{trading} d'une seconde.}.
+	\item La mise à jour des paramètres\footnote{La mise à jour s'effectue une fois toute les 200 étapes durant une étape d'entraînement.} prend $2.2e-04$s.
+\end{itemize}
+
+Il apparaît que l'optimisation des paramètres est l'étape la plus coûteuse. Si l'on réduit le nombre d'étapes nécessaires à 2, le temps devient $2.139-03$. Cela représente un facteur 10.
+
+Il est donc possible en utilisant des valeurs adéquates pour les paramètres, d'utiliser ce logiciel avec une granularité d'une seconde.
  
 \subsection{Conclusion}
 \paragraph{}
