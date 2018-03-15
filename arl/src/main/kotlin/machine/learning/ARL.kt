@@ -70,7 +70,7 @@ class ARL(private val sizeWindow: Int) {
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
-            val computedReturn = price - oldPrice
+            val computedReturn = 1.0 - oldPrice / price
 
             // keep the price for the next loop
             oldPrice = price
@@ -129,7 +129,7 @@ class ARL(private val sizeWindow: Int) {
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
             // compute the return
-            val computedReturn = price - oldPrice
+            val computedReturn = 1.0 - oldPrice / price
 
             // keep the price for the next loop
             oldPrice = price

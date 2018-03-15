@@ -25,7 +25,7 @@ internal class Parameters {
 //        val random = Random()
 
         delta = 0.001
-        eta = 0.001
+        eta = 0.00001
         rho = 0.01
         x = 0.005
         y = 0.0001
