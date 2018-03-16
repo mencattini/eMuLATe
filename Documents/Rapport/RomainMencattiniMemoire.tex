@@ -2054,6 +2054,12 @@ Pour rendre l'ensemble plus lisible et en extraire plus d'informations, une repr
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{table}
 
+Les résultats négatifs peuvent sembler impossible mais en précisant certaines choses cela devient possible :
+\begin{itemize}
+	\item D'un point de vue strictement mathématique, rien n'empêche les valeurs d'être négatives. En ajoutant des \textit{p\&l} négatives à chaque itérations, cela entraîne une décroissance.
+	\item Nous utilisons une approximation également présente dans l'article de base \cite{machine_learning_automated_trading}. En calculant les \textit{returns} par $r_i = p_{i} - p_{i-1}$ et en \textit{tradant} exactement une unité à chaque étapes, on obtient une estimation du gain si le profit était réinvesti. En conséquence d'investir exactement une unité de monnaie, cela n'empêche pas les nombres négatifs.
+\end{itemize}
+
 Premier élément intéressant, la variance la plus élevée se trouve à chaque fois durant l'année 2008. Cela semble cohérent avec la crise financière de 2008 entraînant ainsi une plus grande volatilité.
 
 De plus, notre hypothèse initiale est vérifié par la moyenne des p\&l. Cette dernière diminue en fil des années, conséquence de la faiblesse du programme sur de longue période.
