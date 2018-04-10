@@ -1878,7 +1878,7 @@ Afin de mieux discerner les éléments importants, nous avons décomposer les  d
  
  \begin{figure}[H]
 \centering
-\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_0to_10000}
+\includegraphics[scale=0.85]{res/eursud_2000-2001_from_0to_10000}
 \caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 \footnotemark$, x = 0.005, y=0.0001$. Pour les 10000 premières minutes.}
@@ -1887,28 +1887,28 @@ paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delt
 
  \begin{figure}[H]
 \centering
-\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_10000to_20000}
+\includegraphics[scale=0.85]{res/eursud_2000-2001_from_10000to_20000}
 \caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 10000 à 20000.}
 \end{figure}
 
  \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_20000to_30000}
+	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_20000to_30000}
 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 20000 à 30000.}
 \end{figure}
 
  \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_30000to_40000}
+	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_30000to_40000}
 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 30000 à 40000.}
 \end{figure}
 
  \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.85]{images/res/eursud_2000-2001_from_40000to_50000}
+	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_40000to_50000}
 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 40000 à 50000.}
 \end{figure}
@@ -1947,19 +1947,19 @@ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B
 
   \begin{figure}[H]
 \centering
-\includegraphics[]{images/res/exemple_eta_0001}
+\includegraphics[]{res/exemple_eta_0001}
 \caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
 
   \begin{figure}[H]
 \centering
-\includegraphics[]{images/res/exemple_eta_0005}
+\includegraphics[]{res/exemple_eta_0005}
 \caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
 
   \begin{figure}[H]
 \centering
-\includegraphics[]{images/res/exemple_eta_too_big}
+\includegraphics[]{res/exemple_eta_too_big}
 \caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure}
  
@@ -1974,13 +1974,13 @@ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B
 Dans le premier graphique, nous apercevons difficilement les valeurs finales pour une boucle d'optimisation, voici un autre exemple de ratio ainsi qu'un zoom afin de mieux discerner les valeurs :
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.35]{images/res/Sharpe_ratio_evolution_big}
+	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_big}
 	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure} 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.35]{images/res/Sharpe_ratio_evolution_small}
+	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_small}
 	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
 \end{figure} 
 
