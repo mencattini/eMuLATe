@@ -192,14 +192,17 @@ class ARL(private val sizeWindow: Int) {
      */
    fun saveInFile(fileFt : String="ft.csv", filePt : String = "pt.csv") {
 //        write the vector
-        File(fileFt).appendText("\n")
-        File(filePt).appendText("\n")
-        File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
-        File(filePt).appendText(savedPt.joinToString(separator = "\n"))
-        savedFt = DoubleArray(0)
-        savedPt = DoubleArray(0)
+        if(!fileFt.isEmpty()) {
+            File(fileFt).appendText("\n")
+            File(fileFt).appendText(savedFt.joinToString(separator = "\n"))
+            savedFt = DoubleArray(0)
+        }
+        if(!filePt.isEmpty()) {
+            File(filePt).appendText("\n")
+            File(filePt).appendText(savedPt.joinToString(separator = "\n"))
+            savedPt = DoubleArray(0)
+        }
     }
-
 
     /**
      * Compute the Ft layer using weights, vthreshold, returns and old_ft.
