@@ -22,7 +22,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
     init {
         // we init the value with random
-        val random = Random()
+        val random = Random(0)
 
         // create the oldAt and oldBt
         // the default value are different to avoid the division by 0 in weight update

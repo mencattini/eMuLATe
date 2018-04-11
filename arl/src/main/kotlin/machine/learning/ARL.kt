@@ -12,7 +12,6 @@ import java.util.*
  */
 class ARL(private val sizeWindow: Int) {
 
-    private var z: Double
     private var weight : Weights
     private var parameters : Parameters
     private var ft: Array<Double> // each element is the result of Math.signum(x)
@@ -24,11 +23,7 @@ class ARL(private val sizeWindow: Int) {
     private var savedPt: DoubleArray
 
     init {
-
-        val random = Random(0)
-
         parameters = Parameters()
-        z = random.nextDouble()
 
         // create an array of weight with size of $sizeWindow
         weight = Weights(sizeWindow, 0)
