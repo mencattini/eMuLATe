@@ -168,7 +168,12 @@ class ARL(private val sizeWindow: Int) {
     /**
      * Reset the weight and the returns between runs.
      */
-    fun reset() {
+    fun reset(saveInFile: Boolean=false) {
+        // save in a file :
+        if (saveInFile) {
+            // save the weights
+            File("weights.csv").appendText("\n${this.weight.coefficients.joinToString(separator = ",")}")
+        }
         this.weight = Weights(sizeWindow, 0)
         this.returns = DoubleArray(0)
         this.ft = arrayOf(Math.signum(0.0))
