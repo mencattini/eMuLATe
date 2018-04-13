@@ -14,16 +14,13 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
     var coefficients : DoubleArray
     private var oldDiffFt : DoubleArray
-    var oldAt : Double
-    var oldBt : Double
+    private var oldAt : Double
+    private var oldBt : Double
     private var magnitude : DoubleArray
     private var rho : DoubleArray
     private val epsilon : Double
 
     init {
-        // we init the value with random
-        val random = Random(0)
-
         // create the oldAt and oldBt
         // the default value are different to avoid the division by 0 in weight update
         oldAt = 0.0
@@ -31,7 +28,7 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
 
         // create an array of weight with size of $sizeWindow
         // the weight is defined : (w_{0,M}, vThreshold, w_{M+1})
-        coefficients = DoubleArray(sizeWindow, {random.nextDouble()})
+        coefficients = DoubleArray(sizeWindow, {0.5})
         coefficients[coefficients.lastIndex - 1] = 0.0
         // we need to store the diffFt value for the next update
         oldDiffFt = kotlin.DoubleArray(sizeWindow)

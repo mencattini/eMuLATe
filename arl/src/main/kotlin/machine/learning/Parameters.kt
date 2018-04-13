@@ -1,6 +1,5 @@
 package machine.learning
 
-import java.util.*
 import org.apache.commons.math3.distribution.NormalDistribution
 import java.util.concurrent.Executors
 
@@ -12,25 +11,15 @@ import java.util.concurrent.Executors
  */
 internal class Parameters {
 
-    var delta: Double
-    var eta: Double
-    var rho: Double
-    var x: Double
-    var y: Double
+    var delta: Double = 0.001
+    var eta: Double = 0.00001
+    private var rho: Double = 0.01
+    var x: Double = 0.005
+    var y: Double = 0.0001
+
     @Volatile private lateinit var best: Pair<Double, Parameters>
     private val epsilon = 1e-8
 
-    init {
-//        // we init the value with random
-//        val random = Random()
-
-        delta = 0.001
-        eta = 0.00001
-        rho = 0.01
-        x = 0.005
-        y = 0.0001
-
-    }
 
     /**
      * A custom constructor.
