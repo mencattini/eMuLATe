@@ -138,6 +138,13 @@ internal class Weights(private val sizeWindow : Int, private val index: Int) {
     }
 
     /**
+     * Rest the magnitude
+     */
+    fun restMagnitude() {
+        this.magnitude = kotlin.DoubleArray(sizeWindow, {1.0})
+    }
+
+    /**
      * This is an accessor to the private field.
      * @return the v_t weight
      */
