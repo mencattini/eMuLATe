@@ -26,6 +26,9 @@ arl/.gradle/
 gradle-wrapper.properties
 .gradle/*/*.bin
 
+ft.csv
+pt.csv
+
 __pycache__/
 *.sublime-project
 *.sublime-workspace
