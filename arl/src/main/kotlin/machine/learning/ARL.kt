@@ -61,6 +61,7 @@ class ARL(private val sizeWindow: Int) {
         position.maxPnl = pt.last()
         position.lastPosition = ft.last()
 
+        weight.restMagnitude()
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
@@ -73,7 +74,15 @@ class ARL(private val sizeWindow: Int) {
             returns = returns.plus(computedReturn)
 
             // compute the Ft
-            val computedFt = computeFt(t)
+            var computedFt = computeFt(t)
+
+            // update the weights
+            weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), parameters, returns)
+
+            // cf. article, "since the weight updating is designed to improve the model at each step, it makes
+            // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
+            // signal is used for effective decision making by the risk and the performance control layer."
+            computedFt = computeFt(t, Math.signum(computedFt))
 
             // we put it in the layer 2
             ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
