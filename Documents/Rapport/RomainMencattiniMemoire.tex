@@ -15,6 +15,7 @@
 \usepackage{float}
 \usepackage{titlesec}
 \usepackage{cite}
+\usepackage{rotating}
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 
 \usepackage[perpage, bottom]{footmisc}
@@ -1867,6 +1868,12 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  \paragraph{}
  Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet,nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est de une mesure tout les minutes.
  
+ \todo[inline]{Ajouter graphique p\&l + cours. Plus blabla sur la comparaison.}
+ 
+ \paragraph{}
+ Malheureusement l'approche scientifique de l'article est bancal. En effet, les résultats présentés ne sont basés sur que un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
+ 
+ Dans un premier temps, voici des tests sur le même cours, soit l'EUR/USD, mais sur l'année 2004.
  Les graphiques présentent trois éléments :
  \begin{enumerate}
   \item Le cours de change afin de visualiser la tendance.
@@ -1876,42 +1883,42 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
 
 Afin de mieux discerner les éléments importants, nous avons décomposer les  données en cinq graphiques différents, rendant l'ensemble plus lisible.
  
- \begin{figure}[H]
+ \begin{sidewaysfigure}
 \centering
-\includegraphics[scale=0.85]{res/eursud_2000-2001_from_0to_10000}
-\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\includegraphics[scale=0.5]{res/eursud_2004-2005_from_0to_10000}
+\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
-\footnotemark$, x = 0.005, y=0.0001$. Pour les 10000 premières minutes.}
-\end{figure}
+\footnotemark$, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
 \footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
 
- \begin{figure}[H]
+ \begin{sidewaysfigure}
 \centering
-\includegraphics[scale=0.85]{res/eursud_2000-2001_from_10000to_20000}
-\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 10000 à 20000.}
-\end{figure}
+\includegraphics[scale=0.5]{res/eursud_2004-2005_from_10000to_20000}
+\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
 
- \begin{figure}[H]
+ \begin{sidewaysfigure}
 	\centering
-	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_20000to_30000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 20000 à 30000.}
-\end{figure}
+	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_20000to_30000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
 
- \begin{figure}[H]
+ \begin{sidewaysfigure}
 	\centering
-	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_30000to_40000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 30000 à 40000.}
-\end{figure}
+	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_30000to_40000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
 
- \begin{figure}[H]
+ \begin{sidewaysfigure}
 	\centering
-	\includegraphics[scale=0.85]{res/eursud_2000-2001_from_40000to_50000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Pour les minutes 40000 à 50000.}
-\end{figure}
+	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_40000to_50000}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
 
 
 \paragraph{}
@@ -1990,6 +1997,7 @@ Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramèt
 Afin de voir comment se comportent nos algorithmes sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse est que sur la longueur il risque d'y avoir des pertes. En effet en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
 
 Pour rendre l'ensemble plus lisible et en extraire plus d'informations, une représentation sous forme de tableau a été préférée.
+\todo[inline]{Ajouter plot des cours + p\&l pour les trois paires.}
 
 \begin{table}[h!]
 	\centering
@@ -2067,6 +2075,15 @@ De plus, notre hypothèse initiale est vérifié par la moyenne des p\&l. Cette 
 Concernant les autres mesures, il est difficile d'en apprendre quelque chose excepté le fait que le programme perd de l'argent et que l'année 2008 est la pire de ce point de vue.
 
 Il est intéressant de remarquer que la p\&l maximale de l'année $n+1$ est toujours supérieur à la p\&l minimale de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
+
+\paragraph{}
+\todo[inline]{Ajouter sur la nécessité de faire plusieurs valeures + intro}
+Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres.
+\todo[inline]{Ajouter graphique avec fenêtre 1000/250 + fenêtre 4000/1000 sur EUR/USD }
+\todo[inline]{Ajouter graphique avec heures -> 2000/500, et jours en 200/50}
+
+\subsubsection{Données}
+\todo[inline]{BlaBla sur les données}
 
 \subsubsection{Performances}
 \paragraph{}
