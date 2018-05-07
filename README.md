@@ -3,7 +3,7 @@ Machine Learning Automatic Trading
 
 ## Example :
 
-We work on 300000 minutes of the EURUSD market. The best step are 2000 `L_{train}` and 500 `L_{test}`. At the end, we print the cumulative profit and the value for the market.
+We work on 300000 minutes of the EURUSD market. The best step are 2000 $L_{train}$ and 500 $L_{test}$. At the end, we print the cumulative profit and the value for the market.
 
 ```kotlin
 import machine.learning.ARL
