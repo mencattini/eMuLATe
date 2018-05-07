@@ -192,14 +192,14 @@ class ARL(private val sizeWindow: Int) {
     /**
      * Init the logging by removing old files.
      */
-    fun initLogging(fileFt: String="ft.csv", filePt : String = "pt.csv"){
+    fun initLogging(fileFt: String="data/ft.csv", filePt : String = "data/pt.csv"){
         if (File(fileFt).exists()) File(fileFt).delete()
         if (File(filePt).exists()) File(filePt).delete()
     }
     /**
      *  Saved in a file the p&l and the exposition to use it later.
      */
-   fun saveInFile(fileFt : String="ft.csv", filePt : String = "pt.csv") {
+   fun saveInFile(fileFt : String="data/ft.csv", filePt : String = "data/pt.csv") {
 //        write the vector
         if(!fileFt.isEmpty()) {
             File(fileFt).appendText("\n")
