@@ -10,7 +10,6 @@ RomainMencattini*.tex.backup
 *.synctex.gz
 dontFollow/
 EURUSD.dat
-data/
 
 
 # for the kotlin part
