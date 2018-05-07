@@ -2101,7 +2101,6 @@ Il est intéressant de remarquer que la p\&l maximale de l'année $n+1$ est touj
 \paragraph{}
 Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres. Afin de pouvoir effectuer une comparaison, nous allons garder le cours EUR/USD et modifier seulement certaines valeurs de l'algorithme qui pourraient avoir une influence significative sur ce dernier.
 
-\todo[inline]{Ajouter graphique avec heures -> 2000/500, et jours en 200/50}
 La première idée porte sur le fait de modifier le nombre d'élément accordés pour l'apprentissage et pour le test. Une fenêtre trop grand ou trop petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation a peut de changer de converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction. Nous avons donc évaluer le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela a une grande influence.
 \begin{sidewaysfigure}
 	\centering
@@ -2119,8 +2118,40 @@ La première idée porte sur le fait de modifier le nombre d'élément accordés
 \newpage
 Au vu des graphiques précédents, le changement de taille de la fenêtre d'apprentissage et de test ne semble pas influencer grandement les performances. Nous y retrouvons les mêmes \textit{paterns} qu'avec un ratio de 2000/500, soit des gains locaux mais une perte globale. Nous ne pouvons pas affirmer que la taille n'a pas d'influence car il faudrait calculer le résultat pour chaque valeurs possible ce qui n'est pas réalisable.
 
+\paragraph{}
+La seconde piste porte sur le type de données. Nous avons, par défaut, repris la granularité proposée dans l'article original avec une donnée par minute. Cela correspond à un \textit{trading} très intense avec une volatilité importante. Afin de faire varier cela, nous allons tester avec des données portant sur des heures et sur des jours. Pour le second, il ne sera pas possible de garder la même fenêtre d'apprentissage, soit 2000/500, car cela représente beaucoup trop de jours.
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[scale=0.5]{res/eursud_2004-2005-days}
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[scale=0.5]{res/eursud_2004-2005-hours}
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\end{sidewaysfigure}
+\clearpage
+
+Nous observons la différence de granularité sur le taux de change en lui-même qui n'est plus le même que lors des graphiques précédents. Concernant les performances, il n'y a pas d'amélioration significatives malgré des données moins volatiles.
+
 \subsubsection{Données}
-\todo[inline]{BlaBla sur les données}
+
+\paragraph{}
+Bien que le projet ne porte pas sur les données en tant que telles, il est extrêmement important d'avoir des données consistantes. Il se peut que les informations reçues soient incomplètes, aient des erreurs ou des valeurs incohérentes voir impossibles ou portent sur des jours où le \textit{trading} n'est pas effectué comme les jours fériés ainsi que les weekends.
+
+Ce sont des éléments à prendre en compte lorsqu'il faudra choisir la source de données et plus tard les utiliser. L'information n'est pas gratuite et elle nécessite un traitement. Ce dernier peut être effectué en amont par la source fournissant ou par la personne voulant utiliser les données.
+
+Dans le cadre de ce projet, nous avons favorisé les sources fournissant des valeurs consistantes afin de nous concentrer sur l'implémentation de l'algorithme :
+\begin{itemize}
+	\item La première est le site : \url{https://www.dukascopy.com/}. Ce dernier propose des options intéressantes comme la possibilité de supprimer les données sur les weekends et jours fériés ou de choisir une granularité aussi fine que la minute. Malheureusement les données ne portent que jusqu'en 2004 et il a donc fallu trouver une nouvelle source.
+	\item Il s'agît de \url{http://ratedata.gaincapital.com/}. Il n'y a aucune options mais les données sont consistantes et donc peuvent être utilisées sans traitement au préalable.
+\end{itemize}
+
+Des données inconsistantes peuvent avoir des effets importants sur l'algorithme. En effet s'il manque des jours ou si des valeurs sont incorrects cela peut fausser l'apprentissage et conduire à des résultats inférieurs à ceux obtenus avec une information correctement traitée.
 
 \subsubsection{Performances}
 \paragraph{}
