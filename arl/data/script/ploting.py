@@ -7,14 +7,7 @@ import numpy as np
 if __name__ == '__main__':
     sns.set()
 
-    # df = pd.read_csv("EURUSD_2000_2001_1m_bar.csv", delimiter=";")
-    # df.columns = [
-    #     "DateTime Stamp", "Bar OPEN Bid Quote", "Bar HIGH Bid Quote",
-    #     "Bar LOW Bid Quote", "Bar CLOSE Bid Quote", "Volume"
-    # ]
-    # df = pd.read_csv("2006-2010/gbpusd_2006-2010.csv", delimiter=";")
-
-    df = pd.read_csv("EURUSD-2004_01_01-2005_01_01.csv", delimiter=",")
+    df = pd.read_csv("../2004-2005/EURUSD-2004_01_01-2005_01_01.csv", delimiter=",")
     df.columns = [
         "DateTime Stamp", "Bar OPEN Bid Quote", "Bar HIGH Bid Quote",
         "Bar LOW Bid Quote", "Bar CLOSE Bid Quote"
