@@ -9,8 +9,8 @@ RomainMencattini*.toc
 RomainMencattini*.tex.backup
 *.synctex.gz
 dontFollow/
-EURUSD.dat
-
+2004-2005
+2006-2010
 
 # for the kotlin part
 *.class
