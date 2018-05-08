@@ -1868,7 +1868,16 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  \paragraph{}
  Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet,nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est de une mesure tout les minutes.
  
- \todo[inline]{Ajouter graphique p\&l + cours. Plus blabla sur la comparaison.}
+ \begin{sidewaysfigure}
+ 	\centering
+ 	\includegraphics[scale=0.5]{res/eursud_2000-2001}
+ 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+ 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+ 		\footnotemark$, x = 0.005, y=0.0001$.}
+ \end{sidewaysfigure}
+\footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
+ \clearpage
+ D'après ces résultats, notre version de l'algorithme est bien moins performante que celle présentée. Cela peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
  
  \paragraph{}
  Malheureusement l'approche scientifique de l'article est bancal. En effet, les résultats présentés ne sont basés sur que un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
@@ -1886,11 +1895,10 @@ Afin de mieux discerner les éléments importants, nous avons décomposer les  d
  \begin{sidewaysfigure}
 \centering
 \includegraphics[scale=0.5]{res/eursud_2004-2005_from_0to_10000}
-\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
-\footnotemark$, x = 0.005, y=0.0001$.}
+\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
-\footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
+
 
  \begin{sidewaysfigure}
 \centering
@@ -1919,7 +1927,7 @@ paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delt
 	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
-
+\clearpage
 
 \paragraph{}
 Il peut y avoir, entre différentes \textit{runs}, des différences significatives. Nous allons prendre un exemple simple afin d'expliquer l'origine du problème.
@@ -2083,6 +2091,7 @@ En complément des tableaux, voici des graphiques du cours et du \textit{p\&l}.
 	\caption{USD/JPY de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
+\clearpage
 
 Les résultats négatifs de la \textit{p\&l} semblent incorrects mais en précisant certaines notions cela peut être justifié :
 \begin{itemize}
@@ -2115,7 +2124,8 @@ La première idée porte sur le fait de modifier le nombre d'élément accordés
 	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
-\newpage
+\clearpage
+
 Au vu des graphiques précédents, le changement de taille de la fenêtre d'apprentissage et de test ne semble pas influencer grandement les performances. Nous y retrouvons les mêmes \textit{paterns} qu'avec un ratio de 2000/500, soit des gains locaux mais une perte globale. Nous ne pouvons pas affirmer que la taille n'a pas d'influence car il faudrait calculer le résultat pour chaque valeurs possible ce qui n'est pas réalisable.
 
 \paragraph{}
