@@ -10,7 +10,6 @@ RomainMencattini*.tex.backup
 *.synctex.gz
 dontFollow/
 2004-2005
-2006-2010
 
 # for the kotlin part
 *.class
