@@ -1,7 +1,6 @@
 package machine.learning
 
 import java.io.File
-import java.util.*
 
 /**
  *  It's the main class for the Adaptive reinforcement learning
@@ -19,8 +18,8 @@ class ARL(private val sizeWindow: Int) {
     private var position :Position
 
     // this is for saving or plotting
-    private var savedFt: DoubleArray
-    private var savedPt: DoubleArray
+    var savedFt: DoubleArray
+    var savedPt: DoubleArray
 
     init {
         parameters = Parameters()
@@ -53,6 +52,9 @@ class ARL(private val sizeWindow: Int) {
         var t = 1
         var oldPrice = pricesCasted[t - 1]
 
+        // count the number of order
+        var numberOfOrder = 0.0
+
         // we compute the p_t, it's an array
         var pt = oldPt.clone()
 
@@ -61,7 +63,7 @@ class ARL(private val sizeWindow: Int) {
         position.maxPnl = pt.last()
         position.lastPosition = ft.last()
 
-        weight.restMagnitude()
+        weight.resetParameters()
         // the training is done over every pricesCasted. From the soonest to the latest.
         for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
 
@@ -77,7 +79,9 @@ class ARL(private val sizeWindow: Int) {
             var computedFt = computeFt(t)
 
             // update the weights
-            weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), parameters, returns)
+            weight.updateWeights(
+                    ft.last() * returns[t - 1] - 0.0002 * Math.abs(ft.last() - ft[ft.lastIndex - 1]),
+                    ft[t - 1], Math.signum(computedFt), parameters, returns)
 
             // cf. article, "since the weight updating is designed to improve the model at each step, it makes
             // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
@@ -91,6 +95,14 @@ class ARL(private val sizeWindow: Int) {
 
             // we compute the w_n
             val lastIndex = ft.lastIndex
+
+            if (ft[lastIndex] != ft[lastIndex - 1]){
+                // count the numbre of different order
+                numberOfOrder += 1
+            }
+            if (numberOfOrder > 20){
+                ft[lastIndex] = 0.0
+            }
 
             // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
             pt = pt.plus(pt.last() + ( ft[lastIndex - 1] * returns.last() - 0.0002 *
@@ -114,64 +126,81 @@ class ARL(private val sizeWindow: Int) {
      * @param updateThreshold the frequency we improve the meta-parameters
      * @param oldPt the array of p&l
      */
-    fun train(prices : List<Double>, updateThreshold: Int, oldPt: Array<Double>) {
+    fun train(prices : List<Double>, updateThreshold: Int, oldPt: Array<Double>, epochs: Int=1): Double {
 
-        // we cast the price, for the compatibility with java
-        val pricesCasted = prices.toDoubleArray()
-        var t = 1
-        var oldPrice = pricesCasted[t - 1]
+        val currentReturns = returns.clone()
 
-        // we compute the p_t, it's an array
-        var pt = oldPt.clone()
+        // epochs loop
+        for (ele in  0..epochs) {
+            // rest the magnitude each beginning of loop
+            weight.resetParameters()
 
-        // we init the memory of the position
-        position.currentPnl = pt.last()
-        position.maxPnl = pt.last()
-        position.lastPosition = ft.last()
+            // rest the returns too
+            returns = currentReturns.clone()
 
-        // the training is done over every pricesCasted. From the soonest to the latest.
-        for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
+            // we cast the price, for the compatibility with java
+            val pricesCasted = prices.toDoubleArray()
+            var t = 2
+            var oldPrice = pricesCasted[t - 2]
 
-            // compute the return
-            val computedReturn = 1.0 - oldPrice / price
+            // we compute the p_t, it's an array
+            var pt = oldPt.clone()
 
-            // keep the price for the next loop
-            oldPrice = price
-            // store the computedReturn in returns
-            returns = returns.plus(computedReturn)
-
-            // compute the Ft
-            var computedFt = computeFt(t)
-
-            // update the weights
-            weight.updateWeights(returns[t - 1], ft[t - 1], Math.signum(computedFt), parameters, returns)
-
-            // cf. article, "since the weight updating is designed to improve the model at each step, it makes
-            // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
-            // signal is used for effective decision making by the risk and the performance control layer."
-            computedFt = computeFt(t, Math.signum(computedFt))
-            // we put it in the layer 2
-            ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
-
-            // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
-            if (t % updateThreshold == 0) {
-                parameters = parameters.parallelUpdateParameters(
-                        0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t), weight, sizeWindow)
-            }
-            // increase the givenT size
-            t++
-
-            // we compute the w_n
-            val lastIndex = ft.lastIndex
-
-            // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
-            pt = pt.plus(pt.last() + (ft[lastIndex - 1] * returns.last() - 0.0002 *
-                    Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
-
-            // update of the current p&l
+            // we init the memory of the position
             position.currentPnl = pt.last()
+            position.maxPnl = pt.last()
+            position.lastPosition = ft.last()
 
+            returns = returns.plus(1.0 - oldPrice / pricesCasted[t - 1])
+            ft = ft.plus(1.0)
+            oldPrice = pricesCasted[t - 1]
+
+            // the training is done over every pricesCasted. From the soonest to the latest.
+            for (price in pricesCasted.sliceArray(t..(pricesCasted.size - 1))) {
+
+                // compute the return
+                val computedReturn = 1.0 - oldPrice / price
+
+                // keep the price for the next loop
+                oldPrice = price
+                // store the computedReturn in returns
+                returns = returns.plus(computedReturn)
+
+                // compute the Ft
+                var computedFt = computeFt(t)
+
+                // update the weights
+                weight.updateWeights(
+                        ft.last() * returns[t - 1] - 0.0002 * Math.abs(ft.last() - ft[ft.lastIndex - 1]),
+                        ft[t - 1], Math.signum(computedFt), parameters, returns)
+
+                // cf. article, "since the weight updating is designed to improve the model at each step, it makes
+                // sense to recalculate the trading decision with the most up-to-date version [...] This final trading
+                // signal is used for effective decision making by the risk and the performance control layer."
+                computedFt = computeFt(t, Math.signum(computedFt))
+                // we put it in the layer 2
+                ft = ft.plus(computeRiskAndPerformance(computedFt, parameters, position))
+
+                // if the numbers of steps is reach, update the parameters i.e : delta, rho, ...
+                if (t % updateThreshold == 0) {
+                    parameters = parameters.parallelUpdateParameters(
+                            0.1, 0.5, returns.sliceArray((t - updateThreshold + 1)..t), weight, sizeWindow)
+                }
+                // increase the givenT size
+                t++
+
+                // we compute the w_n
+                val lastIndex = ft.lastIndex
+
+                // R_t := F_{t-1} r_t - delta |F_{t} - F_{t-1}|
+                pt = pt.plus(pt.last() + (ft[lastIndex - 1] * returns.last() - 0.0002 *
+                        Math.abs(ft[lastIndex] - ft[lastIndex - 1])))
+
+                // update of the current p&l
+                position.currentPnl = pt.last()
+            }
         }
+        return this.weight.oldAt / this.weight.oldBt
     }
 
     /**
