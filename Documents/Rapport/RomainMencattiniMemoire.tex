@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[francais]{babel} 
+\usepackage[french]{babel} 
 \usepackage{amsmath} % pour les formules de maths
 \usepackage{amssymb} % pour des symboles
 \usepackage{mathrsfs} % pour avoir acces a des jolies lettres calligrafiées.:)
@@ -1312,10 +1312,10 @@ dans un soucis de rigueur scientifique et pour mieux comprendre les implications
 
 Cet algorithme est composé de trois parties. La première qui constitue le cœur du \textit{machine learning} présent, se base sur un réseau de neurones
 à une couche construite de manière à utiliser la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
-à partir de fonctions de coût utilisant au mieux les données économiques à dispositions. La deuxième couche utilise des notions financiers afin de
+à partir de fonctions de coût utilisant au mieux les données économiques à disposition. La deuxième couche utilise des notions financières afin de
 déterminer si le signal obtenu par la couche une doit être utilisé ou non et comment limiter les risques et pertes. La dernière partie va permettre de
-réduire l'influence humaine en optimisant les métas-paramètres. Ces derniers sont des paramètres qui conditionnent le comportement du réseau de neurones,
-de la descente du gradient et de la deuxième couche. Comme le taux d'apprentissage $\rho$, le \textit{stop loss} $x$, etc.\footnote{Tous les métas-paramètres
+réduire l'influence humaine en optimisant les méta-paramètres. Ces derniers sont des paramètres qui conditionnent le comportement du réseau de neurones,
+de la descente du gradient et de la deuxième couche. Comme le taux d'apprentissage $\rho$, le \textit{stop loss} $x$, etc.\footnote{Tous les méta-paramètres
 seront introduits et expliqués dans la section suivante.} Ils ne varient pas 
 à l'intérieur des dîtes parties et sont modifiés dans la troisième couche. Cela permet au programme d'avoir plus de flexibilité et d'adaptabilité par
 rapport au temps et aux nouveaux éléments rencontrés.
@@ -1331,7 +1331,7 @@ des recherches futures.
 
 \subsection{Algorithme}
 Dans cette section, pour chacune des parties de l'algorithme, nous allons dans un premier temps expliquer son fonctionnement théorique et ses bases
-mathématiques, puis exposer la manière dont nous avons implémenter ces éléments.
+mathématiques, puis exposer la manière dont nous avons implémenté ces éléments.
 Une fois l'algorithme détaillé, nous présenterons les problèmes rencontrés ainsi que les remédiations proposées. Après nous passerons à l'analyse des
 résultats pour les différentes variantes afin de saisir les causes et les conséquences de nos choix.
 
@@ -1343,7 +1343,7 @@ signal suit la formule suivante \cite{fx_trading}:
 $$F_t = sign(\sum_{i=0}^M w_{i,t} r_{t-i} + w_{M+1,t} F_{t-1} + v_t)$$
 où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, $w_{i,t}$ est le ième poids de l'itération $t$, $v_t$ est un seuil et $F_{t-1}$ le résultat de l'itération $t-1$.
 
-Cette formule mathématique implémente un réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}($r_i$). La notation des poids, soit $w_{i,t}$, prend en compte l'itération courrante. En effet, $w_{i,t}$ n'est pas forcément équivalent à $w_{i,t+1}$. Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
+Cette formule mathématique implémente un réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}($r_i$). La notation des poids, soit $w_{i,t}$, prend en compte l'itération courante. En effet, $w_{i,t}$ n'est pas forcément équivalent à $w_{i,t+1}$. Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
 critères\footnote{Nous développerons ces critères plus loin.}.
 Dans notre cas, le réseau de neurones dispose d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
 \footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisé dans le calcul du signal de $t$. Cette construction permet d'augmenter
@@ -1362,7 +1362,7 @@ théorique maximale de la fonction $\widehat{S}(t)$ doit tendre vers l'infini.
 La fonction de coût est définie comme suit :
 $$D_t := \frac{d\widehat{S}(t)}{d\eta}|_{\eta=0} = \frac{B_{t-1}\Delta A_t - \frac{1}{2} A_{t-1}\Delta B_t}{(B_{t-1} - A_{t-1}^2)^{\frac{3}{2}}}$$
 
-où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$.Il faut appliquer un développement de Taylor à $\widehat{S}(t)$ en $\eta=0$
+où $\Delta A_t := (R_t - A_{t-1})$ et $\Delta B_t := (R_t^2 - B_{t-1})$. Il faut appliquer un développement de Taylor à $\widehat{S}(t)$ en $\eta=0$
 
 
 Il reste encore à définir $R_t$, qui quantifie le gain au temps $t$:
@@ -1399,7 +1399,7 @@ $$\frac{dD_t}{dw_i} \approx \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_
 Avec $\frac{dF_t}{dw_{i,t}}$ qui peut également être estimé comme :
 $$\frac{dF_t}{dw_{i,t}} \approx \frac{\delta F_t}{\delta w_{i,t}} + \frac{\delta F_t}{\delta F_{t-1}} \frac{\delta F_{t-1}}{\delta w_{i,t-1}}$$
 
-Ces deux équations sont approximées sur la base d'une optimisation\cite{learning_to_trade}. Cette dernière consiste à ne prendre en compte que le dernier retour $R_t$. Cela permet de construire un système très rapide et réactif permettant ainsi d'optimiser le programme en continue, au fil des nouvelles données.
+Ces deux équations sont approximées sur la base d'une optimisation\cite{learning_to_trade}. Cette dernière consiste à ne prendre en compte que le dernier retour $R_t$. Cela permet de construire un système très rapide et réactif permettant ainsi d'optimiser le programme en continu, au fil des nouvelles données.
 
 On remarque que toutes les formules sont définies de manières récursives. Cela découle de la structure du réseau de neurones. En effet, comme ce dernier est
 récurrent, et comme l'itération $t-1$ influence celle de $t$, une définition récursive est plus naturelle qu'une définition itérative qui ferait intervenir
@@ -1410,7 +1410,7 @@ Nous avons expliqué plus tôt, qu'il existe deux versions de la descente du gra
 version stochastique.
 Les deux sont équivalentes, tant au niveau des résultats que des problèmes rencontrés\cite{learning_to_trade}. Elles le sont également d'un point de vue mathématique
 \cite{learning_to_trade}.
-L'optimisation peut s'effectuer en version stochastique, avec à chaque itération le calcul de $\Delta w_{i,t}$ comme vu précédemment
+L'optimisation peut s'effectuer en version stochastique, avec à chaque itération le calcul de $\Delta w_{i,t}$ comme vu précédemment.
 Ou bien en utilisant tous les exemples et avec une somme :
 $$\Delta w_{i,t} = \sum_{t=1}^T \frac{dD_t}{dR_t} (\frac{dR_t}{dF_t} \frac{dF_t}{dw_{i,t}} + \frac{dR_t}{dF_{t-1}} \frac{dF_{t-1}}{dw_{i,t-1}})$$
 Puis dans tous les cas, il faut mettre à jour par $w_{i,t} = w_{i,t-1} + \rho \Delta w_{i,t}$.
@@ -1432,7 +1432,7 @@ De part le caractère récursif des équations, il faut définir les valeurs pou
  de penser qu'un départ est, à priori, meilleur qu'un autre.
  \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît plutôt d'un signal \textit{long} ou
  \textit{short}.
- \item $\delta,\rho,\eta,x,y \in [0,1]$. Les métas-paramètres sont tirés aléatoirement dans l'intervalle $[0,1]$, car l'article ne donne aucune
+ \item $\delta,\rho,\eta,x,y \in [0,1]$. Les méta-paramètres sont tirés aléatoirement dans l'intervalle $[0,1]$, car l'article ne donne aucune
  indication sur les valeurs optimales. On suppose donc que l'optimisation annule le caractère aléatoire et donne des résultats similaires malgré des
  valeurs initiales différentes.
 \end{itemize}
@@ -1508,7 +1508,7 @@ Cela dépend de la manière dont l'algorithme est construit. L'article ne fourni
 dépendant de l'implémentation. Ne prendre aucune position revient à dire qu'à chaque position prise, nous la fermons, et donc il est possible de ne pas
 se positionner. Au contraire, si nous ne fermons la position que lorsqu'un signal contraire intervient, il est juste de garder la position au temps $t-1$.
 
-Comme tout les métas-paramètres, il est important de trouver une bonne valeur pour $y$. En effet, si le seuil est trop bas, ce dernier n'aura aucun effet 
+Comme tout les méta-paramètres, il est important de trouver une bonne valeur pour $y$. En effet, si le seuil est trop bas, ce dernier n'aura aucun effet 
 et les résultats seront similaires à un algorithme sans seuil. Par contre, si $y$ a une valeur trop élevée, alors cela va bloquer trop de signaux qui
 auraient pu conduire à des gains. La valeur optimale va dépendre des \textit{returns} rencontrés, il n'est donc pas possible d'optimiser à priori.
 
@@ -1551,7 +1551,7 @@ coûts de transactions.
 \subsubsection{Implémentation \textit{Layer 2}}
 \paragraph{}
 L'implémentation du seuil est simple à mettre en place. Le \textit{layer 1} nous renvoie un \texttt{Double}, et il suffit de comparer la valeur avec notre
-$y$. Afin de gérer les métas-paramètres ensemble, nous avons créé un objet \texttt{Parameters} qui contient $\delta,\rho,\eta,x,y$. Le pseudo-code
+$y$. Afin de gérer les méta-paramètres ensemble, nous avons créé un objet \texttt{Parameters} qui contient $\delta,\rho,\eta,x,y$. Le pseudo-code
 du seuil ressemble à :
 
 \begin{lstlisting}
@@ -1604,7 +1604,7 @@ Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contrair
 
 \subsubsection{Algorithme \textit{Layer 3}}
 \paragraph{}
-Cette dernière couche a pour but d'optimiser les métas-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
+Cette dernière couche a pour but d'optimiser les méta-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
 humaine pour trouver les meilleures valeurs possibles. C'est une solution assez courante dans le domaine du \textit{machine learning}\cite{automated_hyperparamters}. Cette méthode est
 souvent opposée à celle de la \textit{grid search} \cite{grid_vs_random}:
 \begin{figure}[H]
@@ -1653,7 +1653,7 @@ l'optimisation :
  \item Nous sélectionnons un intervalle de \textit{returns}.
  \item Nous fixons 4 paramètres parmi les 5.
  \item Nous tirons une valeur aléatoire normalement distribuée centrée sur la valeur initiale.
- \item Pour tout l'intervalle, nous lançons le \textit{Layer 1 \& 2} avec les métas-paramètres.
+ \item Pour tout l'intervalle, nous lançons le \textit{Layer 1 \& 2} avec les méta-paramètres.
  \item Nous récupérons les valeurs importantes et nous calculons $U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$.
  \item Nous stockons le résultat.
  \item Si nous avons terminé les 15 tirages, nous fixons la nouvelle valeur du paramètre avec le meilleur résultat\footnote{i.e: la meilleure valeur de 
@@ -1785,7 +1785,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   
   \paragraph{}
   Nous supposons, pour ce paragraphe, être dans un état où la descente du gradient et le \textit{Layer 2} fonctionnent. Nous nous intéressons donc à la couche 
-  d'optimisation des métas-paramètres\footnote{Aussi noté hyperparamètres dans la littérature.}. La liste de ces derniers est la suivante :
+  d'optimisation des méta-paramètres\footnote{Aussi noté hyperparamètres dans la littérature.}. La liste de ces derniers est la suivante :
   \begin{itemize}
    \item $\rho$ le taux d'apprentissage.
    \item $\eta$ le paramètre d'adaptation.
@@ -1818,6 +1818,113 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
  Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
  
+  \paragraph{}
+ Nous avons voulu observer l'évolution de \textit{Sharpe ratio} pour diverses valeurs de $\eta$, afin de voir si le ratio est optimisé et l'impact
+ du paramètre $\eta$ dans ce ratio. Les graphiques suivants sont calculés à partir du cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec 
+ $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+ paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \rho=0.01, x = 0.005, y=0.0001$. Nous n'avons pris en compte 
+ les résultats de la première itération d'apprentissage. Soit $t= [0,2000]$.
+ Pour rappel le \textit{Sharpe ratio} se calcule de la manière suivante :
+ $$\widehat{S}(t) := \frac{A_t}{B_t}$$
+ où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
+ 
+ 
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[]{res/exemple_eta_0001}
+ 	\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+ 	\label{sharpe ratio eta=0.0001}
+ \end{figure}
+ 
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[]{res/exemple_eta_0005}
+ 	\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+ 	\label{sharpe ratio eta=0.0005}
+ \end{figure}
+ 
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[]{res/exemple_eta_too_big}
+ 	\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+	\label{sharpe ratio eta=0.01}
+ \end{figure}
+ 
+ \paragraph{}
+ Les graphiques \ref{sharpe ratio eta=0.0001}, \ref{sharpe ratio eta=0.0005} et \ref{sharpe ratio eta=0.01} nous montrent que si $\eta$ est trop grand, il y a d'énormes variations dans le \textit{Sharpe ratio} en plus de ne pas voir d'optimisation
+ du dite ratio. Cette amplitude a un effet directe sur les poids, ce qui entraînera une divergence des poids. Si le \textit{Sharpe ratio} est trop grand
+ l'ajout du gradient sera trop important et le risque de \texttt{NaN} sera important.
+ 
+ On remarque également que si la valeur est faible,i.e: $< 10^{-3}$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
+ plus la courbe sera lissée.
+ 
+ Dans le premier graphique, nous apercevons difficilement les valeurs finales pour une boucle d'optimisation, voici d'autres exemples \ref{sharpe ratio eta=0.001 zoomé}, \ref{sharpe ratio eta=0.001 zoomé 2} avec un zoom afin de mieux discerner les valeurs
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_big}
+ 	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+  	\label{sharpe ratio eta=0.001 zoomé}
+ \end{figure} 
+ 
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_small}
+ 	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
+  	\label{sharpe ratio eta=0.001 zoomé 2}
+ \end{figure} 
+ 
+ Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
+ 
+Durant nos expérimentations, nous avons cherché à voir si une corrélation existait entre la valeur du \textit{Sharpe ratio} final après l'entraînement et les gains générés lors de la phase de test. Les graphiques \ref{exemple st positif}, \ref{exemple st negatif} montrent qu'il existe en effet une corrélation plus ou moins forte entre ces deux éléments. Cela nous a conduit à réviser l'algorithme afin d'y ajouter une sorte de filtrage. De manière empirique nous avons trouvé la fonction de décision suivante :
+
+\begin{displaymath}
+f(\widehat{S}_i):
+\left \{
+\begin{array}{rl}
+true & \text{if\ \ } \widehat{S}_i >= \mathbb{E}[{S_r,\ r=0\dots i-1\ |\ S_r > 0}]\\
+false & \text{otherwise} \\
+\end{array}
+\right.
+\end{displaymath}
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[scale=0.5]{res/Exemple_St_positif}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} positif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+		\footnotemark$, x = 0.005, y=0.0001$. }
+	\label{exemple st positif}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[scale=0.5]{res/Exemple_St_negatif}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} négatif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+		\footnotemark$, x = 0.005, y=0.0001$. }
+	\label{exemple st negatif}
+\end{sidewaysfigure}
+
+En appliquant la fonction de filtrage, nous obtenons des résultats quelques peu meilleurs. Le \textit{p\&l} maximum ne varie que peu mais le filtrage permet de vraiment limiter les pertes. Nous diminuons certes nos opportunités, car nous effectuons moins d'opérations, mais également le risque, par le filtrage du \textit{Sharpe ratio} d'entraînement découlant de la corrélation entre ce dernier et les résultats possibles de l'algorithme durant la phase de test \ref{exemple sans filtrage}, \ref{exemple avec filtrage}. 
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[scale=0.5]{res/exemple_avec_filtrage}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+		\footnotemark$, x = 0.005, y=0.0001$. Le filtrage par \textit{Sharpe ratio} est effectué.}
+	\label{exemple avec filtrage}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[scale=0.5]{res/exemple_sans_filtrage}
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
+		\footnotemark$, x = 0.005, y=0.0001$. Le filtrage par \textit{Sharpe ratio} n'y est pas effectué.}
+	\label{exemple sans filtrage}
+\end{sidewaysfigure}
+\clearpage
 
 \paragraph{}
 Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma global du programme :
@@ -1866,8 +1973,9 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  
 \subsubsection{Résultats}
  \paragraph{}
- Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet,nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est de une mesure tout les minutes.
+ Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est d'une mesure toutes les minutes.
  
+  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
  \begin{sidewaysfigure}
  	\centering
  	\includegraphics[scale=0.5]{res/eursud_2000-2001}
@@ -1880,19 +1988,19 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  D'après ces résultats, notre version de l'algorithme est bien moins performante que celle présentée. Cela peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
  
  \paragraph{}
- Malheureusement l'approche scientifique de l'article est bancal. En effet, les résultats présentés ne sont basés sur que un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
+ \todo[inline]{rajouter graphique de performance de l'article}
+ Malheureusement l'approche scientifique de l'article est bancale. En effet, les résultats présentés ne sont basés que sur un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
  
  Dans un premier temps, voici des tests sur le même cours, soit l'EUR/USD, mais sur l'année 2004.
  Les graphiques présentent trois éléments :
  \begin{enumerate}
   \item Le cours de change afin de visualiser la tendance.
-  \item Le signal. Cela permet de voir si le signal correspond à la tendance du cours ou de voir si le signal est nul.
+  \item Le signal. Cela permet de voir si le signal correspond à la tendance du cours ou de voir si le signal vaut 0.
   \item Le profit cumulé.
  \end{enumerate}
 
 Afin de mieux discerner les éléments importants, nous avons décomposer les  données en cinq graphiques différents, rendant l'ensemble plus lisible.
- 
- \begin{sidewaysfigure}
+  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références} \begin{sidewaysfigure}
 \centering
 \includegraphics[scale=0.5]{res/eursud_2004-2005_from_0to_10000}
 \caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
@@ -1948,58 +2056,6 @@ Ce que nous voulons montrer par cet exemple simple, c'est que pour de mêmes don
 
 De plus, la méthode d'optimisation ne garantit pas de trouver le minimum global. Il est donc fortement possible que les directions d'optimisations ne soient pas pareilles conduisant ainsi à des situations similaires. Afin de trouver des résultats identiques d'une fois à l'autre, il faut fixer l'aléatoire de la classe \textit{Random}.
  
- 
- \paragraph{}
- Nous avons voulu observer l'évolution de \textit{Sharpe ratio} pour diverses valeurs de $\eta$, afin de voir si le ratio est optimisé et l'impact
- du paramètre $\eta$ dans ce ratio. Les graphiques suivants sont calculés à partir du cours EUR/CHF entre le 03.01.2010 et le 30.12.2011, avec 
- $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-paramètres toute les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \rho=0.01, x = 0.005, y=0.0001$. Nous n'avons pris en compte 
-les résultats de la première itération d'apprentissage. Soit $t= [0,2000]$.
-Pour rappel le \textit{Sharpe ratio} se calcule de la manière suivante :
-$$\widehat{S}(t) := \frac{A_t}{B_t}$$
-où $A_t := A_{t-1} + \eta (R_t - A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 - B_{t-1})$.
-
-
-  \begin{figure}[H]
-\centering
-\includegraphics[]{res/exemple_eta_0001}
-\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
-\end{figure}
-
-  \begin{figure}[H]
-\centering
-\includegraphics[]{res/exemple_eta_0005}
-\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.005$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
-\end{figure}
-
-  \begin{figure}[H]
-\centering
-\includegraphics[]{res/exemple_eta_too_big}
-\caption[Blup]{Évolution du \textit{Sharpe ratio} avec $\eta = 0.01$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
-\end{figure}
- 
- \paragraph{}
- Ces graphiques nous montrent que si $\eta$ est trop grand, il y a d'énormes variations dans le \textit{Sharpe ratio} en plus de ne pas voir d'optimisation
- du dite ratio. Cette amplitude a un effet directe sur les poids, ce qui entraînera une divergence des poids. Si le \textit{Sharpe ratio} est trop grand
- l'ajout du gradient sera trop important et le risque de \texttt{NaN} sera important.
- 
- On remarque également que si la valeur est faible,i.e: $< 10^{-3}$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
- plus la courbe sera lissée.
-
-Dans le premier graphique, nous apercevons difficilement les valeurs finales pour une boucle d'optimisation, voici un autre exemple de ratio ainsi qu'un zoom afin de mieux discerner les valeurs :
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_big}
-	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
-\end{figure} 
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_small}
-	\caption{Évolution du \textit{Sharpe ratio} avec $\eta = 0.001$, $A_0 = 0, B_0 = 0$ de $t=0$ à $t=2000$}
-\end{figure} 
-
-Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
 
 \paragraph{}
 Afin de voir comment se comportent nos algorithmes sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse est que sur la longueur il risque d'y avoir des pertes. En effet en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
@@ -2070,7 +2126,7 @@ Dans un premier temps, voici une représentation sous forme de tableau afin d'ex
 \end{table}
 
 En complément des tableaux, voici des graphiques du cours et du \textit{p\&l}.
-
+  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2006-2010}
@@ -2099,18 +2155,20 @@ Les résultats négatifs de la \textit{p\&l} semblent incorrects mais en précis
 	\item Nous utilisons une approximation également présente dans l'article de base \cite{machine_learning_automated_trading}. En calculant les \textit{returns} par $r_i = p_{i} - p_{i-1}$ et en \textit{tradant} exactement une unité à chaque étapes, on obtient une estimation du gain si le profit était réinvesti. En conséquence d'investir exactement une unité de monnaie, cela n'empêche pas les nombres négatifs.
 \end{itemize}
 
-Premier élément intéressant, la variance la plus élevée se trouve à chaque fois durant l'année 2008. Cela semble cohérent avec la crise financière de 2008 entraînant ainsi une plus grande volatilité.
+Le premier élément intéressant concerne la variance. Cette dernière atteint sa valeur maximale à chaque fois durant l'année 2008. Cela semble cohérent avec la crise financière de 2008 entraînant ainsi une plus grande volatilité.
 
-De plus, notre hypothèse initiale est vérifié par la moyenne des p\&l. Cette dernière diminue en fil des années, conséquence de la faiblesse du programme sur de longue période.
+De plus, notre hypothèse initiale est vérifiée par la moyenne des p\&l. Cette dernière diminue au fil des années, conséquence de la faiblesse du programme sur de longue période.
 
 Concernant les autres mesures, il est difficile d'en apprendre quelque chose excepté le fait que le programme perd de l'argent et que l'année 2008 est la pire de ce point de vue.
 
-Il est intéressant de remarquer que la p\&l maximale de l'année $n+1$ est toujours supérieur à la p\&l minimale de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
+Il est intéressant de remarquer que le p\&l maximal de l'année $n+1$ est toujours supérieur au p\&l minimal de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
 
 \paragraph{}
 Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres. Afin de pouvoir effectuer une comparaison, nous allons garder le cours EUR/USD et modifier seulement certaines valeurs de l'algorithme qui pourraient avoir une influence significative sur ce dernier.
 
-La première idée porte sur le fait de modifier le nombre d'élément accordés pour l'apprentissage et pour le test. Une fenêtre trop grand ou trop petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation a peut de changer de converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction. Nous avons donc évaluer le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela a une grande influence.
+La première idée porte sur le fait de modifier le nombre d'élément accordés pour l'apprentissage et pour le test. Une fenêtre trop grande ou petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation risque de ne pas converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction. Nous avons donc évalué le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela a une grande influence.
+
+  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_1000-250}
@@ -2131,6 +2189,7 @@ Au vu des graphiques précédents, le changement de taille de la fenêtre d'appr
 \paragraph{}
 La seconde piste porte sur le type de données. Nous avons, par défaut, repris la granularité proposée dans l'article original avec une donnée par minute. Cela correspond à un \textit{trading} très intense avec une volatilité importante. Afin de faire varier cela, nous allons tester avec des données portant sur des heures et sur des jours. Pour le second, il ne sera pas possible de garder la même fenêtre d'apprentissage, soit 2000/500, car cela représente beaucoup trop de jours.
 
+  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005-days}
@@ -2147,6 +2206,7 @@ La seconde piste porte sur le type de données. Nous avons, par défaut, repris 
 \clearpage
 
 Nous observons la différence de granularité sur le taux de change en lui-même qui n'est plus le même que lors des graphiques précédents. Concernant les performances, il n'y a pas d'amélioration significatives malgré des données moins volatiles.
+\todo[inline]{ajouter du blabla}
 
 \subsubsection{Données}
 
@@ -2219,7 +2279,7 @@ d'améliorer le programme, il faudrait comprendre ce qui provoquer ces profits l
 n'est pas forcément le cas actuellement. En comprenant, le phénomène local de ce gain, on pourrait changer l'approche de l'algorithme et en accroître les
 performances.
 
-En fixant les métas-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}}, le \textit{stop trailing loss} est moins visible
+En fixant les méta-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}}, le \textit{stop trailing loss} est moins visible
 que sur d'autres exemples. Ce qui nous permet de mentionner un problème récurrent dans ce projet : de part le manque d'information, les valeurs initiales
 de tout les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{NaN}. Le caractère
 empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous permet pas d'avoir des valeurs standards fonctionnant avec n'importe quel
@@ -2233,13 +2293,13 @@ d'améliorer les performances de l'algorithme tout en reposant sur des bases mat
 \paragraph{}
 Concernant les pistes pour des recherches futures, nous en voyons plusieurs :
 \begin{itemize}
- \item Améliorer les métas-paramètres.
+ \item Améliorer les méta-paramètres.
  \item Intégrer une version alternative de la descente du gradient.
  \item Proposer un réseau multi-couche.
 \end{itemize}
 
-Pour les métas-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
-une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de métas-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
+Pour les méta-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
+une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de méta-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
 RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance global.
 
 En utilisant, une version alternative de la descente du gradient, comme le RMSProp, le Adagrad ou le Adadelta, nous pourrions éviter certain soucis
