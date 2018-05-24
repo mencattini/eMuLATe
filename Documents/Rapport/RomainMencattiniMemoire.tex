@@ -1816,7 +1816,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
  $x$ devient grand et $y$ petit n'ont que peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
  De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche. Si la déviation standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats\footnote{i.e: Un profit cumulé pouvant atteindre des valeurs aberrante comme des pertes de l'ordre de 100 unités.} et si elle est trop petite, nous restons dans
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
- Nous n'avons pas de solution pour cette partie et il conviendrait de chercher une solution dans des recherches futures.
+ Nous n'avons pas de solution pour cette partie et il conviendrait d'en chercher une dans des recherches futures.
  
   \paragraph{}
  Nous avons voulu observer l'évolution de \textit{Sharpe ratio} pour diverses valeurs de $\eta$, afin de voir si le ratio est optimisé et l'impact
@@ -1975,20 +1975,27 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  \paragraph{}
  Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est d'une mesure toutes les minutes.
  
-  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
  \begin{sidewaysfigure}
  	\centering
  	\includegraphics[scale=0.5]{res/eursud_2000-2001}
- 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+ 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
  		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
  		\footnotemark$, x = 0.005, y=0.0001$.}
+ 	\label{eurusd 2000 2001 1M}
+ 	\footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
  \end{sidewaysfigure}
-\footnotetext{Valeur de $\rho$ avant l'optimisation par RMSProp}
- \clearpage
- D'après ces résultats, notre version de l'algorithme est bien moins performante que celle présentée. Cela peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
+
+ 
+ \begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{images/res_from_article}
+	\caption[Blup]{Résultats provenant de l'article \cite{fx_trading}. (a) Le profit cumulé en points. (b) Le taux EUR/USD sur la période. }
+	\label{eurusd 2000 2001 1M article}
+\end{figure}
+
+ D'après la figure \ref{eurusd 2000 2001 1M}, notre version de l'algorithme est bien moins performante que celle présentée dans l'article \ref{eurusd 2000 2001 1M article}. Il y est mentionné un profit de l'ordre de 26\% par an ainsi que des pertes de 8\% environ. Nous sommes loin de ce genre de chiffres. Cela peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
  
  \paragraph{}
- \todo[inline]{rajouter graphique de performance de l'article}
  Malheureusement l'approche scientifique de l'article est bancale. En effet, les résultats présentés ne sont basés que sur un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
  
  Dans un premier temps, voici des tests sur le même cours, soit l'EUR/USD, mais sur l'année 2004.
@@ -1999,42 +2006,15 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
   \item Le profit cumulé.
  \end{enumerate}
 
-Afin de mieux discerner les éléments importants, nous avons décomposer les  données en cinq graphiques différents, rendant l'ensemble plus lisible.
-  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références} \begin{sidewaysfigure}
+Dans un premier temps, la figure \ref{eurusd 2004 2005} montre les résultats obtenus sur le cours EUR/USD entre 2004 et 2005.
+ \begin{sidewaysfigure}
 \centering
-\includegraphics[scale=0.5]{res/eursud_2004-2005_from_0to_10000}
-\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\includegraphics[scale=0.5]{res/eurusd_2004-2005}
+\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\label{eurusd 2004 2005}
 \end{sidewaysfigure}
 
-
- \begin{sidewaysfigure}
-\centering
-\includegraphics[scale=0.5]{res/eursud_2004-2005_from_10000to_20000}
-\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
-\end{sidewaysfigure}
-
- \begin{sidewaysfigure}
-	\centering
-	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_20000to_30000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
-\end{sidewaysfigure}
-
- \begin{sidewaysfigure}
-	\centering
-	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_30000to_40000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
-\end{sidewaysfigure}
-
- \begin{sidewaysfigure}
-	\centering
-	\includegraphics[scale=0.5]{res/eursud_2004-2005_from_40000to_50000}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
-\end{sidewaysfigure}
 \clearpage
 
 \paragraph{}
@@ -2060,7 +2040,7 @@ De plus, la méthode d'optimisation ne garantit pas de trouver le minimum global
 \paragraph{}
 Afin de voir comment se comportent nos algorithmes sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse est que sur la longueur il risque d'y avoir des pertes. En effet en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
 
-Dans un premier temps, voici une représentation sous forme de tableau afin d'extraire des informations statistiques sur les résultats.
+Dans un premier temps, voici une représentation sous forme de tableau afin d'extraire des informations statistiques sur les résultats. Chacune des tables \ref{table usd jpy 2006 2010}, \ref{table eur usd 2006 2010}, \ref{table gbp usd 2006 2010} montre un ensemble de mesures statistiques pour une paire de monnaies donnée.
 
 \begin{table}[h!]
 	\centering
@@ -2068,19 +2048,20 @@ Dans un premier temps, voici une représentation sous forme de tableau afin d'ex
 		\hline
 			années & p\&l max & p\&l min & \textit{draw down} & rendement annuel & moyenne & variance\\
 			\hline
-			2006 & 1.044 & 0.911 & 0.132 & -0.077 & 0.976 & 0.001 \\
+			2006 & 1.003 & 0.884 & 0.119 & -0.107 & 0.949 & 0.001\\
 			\hline
-			2007 & 0.979 & 0.712 & 0.266 & -0.196 & 0.866 & 0.005 \\
+			2007 & 0.914 & 0.798 & 0.116 & -0.084 & 0.873 & 0.001\\
 			\hline
-			2008 & 0.739 & 0.076 & 0.662 & -0.640 & 0.476 & 0.039 \\
+			2008 & 0.818 & 0.554 & 0.264 & -0.253 & 0.72 & 0.004\\
 			\hline
-			2009 & 0.091 & -0.481 & 0.572 & -0.520 & -0.288 & 0.017 \\
+			2009 & 0.615 & 0.42 & 0.195 & -0.071 & 0.519 & 0.003\\
 			\hline
-			2010 & -0.428 & -0.908 & 0.479 & -0.446 & -0.661 & 0.020 \\	
+			2010 & 0.51 & 0.366 & 0.144 & -0.104 & 0.441 & 0.002\\
 			\hline
 	\end{tabular}
-\caption{Voici les résultats obtenus pour la paire USD/JPY de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\caption{Résultats obtenus pour la paire USD/JPY de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\label{table usd jpy 2006 2010}
 \end{table}
 
 \begin{table}[h!]
@@ -2089,19 +2070,20 @@ Dans un premier temps, voici une représentation sous forme de tableau afin d'ex
 		\hline
 		années & p\&l max & p\&l min & \textit{draw down} & rendement annuel & moyenne & variance\\
 		\hline
-		2006 & 1.005 & 0.785 & 0.219 & -0.212 & 0.904 & 0.001\\
+		2006 & 1.01 & 0.955 & 0.055 & -0.031 & 0.981 & 0.0\\
 		\hline
-		2007 & 0.805 & 0.703 & 0.102 & -0.058 & 0.753 & 0.001\\
+		2007 & 1.016 & 0.982 & 0.033 & 0.058 & 0.984 & 0.0\\
 		\hline
-		2008 & 0.744 & 0.108 & 0.636 & -0.590 & 0.588 & 0.025\\
+		2008 & 1.044 & 0.829 & 0.215 & -0.196 & 0.95 & 0.004\\
 		\hline
-		2009 & 0.141 & -0.160 & 0.301 & -0.282 & -0.043 & 0.003\\
+		2009 & 0.866 & 0.708 & 0.158 & -0.121 & 0.798 & 0.002\\
 		\hline
-		2010 & -0.077 & -0.218 & 0.140 & -0.018 & -0.150 & 0.001\\
+		2010 & 0.749 & 0.64 & 0.109 & -0.056 & 0.697 & 0.001\\
 		\hline
 	\end{tabular}
-\caption{Voici les résultats obtenus pour la paire EUR/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\caption{Résultats obtenus pour la paire EUR/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 	paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+\label{table eur usd 2006 2010}
 \end{table}
 
 \begin{table}[h!]
@@ -2110,50 +2092,49 @@ Dans un premier temps, voici une représentation sous forme de tableau afin d'ex
 		\hline
 		années & p\&l max & p\&l min & \textit{draw down} & rendement annuel & moyenne & variance\\
 		\hline
-		2006 & 1.021 & 0.951 & 0.070 & 0.003 & 0.994 & 0.001\\
+		2006 & 1.015 & 0.936 & 0.079 & -0.023 & 0.97 & 0.0\\
 		\hline
-		2007 & 1.006 & 0.881 & 0.124 & -0.078 & 0.936 & 0.001\\
+		2007 & 1.001 & 0.956 & 0.045 & -0.018 & 0.971 & 0.0\\
 		\hline
-		2008 & 0.952 & 0.098 & 0.854 & -0.806 & 0.696 & 0.052\\
+		2008 & 0.971 & 0.771 & 0.2 & -0.136 & 0.891 & 0.005\\
 		\hline
-		2009 & 0.121 & -0.439 & 0.561 & -0.544 & -0.291 & 0.016\\
+		2009 & 0.828 & 0.599 & 0.229 & -0.213 & 0.706 & 0.003\\
 		\hline
-		2010 & -0.426 & -0.973 & 0.546 & -0.533 & -0.628 & 0.017\\
+		2010 & 0.611 & 0.381 & 0.23 & -0.227 & 0.492 & 0.004\\
 		\hline
 	\end{tabular}
-	\caption{Voici les résultats obtenus pour la paire GBP/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	\caption{Résultats obtenus pour la paire GBP/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\label{table gbp usd 2006 2010}
 \end{table}
 
-En complément des tableaux, voici des graphiques du cours et du \textit{p\&l}.
-  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2006-2010}
-	\caption{EUR/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	\caption{EUR/USD de 2006 à 2010 et le \textit{p\&l} résultant des prédictions de l'algorithme. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/gbpusd_2006-2010}
-	\caption{GBP/USD de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	\caption{Cour GBP/USD de 2006 à 2010  et le \textit{p\&l} résultant des prédictions de l'algorithme. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/usdjpy_2006-2010}
-	\caption{USD/JPY de 2006 à 2010 avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+	\caption{Cour USD/JPY de 2006 à 2010  et le \textit{p\&l} résultant des prédictions de l'algorithme. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \end{sidewaysfigure}
 \clearpage
 
-Les résultats négatifs de la \textit{p\&l} semblent incorrects mais en précisant certaines notions cela peut être justifié :
-\begin{itemize}
-	\item D'un point de vue strictement mathématique, rien n'empêche les valeurs d'être négatives. En ajoutant des \textit{p\&l} négatives à chaque itérations, cela entraîne une décroissance.
-	\item Nous utilisons une approximation également présente dans l'article de base \cite{machine_learning_automated_trading}. En calculant les \textit{returns} par $r_i = p_{i} - p_{i-1}$ et en \textit{tradant} exactement une unité à chaque étapes, on obtient une estimation du gain si le profit était réinvesti. En conséquence d'investir exactement une unité de monnaie, cela n'empêche pas les nombres négatifs.
-\end{itemize}
+%Les résultats négatifs de la \textit{p\&l} semblent incorrects mais en précisant certaines notions cela peut être justifié :
+%\begin{itemize}
+%	\item D'un point de vue strictement mathématique, rien n'empêche les valeurs d'être négatives. En ajoutant des \textit{p\&l} négatifs à chaque itérations, cela entraîne une décroissance.
+%	\item Nous utilisons une approximation également présente dans l'article de base \cite{machine_learning_automated_trading}. En calculant les \textit{returns} par $r_i = p_{i} - p_{i-1}$ et en \textit{tradant} exactement une unité à chaque étapes, on obtient une estimation du gain si le profit était réinvesti. En conséquence d'investir exactement une unité de monnaie, cela n'empêche pas les nombres négatifs.
+%\end{itemize}
 
 Le premier élément intéressant concerne la variance. Cette dernière atteint sa valeur maximale à chaque fois durant l'année 2008. Cela semble cohérent avec la crise financière de 2008 entraînant ainsi une plus grande volatilité.
 
@@ -2168,23 +2149,24 @@ Les graphiques suivants proviennent d'une volonté d'analyser les résultats lor
 
 La première idée porte sur le fait de modifier le nombre d'élément accordés pour l'apprentissage et pour le test. Une fenêtre trop grande ou petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation risque de ne pas converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction. Nous avons donc évalué le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela a une grande influence.
 
-  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_1000-250}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $1000$ éléments d'entraînement, $250$ de test, une optimisation des
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $1000$ éléments d'entraînement, $250$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\label{eurusd 2004 2005 1M 1000 250}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 		\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_4000-1000}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\label{eurusd 2004 2005 1M 4000-1000}
 \end{sidewaysfigure}
 \clearpage
 
-Au vu des graphiques précédents, le changement de taille de la fenêtre d'apprentissage et de test ne semble pas influencer grandement les performances. Nous y retrouvons les mêmes \textit{paterns} qu'avec un ratio de 2000/500, soit des gains locaux mais une perte globale. Nous ne pouvons pas affirmer que la taille n'a pas d'influence car il faudrait calculer le résultat pour chaque valeurs possible ce qui n'est pas réalisable.
+Au vu des graphiques précédents \ref{eurusd 2004 2005 1M 1000 250}, \ref{eurusd 2004 2005 1M 4000-1000} le changement de taille de la fenêtre d'apprentissage et de test ne semble pas influencer grandement les performances. Nous y retrouvons les mêmes \textit{paterns} qu'avec un ratio de 2000/500, soit des gains locaux mais une perte globale. Nous ne pouvons pas affirmer que la taille n'a pas d'influence car il faudrait calculer le résultat pour chaque valeurs possibles ce qui n'est pas réalisable.
 
 \paragraph{}
 La seconde piste porte sur le type de données. Nous avons, par défaut, repris la granularité proposée dans l'article original avec une donnée par minute. Cela correspond à un \textit{trading} très intense avec une volatilité importante. Afin de faire varier cela, nous allons tester avec des données portant sur des heures et sur des jours. Pour le second, il ne sera pas possible de garder la même fenêtre d'apprentissage, soit 2000/500, car cela représente beaucoup trop de jours.
