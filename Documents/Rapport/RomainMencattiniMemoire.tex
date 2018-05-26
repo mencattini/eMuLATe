@@ -2169,21 +2169,22 @@ La première idée porte sur le fait de modifier le nombre d'élément accordés
 Au vu des graphiques précédents \ref{eurusd 2004 2005 1M 1000 250}, \ref{eurusd 2004 2005 1M 4000-1000} le changement de taille de la fenêtre d'apprentissage et de test ne semble pas influencer grandement les performances. Nous y retrouvons les mêmes \textit{paterns} qu'avec un ratio de 2000/500, soit des gains locaux mais une perte globale. Nous ne pouvons pas affirmer que la taille n'a pas d'influence car il faudrait calculer le résultat pour chaque valeurs possibles ce qui n'est pas réalisable.
 
 \paragraph{}
-La seconde piste porte sur le type de données. Nous avons, par défaut, repris la granularité proposée dans l'article original avec une donnée par minute. Cela correspond à un \textit{trading} très intense avec une volatilité importante. Afin de faire varier cela, nous allons tester avec des données portant sur des heures et sur des jours. Pour le second, il ne sera pas possible de garder la même fenêtre d'apprentissage, soit 2000/500, car cela représente beaucoup trop de jours.
+La seconde piste porte sur le type de données. Nous avons, par défaut, repris la granularité proposée dans l'article original avec une donnée par minute. Cela correspond à un \textit{trading} très intense avec une volatilité importante. Afin de faire varier cela, nous allons tester avec des données portant sur des heures et sur des jours, \ref{eurusd 2004 2005 days}, \ref{eurusd 2004 2005 hours}. Pour le second, il ne sera pas possible de garder la même fenêtre d'apprentissage, soit 2000/500, car cela représente beaucoup trop de jours par rapport à la durée dont nous voulons faire l'évaluation.
 
-  \todo[inline]{refaire graphique avec sharpe filter + corriger légende + aggrandir le text sur graph + ajouter références}
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005-days}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Les données ont une fréquence journalières.}
+	\label{eurusd 2004 2005 days}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 	\centering
 		\includegraphics[scale=0.5]{res/eursud_2004-2005-hours}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, avec $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Les données ont une fréquence d'une heure.}
+	\label{eurusd 2004 2005 hours}
 \end{sidewaysfigure}
 \clearpage
 
