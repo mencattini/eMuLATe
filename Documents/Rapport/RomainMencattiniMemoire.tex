@@ -118,7 +118,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 \paragraph{}
-Ces dernières années, avec l'augmentation de la puissance de calcul et des données à dispositions, l'intelligence artificielle et son sous-domaine le \textit{machine learning} ont connu une forte croissance. Que ce soit avec la victoire d'une machine face à un humain au jeu de Go \cite{deepmind}, ou bien lorsque des programme de Microsoft et Alibab sont capable de mieux lire qu'un être humain \cite{microsoft_reading}, les progrès permettent de dépasser les humains dans des tâches dont on n'imaginait difficilement qu'elles puissent être réalisées par des machines.
+Ces dernières années, avec l'augmentation de la puissance de calcul et de la quantité de données disponibles, l'intelligence artificielle et son sous-domaine le \textit{machine learning} ont connu une forte croissance. Que ce soit avec la victoire d'une machine face à un humain au jeu de Go \cite{deepmind}, ou bien lorsque des programmes de Microsoft et Alibab sont capables de mieux lire qu'un être humain \cite{microsoft_reading}, les progrès permettent de dépasser l'homme dans des tâches dont on n'imaginait difficilement qu'elles puissent être réalisées par des machines.
 
 \paragraph{}
 De nombreux domaines comme les jeux, la linguistique, l'imagerie sont concernés. C'est également, dans une certaine mesure, le cas pour la finance.
@@ -126,10 +126,10 @@ C'est l'intersection de ces deux domaines, l'intelligence artificielle et la fin
 Le document se décomposera en deux grandes axes. 
 
 \paragraph{}
-La première partie consiste en un état de l'art. Ce dernier nous permettra d'aborder et de définir le marché des changes ainsi que les concepts et formules mathématiques derrières plusieurs techniques d'apprentissage. Nous aborderont un certain nombres d'algorithmes qui comprendra la descente du gradient, les réseaux de neurones, la régression logistique ou les arbres de décisions. Cela nous permettra d'avoir un large horizon de techniques et d'options en vue de réaliser un apprentissage automatique. Une fois ces deux éléments expliqués, nous combinerons ces deux domaines pour montrer les applications possibles ainsi que les pistes de réflexions. Ceci conclura notre état de l'art.
+La première partie consiste en un état de l'art. Ce dernier nous permettra d'aborder et de définir le marché des changes ainsi que les concepts et formules mathématiques derrières plusieurs techniques d'apprentissage. Nous aborderons un certain nombre d'algorithmes qui comprendra la descente du gradient, les réseaux de neurones, la régression logistique ou les arbres de décisions. Cela nous permettra d'avoir un large horizon de techniques et d'options en vue de réaliser un apprentissage automatique. Une fois ces deux éléments expliqués, nous combinerons ces deux domaines pour montrer les applications possibles ainsi que les pistes de réflexions. Ceci conclura notre état de l'art.
 
 \paragraph{}
-La seconde se focalisera sur le projet en lui-même. Nous présenterons de manière précise et détaillée l'algorithme sur lequel se base notre recherche. Il y sera également question de l'implémentation, soit comment la formulation mathématique a été traduite en code informatique. Nous traiterons également des points problématiques ainsi que des remédiations possibles. Après une analyse des résultats de l'algorithme, nous conclurons le document et nous proposerons plusieurs pistes pour des recherches futures.
+La seconde se focalisera sur le projet en lui-même. Nous présenterons de manière précise et détaillée l'algorithme sur lequel se base notre recherche. Il y sera également question de l'implémentation, soit comment la formulation mathématique a été traduite en code informatique. Nous traiterons aussi des points problématiques ainsi que des remédiations possibles. Après une analyse des résultats de l'algorithme, nous conclurons le document et nous proposerons plusieurs pistes pour des recherches futures.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,7 +139,7 @@ La seconde se focalisera sur le projet en lui-même. Nous présenterons de mani�
 \subsection{Introduction}
 \paragraph{}
 Avant la démocratisation de l'informatique, les opérations financières étaient réalisées par des humains. 
-Ce système pouvait avoir des inconvénients:
+Ce système pouvait avoir plusieurs inconvénients:
 \begin{itemize}
 \item L'émotionnel influençait les transactions. En effet, ces dernières étant effectuées par des humains, 
 il y avait un risque non négligeable que l'état de la personne agisse sur sa décision.
@@ -148,10 +148,10 @@ il y avait un risque non négligeable que l'état de la personne agisse sur sa d
 Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à un plan afin de ne pas se laisser 
 influencer par des paramètres extérieurs. Cela pouvait être très difficile.
 
-\item Le \textit{backtesting}\footnote{Le \textit{Backtesting} est le processus qui consiste à tester une stratégie
+\item Le \textit{backtesting}\footnote{Le \textit{Backtesting} est un processus qui consiste à tester une stratégie
 de \textit{trading} sur des données historiques afin de s'assurer de sa viabilité avant de risquer du capital.
 \cite{investopedia_backtesting}} 
-était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliquée. 
+était impossible. Tester la qualification ainsi que la qualité de \textit{trading} d'une personne était compliqué. 
 De même pour un \textit{trading plan}.
 \end{itemize}
 
@@ -164,14 +164,14 @@ leurs algorithmes. L'automatisation mise à part, on retrouve des méthodes d'op
 de \textit{data mining} et de \textit{machine learning}, abrégé \textit{ML}. 
 Des propositions de plus en plus pointues dans les deux domaines voient le jour. 
 L'algorithme qui sera au cœur de ce projet en fait partie. 
-Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres particuliers à la finance.
+Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres propre à la finance.
 
-\paragraph{}Afin d'approcher aux mieux ces notions, nous allons discuter des éléments nécessaires à leur compréhension.
+\paragraph{}Afin d'appréhender aux mieux ces notions, nous allons discuter des éléments nécessaires à leur compréhension.
 Nous allons en premier lieu traiter le domaine financier ainsi que ces outils. Puis nous parlerons de 
-plusieurs méthodes de \textit{ML}. Il est compliqué d'être exhaustif tant les méthodes sont nombreuses et disposent de variations complexes. Les algorithmes choisis présenterons un large panel de techniques et constitueront une introduction complète au domaine. Ces derniers comprendront les réseaux de neurones, les arbres de décision, le \textit{Support Vector Machine}\cite{wikipedia_svm}, les classifieurs \textit{Naive Bayes} ainsi que la descente du gradient \cite{wikipedia_descente_du_gradient} et sa version dite stochastique \cite{descente_du_gradient_stochastique}.
+plusieurs méthodes de \textit{ML}. Il est compliqué d'être exhaustif tant les méthodes sont nombreuses et disposent de variations complexes. Les algorithmes choisis présenteront un large panel de techniques et constitueront une introduction suffisante au domaine. Ces derniers comprendront les réseaux de neurones, les arbres de décision, le \textit{Support Vector Machine}\cite{wikipedia_svm}, les classifieurs \textit{Naive Bayes} ainsi que la descente du gradient \cite{wikipedia_descente_du_gradient} et sa version dite stochastique \cite{descente_du_gradient_stochastique}.
 
 
-Finalement, nous lierons les deux domaines en montrant comment adapter les modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}, en évaluant leur performances.
+Finalement, nous lierons les deux domaines en montrant comment adapter certains modèles mathématiques de \textit{ML} pour les utiliser comme techniques de \textit{trading}, en évaluant leur performances.
 
 
 \subsection{Finance}
@@ -195,7 +195,7 @@ développement économique des pays touchés par la guerre}" \cite{wikipedia_bre
 Le but était également "\textit{d’aplanir les conflits économiques, reconnaissant par là les problèmes engendrés par les disparités économiques}"
 \cite{etalon_or_a_etalon_dollar}.
 
-Plusieurs idées furent proposées, mais ce fût celle de Harry Dexter White qui fût mise en place. Cette dernière prévoyait entre autre:
+Plusieurs idées furent proposées, mais ce fût celle de Harry Dexter White qui fût mise en place. Cette dernière prévoyait entre autres:
 \begin{itemize}
 \item le choix du Dollar américain comme étalon, avec rattachement à l'or\footnote{Suspension de l'équivalence or pour le dollar américain en août 1971 puis abandon 
 définitif en mars 1973 \cite{wikipedia_bretten_woods}.}.
@@ -205,7 +205,7 @@ définitif en mars 1973 \cite{wikipedia_bretten_woods}.}.
 \end{itemize}
 
 On remarque que ces institutions sont toujours en activités, 
-cela démontre l'importance de ces accords pour le système financier actuel.
+ceci démontrant l'impact de ces accords pour le système financier actuel.
 
 \paragraph{}
 Le marché \textit{FOREX} porte sur les devises. La valeur d'une devise ne peut être exprimée qu'en fonction d'une autre. 
@@ -223,8 +223,8 @@ Lorsque le prix d'une devise augmente par rapport à une monnaie étrangère, on
 Ainsi dans le cas contraire, on parlera d'une dépréciation.
 
 La mondialisation a facilité ce marché. En effet, toutes devises étant accessibles depuis 
-n'importe où, il devient donc possible d'avoir des marchés avec des devises plus exotiques.
-Il devient par exemple possible de vendre une monnaie avec un faible taux d'intérêt puis utiliser les fonds générés par la vente pour investir dans une monnaie avec un meilleur taux d'intérêt. Le but étant de capturer le différentiel d'intérêt \cite{currency_carry_trade}.
+n'importe où, il devient donc possible d'avoir des marchés avec des monnaies plus exotiques.
+Comme, par exemple, vendre une monnaie avec un faible taux d'intérêt puis utiliser les fonds générés par la vente pour investir dans une monnaie avec un meilleur taux d'intérêt. Le but étant de capturer le différentiel d'intérêt \cite{currency_carry_trade}.
 
 \paragraph{}
 Les principaux acteurs financiers sont \cite{marche_des_changes}:
@@ -254,7 +254,7 @@ Le \textit{FOREX} répond à ces trois unités \cite{site_fr_forex}:
 \item Il fonctionne à l'échelle mondiale tout en étant décentralisé. 
 De part l'évolution des technologies, l'information circule aisément malgré son statut.
 
-\item L'uniformité des procédés ainsi que des produits est présente. Les acteurs malgré nationalité sont de même nature.
+\item L'uniformité des procédés ainsi que des produits est présente. Les acteurs malgré leurs nationalités sont de même nature.
 \end{itemize}
 
 \paragraph{}
@@ -264,13 +264,13 @@ Le premier est également appelé "Le marché au comptant". Lorsque deux acteurs
 cette dernière se réalise 
 immédiatement\footnote{Valable en théorie, dans la réalité cela peut prendre du temps \cite{marche_des_changes}}.
 
-Le second peut être nommé "Le marché à terme". L'accord est passé à un temps $T$ mais la transaction effective ne
+Le second peut être nommé "Le marché à terme". L'accord est passé au un temps $T$ mais la transaction effective ne
 se réalise que dans le futur. Il également possible que la transaction ne se réalise pas. Ce futur, ou maturité, peut être de plusieurs dizaines de jours,
 voir des années, soit $T + X$\footnote{Où $T$ est le moment présent, et $X$ une durée de temps.}.
 
-Il y a des opérations réalisable sur le marché à terme :
+Il y a des opérations réalisables sur le marché à terme :
 \begin{itemize}
-\item Les \textit{swaps}. Ils consistent à vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$}.
+\item Les \textit{swaps}. Ils consistent à vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$.}.
 
 \item Les \textit{futures/forwards}. La différence entre ces deux tient surtout à leur standardisation et leur mise en place.
 Cependant le principe reste le même: on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
@@ -278,7 +278,7 @@ Cependant le principe reste le même: on réalise une opération (d'achat ou de 
 \item Les \textit{options}. Cela représente un contrat vendu par un parti (\textit{the option writer}) 
 à un autre parti (\textit{the option holder}). Ce contrat offre le droit, et non l'obligation contrairement 
 aux \textit{futures/forwards}, d'acheter (\textit{call}) ou de vendre (\textit{put}). Ici encore, il faut attendre la maturité
-\footnote{Cela est vrai pour les options dites européennes\cite{investopedia_option_europeenne}. 
+\footnote{Ceci est vrai pour les options dites européennes\cite{investopedia_option_europeenne}. 
 Dans le cas des options américaines\cite{investopedia_option_americaine}, le droit peut s'exercer à n'importe quel moment, offrant
 ainsi une plus grande flexibilité.}.
 \end{itemize}
@@ -293,12 +293,11 @@ Les options sont très versatiles. Elles peuvent être utilisées afin de spécu
 
 \paragraph{}
 Le \textit{bid} est le prix maximum qu'un acheteur est d'accord de payer pour un sous-jacent.
-De la même manière, le \textit{ask} est le prix minimum qu'un vendeur accepte pour vendre 
+De la même manière, le \textit{ask} est le prix minimum auquel un vendeur accepte de vendre 
 un sous-jacent \cite{investopedia_bid_ask}.
 
 La différence entre le \textit{bid} et le \textit{ask}, appelée le \textit{spread}, représente la liquidité d'un actif. 
 Il est également utilisé comme marge par les \textit{broker}\cite{wikipedia_broker} et autres plateformes.
-
 
 
 \subsection{Cadre théorique des algorithmes de \textit{Machine Learning}}
@@ -312,8 +311,7 @@ performance measure $P$ if its performance at tasks in $T$, as measured by $P$, 
 
 Cette citation signifie que si nous disposons d'une tâche $T$ à accomplir. $T$ peut consister à trier des images ou à reconnaître des motifs.
 La mesure de la réussite de $T$ est nommée $P$. C'est-à-dire la qualité du résultat pour 
-la tâche donnée, $T$. Si le programme améliore $P$ pour la tâche $T$ grâce à l'expérience $E$. 
-Il s'agit d'un programme de \textit{machine learning}. L'expérience $E$ peut être vue comme une phase d'entraînement
+la tâche donnée, $T$. Si le programme améliore $P$ pour la tâche $T$ grâce à l'expérience $E$, alors il s'agit d'un programme de \textit{machine learning}. L'expérience $E$ peut être vue comme une phase d'entraînement
 ou comme le fait de retenir les réponses après avoir accompli la tâche.
 
 \paragraph{}
@@ -323,14 +321,13 @@ Il existe deux catégories d'apprentissage:
 \item L'apprentissage non-supervisé.
 \end{itemize}
 
-Dans le cas du premier, on fournit au programme, un ensemble d'entraînement\footnote{Ou d'expérience, $E$},
-qui contient des réalisations ainsi que le résultat de la classification. 
+Dans le premier cas, on fournit au programme, un ensemble d'entraînement\footnote{Ou d'expérience, $E$},
+qui contient des réalisations ainsi que le résultat attendu. 
 Le programme va donc pouvoir utiliser ce savoir afin d'améliorer sa performance $P$.
 Nous disposons donc de nombreux couples $(x_i, y_i)$ et le but est de trouver une fonction $f \in F$ telle que: $f(x) = y$.
 
 Pour l'apprentissage non-supervisé, on fournit des données, mais sans le résultat voulu.
-C'est uniquement après avoir décidé d'une valeur qu'on va signifier au programme si cette dernière est correcte.
-On ne lui donnera jamais la valeur attendue. Il va donc utiliser uniquement les résultats précédents pour améliorer son $P$.
+C'est uniquement après avoir décidé d'une valeur qu'on va signifier au programme si cette dernière est correcte sans pourtant lui donner la valeur attendue. Il va donc utiliser uniquement les résultats précédents pour améliorer son $P$.
 
 Par exemple, on désire reconnaître un certain type de voiture à partir d'images. Dans le cas de l'apprentissage supervisé,
 nous allons fournir au programme un ensemble d'entraînement qui contient de nombreuses photos de voitures,
@@ -350,7 +347,7 @@ il faut que la propension et la répartition des mots soient les mêmes que ceux
 \item Contenir des membres de chacune des classes. Pour reconnaître des chiffres, il est important de disposer de chacun 
 des chiffres dans l'ensemble d'entraînement.
 \item Contenir de grandes variations ainsi que du bruit. Afin d'éviter le sur-apprentissage, 
-il faut de nombreux exemples différents, voir très différents, les uns des autres ainsi que 
+il faut de nombreux exemples différents, les uns des autres ainsi que 
 du bruit\footnote{Comme des faux exemples.}.
 \end{itemize}
 
@@ -358,7 +355,7 @@ du bruit\footnote{Comme des faux exemples.}.
 Il est important de saisir comment fonctionne les algorithmes de \textit{machine learning}. 
 Le but est d'utiliser des données, souvent de très hautes dimensionnalités\footnote{Cela signifie qu'elles 
 sont représentées par un grand nombre d'attributs.}, dans des équations dont on pourra faire varier 
-les paramètres afin de classifier au mieux. Le cœur des algorithmes de \textit{machine learning} 
+les paramètres afin d'obtenir un résultat désiré. Le cœur des algorithmes de \textit{machine learning} 
 consiste à optimiser les dits paramètres.
 
 \subsubsection{\textit{Logistic Regression}} \label{section régression logistique}
@@ -411,8 +408,8 @@ $$\sum_{i=1}^N (y_i - \sum_j\beta_j x_{ij})^2 + \lambda \sum_j \beta_j^2$$
 , où $y_i$ est la classe de notre observation, $\beta_j$ sont les coefficients de la régression logistique originale \cite{machine_learning_automated_trading} et $x_{ij}$
 sont les $j$ éléments de l'observation $i$.
 
-L'objectif est de minimiser le carré de la différence entre la classe, ou résultat, de $y_i$ et le résultat 
-calculé: $\sum\limits_j\beta_j x_{ij}$. Donc en fonction de l'observation $x_i$ et des coefficient de $\beta$.
+L'objectif est de minimiser le carré de la différence entre la classe, ou résultat, de $y_i$ et la valeur 
+calculée: $\sum\limits_j\beta_j x_{ij}$. Donc en fonction de l'observation $x_i$ et des coefficients de $\beta$.
 En ajoutant une pénalité, sur $\beta$, on va tenter d'éviter le sur-apprentissage.
 
 \item \textit{Lasso logistic regression/ Lasso regularization}:
@@ -434,7 +431,7 @@ les équations et les paramètres vont changer, mais  le but sera toujours d'opt
 \paragraph{}
 Un arbre de décision est un arbre, dont chaque nœud représente un test sur un attribut. 
 Les branches qui suivent directement le nœud sont les valeurs possibles de l'attribut. 
-Les feuilles de l'arbre, quant à elles, sont la classification d'élément donné en entrée.
+Les feuilles de l'arbre, quant à elles, sont la classification d'éléments donnés en entrée.
 
 Il est important de disposer des attributs avant de commencer la construction de l'arbre. 
 Lors de l'implémentation, nous pouvons représenter l'arbre comme une suite de \textit{if-then-else} afin 
@@ -463,7 +460,7 @@ Un des plus connus est le \textit{ID3} \cite{id3}. Il s'agit d'une méthode de t
 \end{itemize}
 Nous allons construire l'arbre de manière \textit{top-down} en utilisant ,à chaque pas, le meilleur attribut, selon notre test statistique. La construction de l'arbre constitue la phase d'entraînement. Si de nouvelles données viennent s'ajouter, il devient nécessaire de construire un nouvel arbre, soit une nouvelle phase d'entraînement.
 
-La phase de classification consiste à parcourir l'arbre en appliquant les prédicats à l'instance que nous désirons classifier. Une fois arrivé a une feuille, nous avons un résultat.
+La phase de classification consiste à parcourir l'arbre en appliquant les prédicats à l'instance que nous désirons classifier. Une fois arrivé à une feuille, nous avons un résultat.
 
 
 \subsubsection{\textit{Naive Bayes}}\label{section naive bayes}
@@ -478,14 +475,14 @@ $P(Y|X) = \frac{P(X|Y)}{P(X)}P(Y)$
 \begin{center}
 $V_{NB} = arg\ max_{v_{j \in V}} P(v_j) \prod\limits_i P(a_i | v_j)$
 \end{center}
-Où $V_{NB}$ est la classe obtenue, $P(v_j)$ la probabilité à \textit{priori} donc sans informations 
+Où $V_{NB}$ est la classe obtenue, $P(v_j)$ la probabilité à \textit{priori} donc sans information 
 et $\prod\limits_i P(a_i | v_j)$ la probabilité de vraisemblance.
 Il convient donc de trouver la classe qui maximise ce calcul.
 
 Afin d'avoir une certaine sécurité dans les résultats, il est possible d'ajouter un seuil. 
-Les réponses du classifieur étant comprise entre $0$ et $1$, le seuil permettra de décider si la réponse sera prise en compte.
+Les réponses du classifieur étant comprises entre $0$ et $1$, le seuil permettra de décider si la prédiction sera prise en compte.
 
-Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validé et le classifieur ne renvoie aucun
+Par exemple, avec un seuil de $0.6$ si $V_{NB} = 0.58$, alors la réponse n'est pas validée et le classifieur ne renvoie aucun
 résultat. Si $V_{NB} = 0.7$ alors la réponse est jugée sûre et la classe de $V_{NB}$ est retournée. 
 
 \paragraph{}\label{section roc curve analysis}
@@ -503,10 +500,9 @@ Cette pente $S$ est définie comme suit \cite{machine_learning_automated_trading
 $S = \frac{Cost(P|N) - Cost(N|N)}{Cost(N|P) - Cost(P|P)} \cdot \frac{N}{P}$
 \end{center}
 Sachant que $Cost(P|N)$ est le coût pour avoir mal classé une classe négative comme positive. 
-$P$ est la somme des vrais positifs et des faux négatifs. $N$, quant à lui, 
-vaut la somme des vrais négatifs ainsi que des faux positifs.
+$P$ est la somme des vrais positifs et des faux négatifs. $N$, quant à lui, équivaut à l'addition des vrais négatifs ainsi que des faux positifs.
 
-Voici une illustration\footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_5403_f_20-x1000_1600}}:
+La figure \ref{roc_curve} illustre cela \footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_5403_f_20-x1000_1600}}:
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.20]{images/roc_curve}
@@ -514,20 +510,22 @@ Voici une illustration\footnote{Source: \url{http://www.prolekare.cz/dbpic/jp_54
 au taux de vrais positifs. On veut donc tendre vers $y = 1$ et $x = 0$. Lors de l'optimisation par la pente $S$, 
 le but sera d'obtenir une intersection avec la \textit{ROC curve} dans la zone \textit{optimal threshold} 
 afin d'avoir le meilleur seuil possible.}
+\label{roc_curve}
 \end{figure}
 
 
 \subsubsection{\textit{SVM}}\label{section svm}
 \paragraph{}
 Le but de l'algorithme \textit{SVM}\footnote{\textit{Support Vector Machine}} est de séparer les données grâce à un hyper-plan.
-Cela permet de différencier les classes des observations suivantes en déterminant s'ils se trouvent d'un côté ou l'autre 
-du plan. Ce dernier n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}}: 
+Cela permet de différencier les observations suivantes en déterminant si elles se trouvent d'un côté ou l'autre 
+du plan. Ce dernier n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}} comme le suggère la figure \ref{svm_exemple}. 
 \begin{figure}[H]
 \centering
 \includegraphics{images/svm_exemple}
 \caption{Exemple d'hyper-plans séparant les données. Si nous voulons classifier un nouvel élément, 
 il suffit de calculer s'il se trouve à gauche ou à droite de l'hyper-plan. Dans le premier cas, il s'agira, 
 pour notre algorithme, d'un rond et dans l'autre d'un carré}
+\label{svm_exemple}
 \end{figure}
 
 \paragraph{}
@@ -544,9 +542,10 @@ La fonction $\phi(x)$ est utilisée dans ce but. Un exemple de fonction est:
 $\phi: R^2 \rightarrow R^3 :(x, y) \rightarrow (x, y, z):= (x^2, \sqrt{2}x y, y^2)$
 \end{center}
 
-Il est possible d'imager cette opération comme cela\footnote{\url{https://www.dtreg.com/uploaded/pageimg/SvmDimensionMap.jpg}}:
+Il est possible d'imager cette opération \footnote{\url{https://www.dtreg.com/uploaded/pageimg/SvmDimensionMap.jpg}} avec la figure \ref{svm_exemple_phi}.
 \begin{figure}[H]
 \centering
+\label{svm_exemple_phi}
 \includegraphics[scale=0.3]{images/svm_exemple_phi}
 \caption{Exemple d'utilisation de la fonction $\phi$ pour passer d'un espace $R^2$ à $R^3$ afin de faciliter la séparation.}
 \end{figure}
@@ -613,11 +612,9 @@ d'influencer les couches précédant l'\textit{output layer}.\footnote[2]{}}
 \stepcounter{footnote}\footnotetext{Source:\url{https://jcrisch.files.wordpress.com/2015/04/reseau_de_neurones.png}}
 
 \paragraph{}
-Concernant la valeur de sortie, elle peut être simple, comme le résultat d'une classification binaire,\textit{i.e.} $0$ ou $1$
-en sortie. Mais elle peut également être d'une dimensionnalité plus élevée comme un vecteur, citons l'exemple d'un point
-dans un espace $R^2$.
+Concernant la valeur de sortie, elle peut être binaire,\textit{i.e.} $0$ ou $1$, plus complexe comme un vecteur ou même un relatif.
 
-Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonction. Nous pouvons citer :
+Afin de borner les valeurs de sortie, la plupart des réseaux utilisent une fonction. Nous pouvons citer :
 \begin{itemize}
 \item La fonction sigmoïde : $S(t) = \frac{1}{1 + e^{-t}}$.
 \item La fonction tangente hyperbolique : $f(x) = tanh(x)$.
@@ -626,18 +623,19 @@ Afin de borner les valeurs en sortie, la plupart des réseaux utilisent une fonc
 Bien souvent, l'utilisation d'un réseau de neurones à une couche est suffisante. Cela est valable pour les fonctions continues,
 dans le cas de fonctions discontinues, il est intéressant de passer à un réseau disposant de plusieurs couches.
 Attention toutefois, si le nombre de neurones est trop important, l'algorithme va avoir tendance à sur-apprendre,
-et à l'inverse, à sous-apprendre si le nombre est trop faible. Il est donc important de bien doser cette quantité afin
+et à l'inverse, à sous-apprendre quand il est trop faible. Il est donc important de bien doser cette quantité afin
 d'éviter ces problèmes.
 
 \paragraph{}
 Un exemple concret de réseau de neurones est celui présenté dans l'article qui se trouve au cœur du projet ~\cite{fx_trading}.
-Avant de montrer les équations, en voici un schéma \cite{fx_trading}:
+La figure \ref{exemple_nn_projet} est un schéma montrant le fonctionnement du réseau \cite{fx_trading}.
 \begin{figure}[H]
  \centering
  \includegraphics[scale=0.4]{images/exemple_nn_projet}
  \caption{Représentation sous forme de schéma du réseau de neurones. Avec $w$ le vecteur de poids, $v$ le seuil, $\delta$ le coût de
  \textit{trading}, $\eta$ un paramètre d'adaptation, $\rho$ le taux d'apprentissage, $x$ le seuil d'arrêt lors de pertes, $y$ le
  seuil de \textit{trading}, $z$ la condition d'arrêt automatique lors de pertes critiques et l'aversion au risque notée $\upsilon$.}
+\label{exemple_nn_projet}
 \end{figure}
 
 Il s'agit de trois couches qui doivent optimiser chacune une série de paramètres. La première va maximiser le vecteur de poids $w$
@@ -673,7 +671,7 @@ $$\Sigma := \frac{\sum_{i=0}^N (R_i)^2 I(R_i < 0)}{\sum_{i=0}^N (R_i)^2 I(R_i > 
 $$ U(\overline{R},\Sigma,\upsilon) := a\cdot(1-\upsilon)\cdot \overline{R} - \upsilon \cdot \Sigma$$
 
 ,où $R_i := W_i - W{i-1}$ est le rendement au temps $i$ avec $W_i$ le profit cumulé, $\overline{R} := \frac{W_N}{N}$ est le profit moyen
-avec $N$ qui est le nombre d'intervalle, $a$ une constante et $\upsilon$ l'aversion au risque.
+avec $N$ qui est le nombre d'intervalles, $a$ une constante et $\upsilon$ l'aversion au risque.
 Ces équations semblent complexes, néanmoins $\Sigma$ représente les \textit{returns} négatifs sur les positifs.
 
 Ces équations ont été construites de manière à posséder ces propriétés \cite{fx_trading}:
@@ -689,6 +687,8 @@ $$\max_{\delta, \eta, \rho, x, y} U(\overline{R};\Sigma: \delta, \eta, \rho, x, 
 Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces derniers peuvent être optimisés de la manière voulue.
 \\
 Les réseaux de neurones peuvent être optimisés de plusieurs manières. L'une d'entre elle est la descente du gradient.
+
+\todo[inline]{clean}
 
 \subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
