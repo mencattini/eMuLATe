@@ -126,10 +126,10 @@ C'est l'intersection de ces deux domaines, l'intelligence artificielle et la fin
 Le document se décomposera en deux grandes axes. 
 
 \paragraph{}
-La première partie consiste en un état de l'art. Ce dernier nous permettra d'aborder et de définir le marché des changes ainsi que les concepts et formules mathématiques derrières plusieurs techniques d'apprentissage. Nous aborderons un certain nombre d'algorithmes qui comprendra la descente du gradient, les réseaux de neurones, la régression logistique ou les arbres de décisions. Cela nous permettra d'avoir un large horizon de techniques et d'options en vue de réaliser un apprentissage automatique. Une fois ces deux éléments expliqués, nous combinerons ces deux domaines pour montrer les applications possibles ainsi que les pistes de réflexions. Ceci conclura notre état de l'art.
+La première partie consiste en un état de l'art. Ce dernier nous permettra d'aborder et de définir le marché des changes ainsi que les concepts et formules mathématiques derrières plusieurs techniques d'apprentissage. Nous aborderons un certain nombre d'algorithmes qui comprendra la descente du gradient, les réseaux de neurones, la régression logistique ou les arbres de décisions. Cela nous permettra d'avoir un large horizon de techniques et d'options en vue de réaliser un apprentissage automatique. Une fois ces deux éléments expliqués, nous combinerons ces deux domaines pour montrer les applications possibles ainsi que les pistes de réflexions.
 
 \paragraph{}
-La seconde se focalisera sur le projet en lui-même. Nous présenterons de manière précise et détaillée l'algorithme sur lequel se base notre recherche. Il y sera également question de l'implémentation, soit comment la formulation mathématique a été traduite en code informatique. Nous traiterons aussi des points problématiques ainsi que des remédiations possibles. Après une analyse des résultats de l'algorithme, nous conclurons le document et nous proposerons plusieurs pistes pour des recherches futures.
+La seconde se focalisera sur le projet en lui-même. Nous présenterons de manière précise et détaillée l'algorithme sur lequel se base notre recherche. Il y sera également question de l'implémentation, soit comment la formulation mathématique a été traduite en code informatique. Nous traiterons aussi des points problématiques ainsi que des solutions possibles. Après une analyse des résultats de l'algorithme, nous conclurons le document et nous proposerons plusieurs pistes pour des futures recherches.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,11 +142,11 @@ Avant la démocratisation de l'informatique, les opérations financières étaie
 Ce système pouvait avoir plusieurs inconvénients:
 \begin{itemize}
 \item L'émotionnel influençait les transactions. En effet, ces dernières étant effectuées par des humains, 
-il y avait un risque non négligeable que l'état de la personne agisse sur sa décision.
+il y avait un risque non négligeable que l'état de la personne influence sa décision.
 
 \item Un problème sous-jacent était de maintenir une discipline de \textit{trading}. 
 Afin de minimiser les pertes et de maximiser les gains, il fallait se tenir à un plan afin de ne pas se laisser 
-influencer par des paramètres extérieurs. Cela pouvait être très difficile.
+influencer par des paramètres extérieurs. Cela ajoutait une difficulté supplémentaire.
 
 \item Le \textit{backtesting}\footnote{Le \textit{Backtesting} est un processus qui consiste à tester une stratégie
 de \textit{trading} sur des données historiques afin de s'assurer de sa viabilité avant de risquer du capital.
@@ -166,8 +166,8 @@ Des propositions de plus en plus pointues dans les deux domaines voient le jour.
 L'algorithme qui sera au cœur de ce projet en fait partie. 
 Il s'agit d'un réseau de neurones avec plusieurs couches prenant en compte des paramètres propre à la finance.
 
-\paragraph{}Afin d'appréhender aux mieux ces notions, nous allons discuter des éléments nécessaires à leur compréhension.
-Nous allons en premier lieu traiter le domaine financier ainsi que ces outils. Puis nous parlerons de 
+\paragraph{}Afin d'appréhender aux mieux ces notions, nous allons étudier les éléments nécessaires à leur compréhension.
+En premier lieu, nous allons traiter le domaine financier ainsi que ces outils. Puis, nous parlerons de 
 plusieurs méthodes de \textit{ML}. Il est compliqué d'être exhaustif tant les méthodes sont nombreuses et disposent de variations complexes. Les algorithmes choisis présenteront un large panel de techniques et constitueront une introduction suffisante au domaine. Ces derniers comprendront les réseaux de neurones, les arbres de décision, le \textit{Support Vector Machine}\cite{wikipedia_svm}, les classifieurs \textit{Naive Bayes} ainsi que la descente du gradient \cite{wikipedia_descente_du_gradient} et sa version dite stochastique \cite{descente_du_gradient_stochastique}.
 
 
@@ -249,7 +249,7 @@ Henry Bourguinat a énoncé "\textit{la règle des trois unités}" qui correspon
 et d'opérations et d'acteurs.
 Le \textit{FOREX} répond à ces trois unités \cite{site_fr_forex}:
 \begin{itemize}
-\item Ce marché fonctionne 24h/24 et les transactions s'effectuent presque en continue.
+\item Ce marché fonctionne 24h/24h et les transactions s'effectuent presque en continue.
 
 \item Il fonctionne à l'échelle mondiale tout en étant décentralisé. 
 De part l'évolution des technologies, l'information circule aisément malgré son statut.
@@ -273,7 +273,7 @@ Il y a des opérations réalisables sur le marché à terme :
 \item Les \textit{swaps}. Ils consistent à vendre une monnaie au comptant puis à la racheter à terme\footnote{Soit à $T+X$.}.
 
 \item Les \textit{futures/forwards}. La différence entre ces deux tient surtout à leur standardisation et leur mise en place.
-Cependant le principe reste le même: on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
+Cependant, le principe reste le même: on réalise une opération (d'achat ou de vente) qui ne s'effectuera qu'à maturité.
 
 \item Les \textit{options}. Cela représente un contrat vendu par un parti (\textit{the option writer}) 
 à un autre parti (\textit{the option holder}). Ce contrat offre le droit, et non l'obligation contrairement 
@@ -333,7 +333,7 @@ Par exemple, on désire reconnaître un certain type de voiture à partir d'imag
 nous allons fournir au programme un ensemble d'entraînement qui contient de nombreuses photos de voitures,
 ainsi que la marque des dites voitures. L'algorithme va donc travailler avec ces données.
 
-Par contre dans le cas de l'apprentissage non-supervisé, le programme ne pourra utiliser que les photos,
+Par contre, dans le cas de l'apprentissage non-supervisé, le programme ne pourra utiliser que les photos,
 et après avoir retourné le résultat, nous lui dirons si c'est juste ou faux. Il mémorisera le résultat 
 optimisera en conséquence ses réponses.
 
@@ -342,7 +342,7 @@ Concernant, l'ensemble d'entraînement, il y a des points à prendre en compte a
 Pour ce faire il faut:\label{astuce ensemble d'entraînement}
 \begin{itemize}
 \item Représenter la population générale. Donc si le but est du traitement de la langue, 
-il faut que la propension et la répartition des mots soient les mêmes que ceux de la langue.
+il faut que la proportion et la répartition des mots soient les mêmes que ceux de la langue.
 
 \item Contenir des membres de chacune des classes. Pour reconnaître des chiffres, il est important de disposer de chacun 
 des chiffres dans l'ensemble d'entraînement.
@@ -421,7 +421,7 @@ Le fonctionnement est similaire au précédent, seul change la pénalité.
 \end{itemize}
 
 \paragraph{}
-Comme mentionné plus haut, l'optimisation porte sur les paramètres de l'équation. Dans le cas de la régression logistique, 
+Comme mentionné, l'optimisation porte sur les paramètres de l'équation. Dans le cas de la régression logistique, 
 il s'agît du $\beta$. Il conviendra donc de trouver la valeur optimale pour cette variable afin de maximiser ou minimiser 
 les équations ci-dessus. De manière similaire pour les autres techniques de \textit{ML}, 
 les équations et les paramètres vont changer, mais  le but sera toujours d'optimiser ces éléments. 
@@ -435,7 +435,7 @@ Les feuilles de l'arbre, quant à elles, sont la classification d'éléments don
 
 Il est important de disposer des attributs avant de commencer la construction de l'arbre. 
 Lors de l'implémentation, nous pouvons représenter l'arbre comme une suite de \textit{if-then-else} afin 
-d'améliorer la lisibilité. Dans ce cas très précis, disposer d'un langage permettant le \textit{pattern matching} est fort utile.
+d'améliorer la lisibilité. Dans ce cas précis, disposer d'un langage permettant le \textit{pattern matching} est fort utile.
 
 Cet algorithme a tendance à très facilement sur-apprendre, il convient donc de bien choisir la manière de construire 
 l'arbre ainsi que l'ensemble d'entraînement pour minimiser cet effet. 
@@ -458,7 +458,7 @@ Un des plus connus est le \textit{ID3} \cite{id3}. Il s'agit d'une méthode de t
  \item utiliser cet attribut comme nœud.
  \item retourner au premier point, tant que l'ensemble des attributs n'est pas vide.
 \end{itemize}
-Nous allons construire l'arbre de manière \textit{top-down} en utilisant ,à chaque pas, le meilleur attribut, selon notre test statistique. La construction de l'arbre constitue la phase d'entraînement. Si de nouvelles données viennent s'ajouter, il devient nécessaire de construire un nouvel arbre, soit une nouvelle phase d'entraînement.
+Nous allons construire l'arbre de manière \textit{top-down} en utilisant, à chaque pas, le meilleur attribut, selon notre test statistique. La construction de l'arbre constitue la phase d'entraînement. Si de nouvelles données viennent s'ajouter, il devient nécessaire de construire un nouvel arbre, soit une nouvelle phase d'entraînement.
 
 La phase de classification consiste à parcourir l'arbre en appliquant les prédicats à l'instance que nous désirons classifier. Une fois arrivé à une feuille, nous avons un résultat.
 
@@ -487,11 +487,11 @@ résultat. Si $V_{NB} = 0.7$ alors la réponse est jugée sûre et la classe de 
 
 \paragraph{}\label{section roc curve analysis}
 La \textit{ROC\footnote{Receiver Operating Characteristic} Curve analysis} permet d'améliorer le classifieur. 
-En effet cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} 
+En effet, cette dernière peut détecter les \textit{true positive rate} par rapport aux \textit{false positive rate} 
 pour différents seuils de classification de l'algorithme \textit{Naive Bayes} \cite{machine_learning_automated_trading}. 
 À partir de cela, nous pouvons déterminer le meilleur seuil de sortie et donc perfectionner notre algorithme.
-De plus cette courbe peut aider à comparer des classifieurs entre eux en comparant 
-la surface sous la courbe \cite{machine_learning_automated_trading}.
+De plus, cette courbe permet de comparer des classifieurs entre eux par rapport
+la surface sous leur courbe \cite{machine_learning_automated_trading}.
 
 La méthode utilisée est la suivante \cite{machine_learning_automated_trading}: il faut faire s'intersecter 
 la pente $S$ avec la courbe \textit{ROC} et ainsi obtenir une valeur optimale pour le seuil.
@@ -509,7 +509,7 @@ La figure \ref{roc_curve} illustre cela \footnote{Source: \url{http://www.prolek
 \caption{Exemple de \textit{ROC curve}: L'axe des $x$ correspond au taux de faux positifs et l'axe des $y$ 
 au taux de vrais positifs. On veut donc tendre vers $y = 1$ et $x = 0$. Lors de l'optimisation par la pente $S$, 
 le but sera d'obtenir une intersection avec la \textit{ROC curve} dans la zone \textit{optimal threshold} 
-afin d'avoir le meilleur seuil possible.}
+afin de disposer du meilleur seuil possible.}
 \label{roc_curve}
 \end{figure}
 
@@ -517,7 +517,7 @@ afin d'avoir le meilleur seuil possible.}
 \subsubsection{\textit{SVM}}\label{section svm}
 \paragraph{}
 Le but de l'algorithme \textit{SVM}\footnote{\textit{Support Vector Machine}} est de séparer les données grâce à un hyper-plan.
-Cela permet de différencier les observations suivantes en déterminant si elles se trouvent d'un côté ou l'autre 
+Cela permet de différencier les observations suivantes en déterminant si elles se trouvent d'un côté ou de l'autre 
 du plan. Ce dernier n'est pas unique\footnote{Source: \url{https://computersciencesource.files.wordpress.com/2010/01/svmafter.png}} comme le suggère la figure \ref{svm_exemple}. 
 \begin{figure}[H]
 \centering
@@ -649,18 +649,17 @@ L'optimisation de $w$ se fait par un algorithme de descente du gradient (voir \r
 \paragraph{}
 La deuxième couche va travailler à partir des paramètres $x,y,z$. Il est possible que le marché soit irrationnel durant une longue
 durée, dans ce cas la psychologie peut pousser à garder une position en espérant un changement. C'est ce genre de comportement qu'un
-algorithme permet d'éviter. Pour ce faire, nous définissons un excédant des pertes et nous veillons qu'il soit toujours à une distance
+algorithme permet d'éliminer. Pour ce faire, nous définissons un excédant des pertes et nous veillons qu'il soit toujours à une distance
 $x$ du meilleur prix atteint; afin d'éviter de tenir trop longtemps une position défavorable.
 
 Il est également intéressant de définir un seuil. Si la réponse du réseau est supérieure à ce seuil, nous la prenons en compte et
 dans le cas contraire, nous ne faisons rien. Cela permet d'évaluer la "force" du signal renvoyé par la première couche. Ce seuil
 est $y$.
 
-La dernière variable utilisée dans cette couche est $z$. Il y a un consensus dans la communauté de \textit{trading} concernant le fait
-que les algorithmes fonctionnent bien durant un temps puis cesse d'être profitable. À ce moment, il convient d'arrêter le programme
+La dernière variable utilisée dans cette couche est $z$. Il y a un consensus dans la communauté de \textit{trading} concernant la chute de la capacité d'un algorithme au fil du temps impliquant une perte de profit. À ce moment, il convient d'arrêter le programme
 et d'y apporter des modifications\footnote{Au niveau des équations, des données ou des paramètres.} avant de le relancer. La tâche du
 paramètre $z$ est de donner un seuil pour les pertes du profit cumulé qui, lorsqu'il est dépassé, lance une procédure d'arrêt.
-Contrairement à $x,y$ qui seront optimisés par la troisième couche, le paramètre $z$ est fixé au début du programme et ne change plus.
+Contrairement à $x$, $y$ qui seront optimisés par la troisième couche, le paramètre $z$ est fixé au début du programme et ne change plus.
 
 \paragraph{}
 La couche d'optimisation dynamique est la troisième couche. Cette dernière va, à chaque itération, optimiser les paramètres suivants :
@@ -688,15 +687,12 @@ Car $x,y,\eta,\delta,\rho$ interviennent tous dans le calcul de $\Sigma$. Ces de
 \\
 Les réseaux de neurones peuvent être optimisés de plusieurs manières. L'une d'entre elle est la descente du gradient.
 
-\todo[inline]{clean}
 
 \subsubsection{Descente du gradient}\label{section descente du gradient}
 \paragraph{}
 L'algorithme de descente du gradient fonctionne sur des fonctions réelles différentiables sur un espace tel
-que $\mathbb{R}^n$. Il est itératif et fonctionne en améliorant l'itération précédente, jusqu'à
-atteindre une condition d'arrêt.
-
-Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme dans $\mathbb{R}^2$ :
+que $\mathbb{R}^n$. Il est itératif et travaille en améliorant l'itération précédente, jusqu'à
+atteindre une condition d'arrêt. La figure \ref{descente_gradient_exemple} montre l'intuition derrière cet algorithme.
 
 \begin{figure}[H]
 \centering
@@ -704,6 +700,7 @@ Avant d'en expliquer la teneur mathématique, voici un exemple de l'algorithme d
 \caption[]{Exemple de l'algorithme de descente du gradient en deux dimensions. À chaque itération,
 il faut prendre la direction opposée au gradient\footnotemark, cela permet d'arriver à un nouveau
 point. En itérant, on se rapproche de l'optimum. }
+\label{descente_gradient_exemple}
 \end{figure}
 
 \footnotetext{Dans cet exemple, il est possible de dire, qu'il faut prendre la normal de la courbe de niveau.}
@@ -729,8 +726,8 @@ point itéré : $$x_{k+1} = x_k - \alpha_k \bigtriangledown f(x_k)$$
 \end{itemize}
 
 \paragraph{}
-La preuve que la recherche dans la direction opposée au gradient induit une décroissance est la suivante.
-Si la dérivée est non nulle\footnote{i.e: Si nous ne sommes pas déjà sur un maximum} au point $x$, $f'(x) \ne 0$. Soit
+Il existe une preuve mathématique concernant la convergence lors de l'utilisation de la direction opposée au gradient.
+Si la dérivée est non nulle\footnote{i.e: Si nous ne sommes pas déjà sur un maximum/minimum local} au point $x$, $f'(x) \ne 0$. Soit
 $$d = - \bigtriangledown f(x)$$
 Puisque :
 $$f'(x) \cdot d = \bigtriangledown f(x) \cdot -\bigtriangledown f(x) = - ||\bigtriangledown f(x) ||^2 < 0$$
@@ -762,7 +759,7 @@ Cette manière de procéder s'applique aisément sur les gros volumes de donnée
 
 Provenant de cet article \cite{descente_du_gradient_stochastique}, voici des équations pouvant être minimisées dans
 le cadre d'un programme de \textit{machine learning}.
-Soit $(x_i,y_i)\text{,\ } i=1..N$, un ensemble de données. Notre fonction de coût est $l(y,y')$.
+Soit $(x_i,y_i)\text{,\ } i=1\dots N$, un ensemble de données. Notre fonction de coût est $l(y,y')$.
 Cela représente le coût de prédire $y'$ quand la réponse est $y$. Moyennons cela sur tous les exemples :
 
 $$E_N(f) = \frac{1}{N} \sum_{i=1}^{n}l(f_w(x_i),y_i)$$
@@ -779,9 +776,9 @@ Comme mentionné plus haut, la technique de \textit{Batch Algorithm} devient len
 Pour pallier ce problème, il existe une technique : \textit{stochastic gradient descent}. C'est une méthode d'approximation
 statistique de la descente du gradient.
 
-Il convient de ne prendre qu'un seul couple au lieu de l'ensemble complet d'entraînement. La somme disparaît donc dans l'équation à minimiser :
+Il consiste à ne prendre qu'un seul couple au lieu de l'ensemble complet d'entraînement. La somme disparaît donc dans l'équation à minimiser :
 $$w_{k+1} = w_k -\alpha_k \bigtriangledown Q ((x_i,y_i), w_k)$$
-C'est donc une technique de \textit{Online Algorithm}. L'algorithme peut traiter des données à la volée car il n'a pas
+Cela s'apparente à une technique de \textit{Online Algorithm}. L'algorithme peut traiter des données à la volée car il n'a pas
 besoin de se souvenir des exemples précédant.
 
 Il est possible pour pénaliser la complexité de $w$ de rajouter un élément. Cela permet de borner quelque peu les valeurs des poids:
@@ -817,15 +814,15 @@ méthodes $f_{i_E}$ entraînées.
 L'algorithme se comporte comme suit pour une observation $x$:
 \paragraph{}
 $\forall f_{i_E} \in M_E$, il faut calculer $f_{i_E}(x)$ et garder la classe résultante dans notre liste de résultat $R$.
-Si $\exists\ classe_i \in R$, telle que $$\sum (classe_i \in R) > \frac{|M_E|}{2}$$
+Si $\exists\ classe_i \in R$, tel que $$\sum (classe_i \in R) > \frac{|M_E|}{2}$$
 
 Alors cela signifie que la $classe_i$ est notre résultat, dans le cas contraire, l'algorithme ne donne aucune réponse.
 
 \paragraph{}
 L'algorithme va donc, à partir d'un ensemble de méthodes et d'une observation, calculer les classes. Si
-une de ces dernières est représentée de manière majoritaire\footnote{\textit{i.e.} 50\% des voix + 1 voix}, le
+une de ces dernières est représentée de manière majoritaire\footnote{\textit{i.e.} 50\% des voix + 1.}, le
 programme retournera ce résultat. Si la majorité n'est pas atteinte, aucune classe n'est jugée valable et donc
-aucune réponse ne sera rendue.
+aucune valeur ne sera rendue.
 
 Cette technique réduit la composante individuelle des méthodes de \textit{ML} ainsi que le risque d'erreur. Si
 une observation est mal classifiée, cela signifie que plus de la moitié des algorithmes ont fait une erreur.
@@ -861,7 +858,7 @@ De plus, le système de majorité promeut une qualité et une confiance accrue d
 \subsubsection{Introduction}
 \paragraph{}
 Avant de parler des performances des algorithmes mentionnés, il convient de préciser que ces derniers proviennent
-de plusieurs articles différents. Ils ont donc été testés avec des paramètres ayant des valeurs disparates ainsi
+de divers articles. Ils ont donc été testés avec des paramètres ayant des valeurs disparates ainsi
 que sur des données distinctes.
 Il est donc très compliqué de comparer les résultats des algorithmes entre deux articles différents et
 d'affirmer qu'une méthode est meilleure qu'une autre. 
@@ -872,7 +869,7 @@ nous pourrons estimer que la performance est bonne, et l'inverse pour une valeur
 
 \paragraph{}
 Pour tous les algorithmes qui ont été mentionnés dans la section précédente, nous allons expliquer les changements
-appliqués à ces derniers en vue de les étendre au domaine financier. De plus nous étudierons les résultats obtenus
+appliqués à ces derniers en vue de les étendre au domaine financier. De plus, nous étudierons les résultats obtenus
 et analyserons quelles améliorations apportent un gain significatif dans la classification.
 
 La séparation sera quelque peu différente. Certains articles cumulant plusieurs algorithmes, afin d'éviter
@@ -886,7 +883,7 @@ comme les réseaux de neurones n'aient pas de valeurs.
 \subsubsubsection{Introduction}
 \paragraph{}
 Cet article montre un exemple d'application sur le marché des actions \cite{machine_learning_automated_trading}
-\footnote{Ou \textit{Stock market.}}. Après avoir essayé deux approches :
+\footnote{Ou \textit{Stock market}.}. Après avoir essayé deux approches :
 \begin{itemize}
 \item L'approche individuelle.
 \item L'approche par secteur.
@@ -898,9 +895,9 @@ Après les premiers résultats, l'auteur a conclu que cette approche
 était trop simple pour être utilisée, car les valeurs étaient significativement moins bonnes que celle de la
 seconde approche\cite{machine_learning_automated_trading}.
 
-La seconde approche, quant à elle, repose sur la supposition que le prix d'une action dépend des autres actions,
+La seconde approche, quant à elle, repose sur la supposition que le prix d'une action dépend également des autres actions,
 souvent concurrentes. Il a donc pris en compte l'historique des prix du sous-jacent évalué, mais également celui de ses
-concurrents en termes de marché. Les données possédées par l'auteur portent sur divers secteurs. Notamment celui
+concurrents en terme de marché. Les données possédées par l'auteur portent sur divers secteurs. Notamment celui
 de l'\textit{utility}, de l'\textit{energy} et de l'\textit{information technology}. Le procédé est le suivant,
 pour déterminer si une action précise $A_1$ va augmenter ou diminuer, il va analyser le prix de l'action durant les $N$ jours
 précédant mais également celui des $M$ autres actions du secteur donné.
@@ -911,7 +908,7 @@ Un autre point qu'il convient d'aborder porte sur l'ensemble d'entraînement. Af
 il a fallu partager le \textit{set} de données.
 
 Dans le cas contraire, il aurait été impossible de tester les algorithmes entraînés. Ou bien, ils auraient été évalués
-sur les mêmes données que leur entraînement. Ce qui n'est pas possible.
+sur les mêmes données que leur entraînement. Ce qui n'est pas correct d'un point de vue scientifique.
 
 Le choix a donc été fait de partager l'ensemble de données en deux sous-parties. Une première contenant 80\% des
 données qui sera dédiée à l'entraînement et une seconde avec 20\% pour l'évaluation.
@@ -940,7 +937,7 @@ $$\textit{TR} = \frac{\textit{TP} + \textit{TN}}{\textit{TP} + \textit{TN} + \te
 \subsubsubsection{Résultats}
 Cet article a pour avantage de tester de nombreux algorithmes et techniques. En analysant les résultats, des pistes peuvent être mises en évidences. Nous pourrons également déterminer un ordre de grandeur concernant la précision pour un problème donné.
 \paragraph{}
-Les résultats proviennent de l'article suivant \cite{machine_learning_automated_trading} :
+Les résultats de l'article \cite{machine_learning_automated_trading} sont représentés par les tableaux, \ref{table_lasso_logistic}, \ref{table_dt}, \ref{table_nb}, \ref{table_svm}.
 
 \begin{table}[h!]
 	\centering
@@ -956,6 +953,7 @@ Les résultats proviennent de l'article suivant \cite{machine_learning_automated
 	\hline
 \end{tabular}
 \caption[]{Tableau de résultats pour l'algorithme \textit{Lasso Logistic Regression} (voir \ref{section régression logistique}).}
+\label{table_lasso_logistic}
 \end{table}
 
 
@@ -974,6 +972,7 @@ Les résultats proviennent de l'article suivant \cite{machine_learning_automated
 	\hline
 \end{tabular}
 \caption[]{Tableau de résultats pour l'algorithme \textit{Decision Tree} (voir \ref{section arbre de décision}).}
+\label{table_dt}
 \end{table}
 
 
@@ -992,6 +991,7 @@ Les résultats proviennent de l'article suivant \cite{machine_learning_automated
 	\hline
 \end{tabular}
 \caption[]{Tableau de résultats pour l'algorithme \textit{Naive Bayes} (voir \ref{section naive bayes}).}
+\label{table_nb}
 \end{table}
 
 
@@ -1009,6 +1009,7 @@ Les résultats proviennent de l'article suivant \cite{machine_learning_automated
 	\hline
 \end{tabular}
 \caption{Tableau de résultats pour l'algorithme \textit{SVM} (voir \ref{section svm}).}
+\label{table_svm}
 \end{table}
 
 
@@ -1020,10 +1021,10 @@ Un autre point important concernant le fait que les algorithmes détectent mieux
 \textit{TNR}\footnote{Exception faite du secteur énergie.}. Cela est dû au cours des actions des différents secteur
 globalement en hausse dans les données prises en compte. Du coup, de par le manque de données à la baisse dans
 l'ensemble d'entraînement, l'apprentissage est limité. Concernant le secteur de l'énergie, vu qu'il était en baisse,
-l'inverse se produit.
+le phénomène inverse se produit.
 
 Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec les quatre algorithmes
-\footnote{Source des résultats: \cite{machine_learning_automated_trading}}:
+\footnote{Source des résultats: \cite{machine_learning_automated_trading}} dans \ref{table_majority_vote}.
 
 \begin{table}[h!]
 	\centering
@@ -1039,6 +1040,7 @@ Afin d'améliorer cet aspect l'auteur a utilisé le \textit{majority vote} avec 
 	\hline
 \end{tabular}
 \caption{Tableau de résultats pour le \textit{majority vote} (voir \ref{section majority vote}).}
+\label{table_majority_vote}
 \end{table}
 
 Les résultats sont similaires à ceux de \textit{Naive Bayes} et de \textit{SVM}, cela n'est donc pas très
@@ -1070,7 +1072,7 @@ par \textit{ROC curve analysis} (voir \ref{section roc curve analysis}).}
 Le fait d'utiliser la \textit{ROC curve analysis} afin d'obtenir le seuil optimal permet principalement d'augmenter
 la performance dans la détection des négatifs. Il est important de mentionner que cela n'influence que peu
 la détection des positifs car ils sont bien représentés dans l'ensemble d'entraînement et donc mieux reconnus.
-L'amélioration est donc intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité
+L'amélioration est intéressante car sans augmenter le risque de sur-apprentissage, elle augmente la qualité
 de classification.
 
 \begin{table}[h!]
@@ -1118,13 +1120,14 @@ de manière non uniforme. Dans ce cadre précis, il est intéressant d'accorder 
 récente qu'à une plus ancienne. On considère que les éléments proches de nous d'un point de vue temporel,
 ont une plus grande influence.
 
-La meilleure manière d'appliquer cela est d'utiliser une sélection aléatoire exponentielle.
+La meilleure manière d'appliquer cela est d'utiliser une sélection aléatoire exponentielle comme cela de la figure \ref{choix_exp}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.40]{images/choix_exp}
 \caption[]{Exemple de distribution exponentielle\footnotemark.
 Cela va donc permettre de choisir les points les plus proches avec une probabilité plus grande.}
+\label{choix_exp}
 \end{figure}
 
 \footnotetext{Source: \cite{descente_du_gradient_stochastique}}
@@ -1138,9 +1141,9 @@ Par conséquent, l'algorithme convergera plus vite pour un coût plus faible en 
 
 \paragraph{}
 La métrique d'évaluation est différente des notions de \textit{TPR},\textit{TNR} et \textit{TR}.
-Dans cet article, le but est de prédire le prix d'un cours, comme EUR/USD à partir de plusieurs autres,
-comme EUR/CAD, EUR/AUD, EUR/GBP. Il est donc extrêmement compliqué de calculer avec plusieurs décimales
-le résultat exact, impliquant donc des taux nuls pour chacune des métriques.
+Dans cet article, le but est de prédire le prix d'un cours, par exemple le EUR/USD à partir de plusieurs autres,
+comme EUR/CAD, EUR/AUD, EUR/GBP. Il est donc extrêmement compliqué de prédire avec plusieurs décimales
+le résultat exact, impliquant donc des taux nuls pour chacune des métriques des précisions classiques.
 Il fallu donc trouver une méthode basée sur l'erreur relative :
 $$relative_{error} = \frac{\Delta x}{x}$$
 
@@ -1154,23 +1157,24 @@ Le but est de calculer un taux de change à partir de données. Pour obtenir ces
 ne sont pas précisées dans l'article.
 
 L'algorithme retourne deux valeurs : le \textit{bid} et le \textit{ask} à partir des données fournies. Ci-dessous, nous allons
-voir la précision de ces résultats. Les tableaux représentent la
+voir la précision de ces résultats. Les tableaux \ref{table_forex_singapore}, \ref{table_forex_singapore_2} représentent la
 comparaison entre les valeurs calculées et les valeurs réelles, soit l'erreur relative.
 
 \begin{table}[H]
 	\centering
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|}
 	\hline
 	Données & \textit{plainSGD} & \textit{approxSGD} & \textit{approxWarmSGD}\\
 	\hline
 	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
 	\hline
-	\textit{Singapoore with SW-1\footnotemark{}} & 0.1366274551\% & 0.133887583\% & 0.2294997927\% \\
+	\textit{Singapoore with SW-1\footnotemark{}} & 0.137\% & 0.134\% & 0.231\% \\
 	\hline
-	\textit{Singapoore with SW/2\footnotemark{}} & 0.1366274551\% & 0.09281447603\% & 0.1551851906\%\\
+	\textit{Singapoore with SW/2\footnotemark{}} & 0.137\% & 0.093\% & 0.155\%\\
 	\hline
 
 \end{tabular}
+\label{table_forex_singapore}
 \caption[]{Tableau de résultats\footnote[3]{} pour les différentes versions de \textit{SGD} sur le
 \textit{FOREX} de Singapore. Les différences entre le \textit{bid} et le \textit{ask} étant minimes,
 l'auteur ne les a pas consignées.}
@@ -1190,24 +1194,25 @@ cela ne change rien, on peut donc en conclure que les $N/2 - 1$ données supplé
 dans le calcul. Pour le \textit{approxSGD} et le \textit{approxWarmSGD}, le taux d'erreur diminue. Nous pouvons donc
 dire que la fenêtre était trop grande et, pire encore, ajoutait du bruit rendant le calcul moins précis.
 
-D'un point de vue calculatoire c'est très intéressant car il est possible de diminuer la taille de la fenêtre et
+D'un point de vue calculatoire, il est possible de diminuer la taille de la fenêtre et
 donc gagner en vitesse tout en gardant, voir en augmentant, la qualité des résultats.
 
 
 \begin{table}[H]
 	\centering
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|}
 	\hline
 	Données & \textit{plainSGD} & \textit{approxSGD} & \textit{approxWarmSGD}\\
 	\hline
 	\ & \textit{Bid/Ask} & \textit{Bid/Ask} & \textit{Bid/Ask} \\
 	\hline
-	\textit{Capital K SW-1} & 0.01167\%/0.0117\% & 0.0116\%/0.0117\% & 1.502e-03\%/1.554e-03\% \\
+	\textit{Capital K SW-1} & 0.01167\%/0.0117\% & 0.0116\%/0.0117\% & 1.502$e^{-3}$\%/1.554$e^{-3}$\% \\
 	\hline
-	\textit{Capital K SW/2} & 0.01167\%/0.0117\% & 0.0314\%/0.0313\% & 1.701e-03\%/1.751e-03\%\\
+	\textit{Capital K SW/2} & 0.01167\%/0.0117\% & 0.0314\%/0.0313\% & 1.701$e^{-3}$\%/1.751$e^{-3}$\%\\
 	\hline
 
 \end{tabular}
+\label{table_forex_singapore_2}
 \caption[]{Tableau de résultats\footnote{} pour les différentes versions de \textit{SGD}.}
 \end{table}
 
@@ -1229,25 +1234,25 @@ Afin d'élaborer des algorithmes de \textit{ML}, il est important de saisir les 
 continue, mieux vaut utiliser des techniques de descente de gradient et dans le cas de données faiblement différentiables, 
 l'utilisation d'un programme \textit{SVM} avec un \textit{kernel trick} est recommandée.
 
-Cela est également valable pour sa mise en place. Les optimisations mathématiques possibles sont nombreuses et complexes,
+Ceci est également vrai pour son application. Les optimisations mathématiques possibles sont nombreuses et complexes,
 comme nous l'avons vu dans la partie (\ref{section machine learning finance}), il conviendra donc de les comprendre afin de
-mieux cerner les contraintes et les gains lors de l'optimisation.
+mieux cerner les contraintes et les gains lors de leur utilisation.
 
 Ces éléments peuvent être vus comme une boîte à outils algorithmiques, le choix et l'utilisation des différents
-outils reviendra à la personne qui programmera. Ce sera cette dernière qui devra construire l'algorithme le plus
-adapté avec les données, les contraintes et les techniques à sa disposition.
+outils reviendra à la personne qui programmera et surtout au problème rencontré. Ce seront ces éléments qui influenceront la construction de l'algorithme le plus
+adapté avec les données, les contraintes et les techniques disponibles.
 
 \paragraph{}
 Les considérations mathématiques ne sont pas les seuls éléments importants. Appliquer un algorithme sans chercher à comprendre
 les cas concrets peut mener à des programmes peu efficaces.
 
-Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante,
+Dans chacun des articles, les auteurs avaient une connaissance et une compréhension du monde de la finance suffisante 
 pour améliorer les techniques en dehors du carde mathématique. L'approche par secteur \cite{machine_learning_automated_trading}
 ou l'utilisation de méta-paramètres propre au domaine financier ~\cite{fx_trading} en sont des exemples concrets.
-Chacun de ces éléments a sensiblement amélioré les performances des algorithmes auxquels ils ont été appliqués.
+Chacun de ces éléments a sensiblement amélioré les performances des algorithmes sur lesquels ils ont été appliqués.
 
 Une technique de \textit{machine learning} n'est qu'une solution à un problème mathématique précis. L'ajout d'éléments,
-comme ceux cités auparavant, améliore la quantité d'informations disponible et précise l'équation mathématique à optimiser.
+comme ceux cités auparavant, améliore la quantité d'information disponible et précise l'équation mathématique à optimiser.
 
 \paragraph{}
 Il est important de lier ces deux parties pour obtenir des résultats optimaux.
@@ -1256,19 +1261,19 @@ Les valeurs peuvent être encourageantes même s'il convient de relativiser les 
 être obtenus sur des ensembles de données "faciles". Ce mot qualifie des périodes avec peu de changements ou peu de
 variations, ce qui facilite grandement la classification.
 Néanmoins, les taux d'erreurs sont faibles et la classification efficace.
-Cela démontre que les bons algorithmes appliqués avec une bonne connaissance du domaine fournissent des résultats satisfaisants. 
+Cela démontre que les bons algorithmes appliqués avec une bonne connaissance du domaine peuvent fournir des résultats satisfaisants. 
 
 \paragraph{}
-Le choix d'implémenter l'algorithme de réseau de neurones provient des justifications suivantes :
+Le choix d'implémenter un algorithme de réseau de neurones provient des justifications suivantes :
 \begin{itemize}
  \item Les \textit{Neural Nets} peuvent, avec assez de ressources\footnote{Cela comprend le temps et les données.}, approximer n'importe
- quel fonction. De plus ils sont capables d'opérer des séparations non linéaires sans recourir au \textit{Kernel trick}.
- \item Il est possible d'éviter les problèmes de sur-apprentissage, en modifiant les méta-paramètres. Cela nous permet de profiter
+ quel fonction. De plus, ils sont capables d'opérer des séparations non linéaires sans recourir au \textit{Kernel trick}.
+ \item Les problèmes de sur-apprentissage peuvent être diminués en modifiant les méta-paramètres. Cela nous permet de profiter
  de n'importe quel ensemble d'entraînement sans craindre que ce dernier pose problème.
 \end{itemize}
 
 Les algorithmes d'arbres de décision sont des classifieurs linéaires. Ce qui signifie qu'ils sont limités
-lorsque les données ne sont pas linéaires, réduisant de fait, la qualité de classification. On retrouve ce même problème
+lorsque les données ne sont pas linéaires, réduisant de fait, leurs performances. On retrouve ce même problème
 pour la régression logistique. De plus les arbres de décision (voir \ref{section arbre de décision}) ont de gros risques
 de sur-apprentissage même avec un ensemble d'entraînement adapté, sans compter qu'ils gèrent mal les exemples en continus.
 En effet, lors d'un entraînement \textit{online}\footnote{Quand les exemples arrivent de manière continue.} chacun des nouveaux
@@ -1278,7 +1283,7 @@ de calculs, il convient donc de l'éviter.
 Le classifieur \textit{Naive Bayes} aurait pu être une méthode de classification efficace\footnote{i.e: Deviner si le cours va monter, descendre ou stagner.}car ce dernier peut classifier les données non linéaires,
 ne présente pas de problème de sur-apprentissage et est adapté pour un apprentissage \textit{online}. Il suffit de rajouter le
 dernier exemple dans l'équation pour mettre à jour l'apprentissage. La raison qui nous a poussé à choisir les réseaux de neurones 
-plutôt que l'algorithme de \textit{Naive Bayes} est que ce dernier a des performances limitées sur un grand ensemble de données.
+plutôt que l'algorithme de \textit{Naive Bayes} provient du fait que ce dernier a des performances limitées sur un grand ensemble de données.
 Si l'on prend des petits jeux de données, \textit{Naive Bayes} est très efficace
 \footnote{Dans ce cadre précis, il est même meilleur que tous les autres algorithmes vus dans ce projet.}
 \cite{ml_petites_donnees}.
@@ -1286,7 +1291,7 @@ Cependant si l'ensemble grandit, ces performances plafonnent, ce qui n'est pas l
 résultats augmentent à mesure que le nombre de données disponibles croît.
 
 Au vu des raisons susmentionnées, un algorithme de réseau de neurones nous semblait un choix raisonnable tant pour les spécifications mathématiques que pour la manière de l'utiliser. Car le \textit{FOREX} nous
-fournit suffisamment de données pour avoir d'excellent résultats, de plus, nous ne sommes pas limités par une classification linéaire.
+fournit suffisamment de données pour avoir de bons résultats, de plus, nous ne sommes pas limités par une classification linéaire.
 Le cas échéant, si les réseaux de neurones ne fournissent pas de résultats suffisants, il sera possible de réorienter notre choix sur une autre méthode. Cela nous laisse des pistes de recherches tant en cas de succès que d'échec.
 
 
@@ -1304,27 +1309,27 @@ fonctionnent ou non et, le cas
 
 L'algorithme n'est pas totalement décrit car l'article
 est un \textit{proof of concept} et n'a pas vocation à être publié comme une nouvelle méthode de \textit{trading}. Il s'agît plutôt d'une piste 
-éventuelle de recherches. Il faudra donc
+éventuelle de recherche. Il faudra donc
 interpréter les éléments et interpoler ceux manquants. Une fois le programme créé, nous le testerons sur des données réelles afin d'estimer s'il est
 utilisable ou non d'après des critères de \textit{back-testing}. Toutes les notions économiques, mathématiques et scientifiques nécessaires à la 
-compréhension sont décrites dans l'état de l'art précédant cette partie. Néanmoins, les équations importantes seront introduites ou exposées à nouveaux
+compréhension sont décrites dans l'état de l'art. Néanmoins, les équations importantes seront introduites ou exposées à nouveaux
 dans un soucis de rigueur scientifique et pour mieux comprendre les implications.
 
 Cet algorithme est composé de trois parties. La première qui constitue le cœur du \textit{machine learning} présent, se base sur un réseau de neurones
-à une couche construite de manière à utiliser la \textit{back-propagation} et le \textit{feed-forward}. L'optimisation des poids se fait via une descente du gradient simple 
+à une couche construite de manière à être récurrente. L'optimisation des poids se fait via une descente du gradient simple 
 à partir de fonctions de coût utilisant au mieux les données économiques à disposition. La deuxième couche utilise des notions financières afin de
 déterminer si le signal obtenu par la couche une doit être utilisé ou non et comment limiter les risques et pertes. La dernière partie va permettre de
 réduire l'influence humaine en optimisant les méta-paramètres. Ces derniers sont des paramètres qui conditionnent le comportement du réseau de neurones,
 de la descente du gradient et de la deuxième couche. Comme le taux d'apprentissage $\rho$, le \textit{stop loss} $x$, etc.\footnote{Tous les méta-paramètres
 seront introduits et expliqués dans la section suivante.} Ils ne varient pas 
-à l'intérieur des dîtes parties et sont modifiés dans la troisième couche. Cela permet au programme d'avoir plus de flexibilité et d'adaptabilité par
+à l'intérieur des dîtes parties et sont modifiés dans la troisième couche. Ceci permet au programme d'être plus flexible et de s'adapter par
 rapport au temps et aux nouveaux éléments rencontrés.
 
 À cause du caractère empirique du projet, nous avons dû chercher et expérimenter afin de comprendre, d'implémenter, d'interpoler et de corriger
 les bouts d'algorithmes présentés dans le \textit{proof of concept} \cite{fx_trading}. Nous allons donc découper l'article de manière à pouvoir 
 expliquer l'idée mais également les problèmes et nos améliorations.
 Dans un premier temps, nous exposerons chacune des trois couches avec une partie présentant le concept mathématique et une autre pour la manière dont nous
-l'avons implémentée. Ensuite, nous parlerons des problèmes rencontrés ainsi que les remédiations ou les pistes de solutions que nous avons trouvées.
+l'avons implémenté. Ensuite, nous parlerons des problèmes rencontrés ainsi que les remédiations ou les pistes de solutions.
 Puis, nous présenterons les résultats, ainsi que certaines métriques afin d'expliquer les performances et le comportement de l'algorithme. Pour
 finir, nous conclurons notre rapport en synthétisant les idées, les problèmes et les résultats et en proposant des améliorations ou des pistes pour 
 des recherches futures.
@@ -1346,7 +1351,7 @@ où $r_t$ est le \textit{return} au temps $t$ obtenu par $r_t = p_t - p_{t-1}$, 
 Cette formule mathématique implémente un réseau de neurones. Il s'agît d'une multiplication vectorielle entre les poids ($w$) et les \textit{returns}($r_i$). La notation des poids, soit $w_{i,t}$, prend en compte l'itération courante. En effet, $w_{i,t}$ n'est pas forcément équivalent à $w_{i,t+1}$. Les poids ont pour but de donner une pondération à chacun des éléments afin de fournir un résultat le plus "juste" possible, suivant certains
 critères\footnote{Nous développerons ces critères plus loin.}.
 Dans notre cas, le réseau de neurones dispose d'une seule couche mais cette couche est récurrente. Cela signifie que l'\textit{output}
-\footnote{Notre signal $\in \{-1,+1\}$} à l'itération $t-1$ est utilisé dans le calcul du signal de $t$. Cette construction permet d'augmenter
+\footnote{Notre signal $\in \{-1,+1\}$.} à l'itération $t-1$ est utilisé dans le calcul du signal de $t$. Cette construction permet d'augmenter
 la quantité d'information disponible par le réseau afin d'améliorer les résultats.
 Un seuil, $v_t$, est ajouté dans la formule afin de lisser les résultats et d'éviter des variations trop fréquentes.
 
@@ -1381,7 +1386,7 @@ un coût. Les différents cas sont :
 \begin{itemize}
  \item Si $F_t = F_{t-1}$ alors la différence est nulle et de même pour le coût de transaction.
  \item Dans le cas contraire, cela signifie que nous avons dans un premier temps fermé une position, puis ouvert une autre. Il y a deux transactions
- effectuées et donc $2 \delta$.
+ effectuées et donc un coût de $2 \delta$.
 \end{itemize}
 Le profit n'est pas uniquement dépendant du signal et du \textit{return} mais également du signal de l'itération précédente.
 
@@ -1406,8 +1411,7 @@ récurrent, et comme l'itération $t-1$ influence celle de $t$, une définition 
 des accumulateurs.
 
 \paragraph{}
-Nous avons expliqué plus tôt, qu'il existe deux versions de la descente du gradient (\ref{section descente du gradient}). Une version normale, ainsi qu'une
-version stochastique.
+Nous avons expliqué plus tôt, qu'il existe deux versions de la descente du gradient (\ref{section descente du gradient}). Une version normale, ainsi qu'une stochastique.
 Les deux sont équivalentes, tant au niveau des résultats que des problèmes rencontrés\cite{learning_to_trade}. Elles le sont également d'un point de vue mathématique
 \cite{learning_to_trade}.
 L'optimisation peut s'effectuer en version stochastique, avec à chaque itération le calcul de $\Delta w_{i,t}$ comme vu précédemment.
@@ -1418,7 +1422,7 @@ Puis dans tous les cas, il faut mettre à jour par $w_{i,t} = w_{i,t-1} + \rho \
 Dans les deux cas, nous pouvons appliquer une boucle d'optimisation, notée \textit{epochs} dans la littérature. Cette dernière permet d'appliquer plusieurs
 fois la descente du gradient afin d'améliorer les résultats. Si la descente du gradient est notée $\widehat{g}$ et $w$ nos poids cela revient à faire :
 $$\widehat{g}(\widehat{g}(...\widehat{g}(w)))$$
-Mathématiquement la descente va tendre vers un optimum et en chaînant les dérivations cela permet d'accélérer la convergence.
+Mathématiquement, la descente va tendre vers un optimum et en chaînant les dérivations cela permet d'accélérer la convergence.
 
 \subsubsection{Implémentation \textit{Layer 1}}
 
@@ -1427,10 +1431,10 @@ De part le caractère récursif des équations, il faut définir les valeurs pou
 éléments concrets. Nous avons :
 \begin{itemize}
  \item $A_0 = 0$. Le profit moyen au temps $0$ est nul car aucune transaction n'a été effectuée.
- \item $B_0 = 0$. La déviation standard est nulle également pour les mêmes raisons que $A_0$.
- \item $w_{i,0} \in [0,1]$. Les poids sont initialisés de manières aléatoire et uniformément répartis sur l'ensemble $[0,1]$. Il n'y a aucune raison
- de penser qu'un départ est, à priori, meilleur qu'un autre.
- \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît plutôt d'un signal \textit{long} ou
+ \item $B_0 = 0$. La déviation standard est nulle pour les mêmes raisons que $A_0$.
+ \item $w_{i,0} \in [0,1]$. Les poids sont initialisés de manières aléatoire et uniformément répartis sur l'ensemble $[0,1]$. À priori, il n'y a aucune raison
+ de penser qu'un départ est meilleur qu'un autre.
+ \item $F_0 = 0$. Le signal de l'itération 0 est nul car on peut, sans information complémentaire, savoir s'il s'agît d'un signal \textit{long} ou
  \textit{short}.
  \item $\delta,\rho,\eta,x,y \in [0,1]$. Les méta-paramètres sont tirés aléatoirement dans l'intervalle $[0,1]$, car l'article ne donne aucune
  indication sur les valeurs optimales. On suppose donc que l'optimisation annule le caractère aléatoire et donne des résultats similaires malgré des
@@ -1438,7 +1442,7 @@ De part le caractère récursif des équations, il faut définir les valeurs pou
 \end{itemize}
 
 \paragraph{}
-Nous avons fait le choix de représenter le vecteur $w$ et les \textit{returns} comme un \texttt{Array<Double>}. À partir de là, l'implémentation du signal
+Nous avons fait le choix de représenter le vecteur $w$ et les \textit{returns} comme un \texttt{Array<Double>}. L'implémentation du signal
 consiste à itérer sur les deux vecteurs, à multiplier les éléments correspondant et à sommer le tout. Nous y ajouterons le seuil $v_t$ ainsi que le 
 résultat de l'itération précédente soit $w_{i,M+1} F_{t-1}$.
 Voici un pseudo code résumant le calcul :
@@ -1450,7 +1454,7 @@ Voici un pseudo code résumant le calcul :
  return acc + vt + w[w.length - 1] * oldFt
 \end{lstlisting}
 
-Afin de produire un code décomposable, nous avons créé des objets avec un objectif métier clair. Un objet \texttt{Weights} est donc instancié, représentant
+Afin de produire un code décomposable, nous avons créé des objets avec un but métier clair. Un objet \texttt{Weights} est donc instancié, représentant
 les poids. Des méthodes y sont attachées comme celle de mise à jour des poids. Il dispose de plusieurs attributs :
 \begin{itemize}
  \item $A_{t-1}$ afin d'utiliser le résultat de l'itération précédente dans le calcul de $A_t$, noté \texttt{Weights.oldAt}.
@@ -1460,20 +1464,20 @@ les poids. Des méthodes y sont attachées comme celle de mise à jour des poids
 \end{itemize}
 
 \paragraph{}
-Le code implémente directement les équations que nous avons mentionnées plus haut. Nous calculons donc $\Delta w_{i.t}$ puis
+Le code implémente directement les équations que nous avons mentionnées. Nous calculons donc $\Delta w_{i.t}$ puis,
 nous mettons à jour les valeurs des poids. La représentation de $w$ et des $returns$ ne change pas. Concernant les autres éléments, 
 $A_t$,$B_t$,$\delta,\rho,\eta$ sont de type \texttt{Double}. Il y a cependant des éléments qui ne sont pas totalement défini, il convient donc de faire 
 un choix. Ces trois équations posant problèmes sont:
 \begin{itemize}
  \item $\frac{dR_t}{F_t} = -\delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ qui n'est pas défini si $F_t = F_{t-1}$.\\
- \item $\frac{dR_t}{F_{t-1}} = r_t + \delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ non défini pour $F_t = F_{t-1}$.\\
- \item $\frac{dD_t}{dR_t} = \frac{B_{t-1} - A_{t-1}r_t}{|B_{t-1} - A_{t-1}^2|^{\frac{3}{2}}}$ qui est non défini pour $A_{t-1}^2 >= B_{t-1}$.
+ \item $\frac{dR_t}{F_{t-1}} = r_t + \delta \frac{F_t - F_{t-1}}{|F_t - F_{t-1}|}$ qui n'est pas défini si $F_t = F_{t-1}$.\\
+ \item $\frac{dD_t}{dR_t} = \frac{B_{t-1} - A_{t-1}r_t}{|B_{t-1} - A_{t-1}^2|^{\frac{3}{2}}}$ qui n'est pas définit si $A_{t-1}^2 >= B_{t-1}$.
 \end{itemize}
 
 Pour résoudre cela, nous avons posé que si $F_t = F_{t-1}$, alors: 
 $$\frac{F_t - F_{t-1}}{|F_t - F_{t-1}|} = 0$$
-Et si $A_{t-1}^2 >= B_{t-1}$, alors il faut que la valeur de $\frac{dD_t}{dR_t}$ soit très basse pour pénaliser cela\footnote{La valeur numérique est à 
-l'appréciation du programme. Cela peut être \texttt{-100} ou \texttt{Double.MIN\_VALUE}}.
+Et si $A_{t-1}^2 >= B_{t-1}$, alors la valeur de $\frac{dD_t}{dR_t}$ doit être très basse pour pénaliser cela\footnote{La valeur numérique est à 
+l'appréciation du programme. Cela peut être \texttt{-100} ou \texttt{Double.MIN\_VALUE}.}.
 
 La descente du gradient est très sensible au \textit{learning rate}\footnote{$\rho$ dans notre cas.}. C'est un des paramètres critiques en vue d'un algorithme efficient\cite{no_more_pesky_learning_rate}. Dans certains cas, les poids peuvent diverger et
 tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents\cite{no_more_pesky_learning_rate}. Une solution possible pour pallier ce problème 
@@ -1482,11 +1486,11 @@ La technique du gradient consiste à :
 $$w_{t+1} = w_{t} + \rho dw_{t}$$
 À cause l'addition, $w$ peut devenir arbitrairement grand\footnote{Dans le pire des cas, la croissance est exponentielle en doublant à chaque itération.}. Pour limiter cela, si les poids dépassent un certain seuil, nous multiplions les composantes problématiques de $w_{t+1}$ par $f$, ce qui aura pour conséquence de réduire leur valeur.
 
+
 \subsubsection{Algorithme \textit{Layer 2}}
 \paragraph{}
 Nous l'avons vu avec la partie sur le \textit{layer 1}, ce dernier nous donne un signal. Ce signal ne possède que deux valeurs $\{+1,-1\}$. Le
-\textit{layer 2} va utiliser ce signal si certaines conditions sont requises.
-Les deux conditions sont:
+\textit{layer 2} va utiliser ce signal sous certaines conditions à savoir:
 \begin{itemize}
  \item Le seuil, ou \textit{threshold}.
  \item Le \textit{stop trailing loss}.
@@ -1508,7 +1512,7 @@ Cela dépend de la manière dont l'algorithme est construit. L'article ne fourni
 dépendant de l'implémentation. Ne prendre aucune position revient à dire qu'à chaque position prise, nous la fermons, et donc il est possible de ne pas
 se positionner. Au contraire, si nous ne fermons la position que lorsqu'un signal contraire intervient, il est juste de garder la position au temps $t-1$.
 
-Comme tout les méta-paramètres, il est important de trouver une bonne valeur pour $y$. En effet, si le seuil est trop bas, ce dernier n'aura aucun effet 
+Comme pour tous les méta-paramètres, il est important de trouver une bonne valeur pour $y$. En effet, si le seuil est trop bas, ce dernier n'aura aucun effet 
 et les résultats seront similaires à un algorithme sans seuil. Par contre, si $y$ a une valeur trop élevée, alors cela va bloquer trop de signaux qui
 auraient pu conduire à des gains. La valeur optimale va dépendre des \textit{returns} rencontrés, il n'est donc pas possible d'optimiser à priori.
 
@@ -1526,18 +1530,19 @@ figure se présentent:
 Si les pertes dépassent effectivement le pourcentage, alors nous fermons la position et attendons de recevoir une position différente de celle ayant
 entraînée les pertes. Dans le cas contraire, nous ne faisons rien.
 
-Voici l'effet que peut avoir un \textit{stop trailing loss} sur une courbe de profit:
+La figure \ref{stop_loss} montre l'effet que peut avoir un \textit{stop trailing loss} sur une courbe de profit.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/stop_loss}
 \caption{Exemple de l'effet d'un \textit{trailing stop loss}.}
+\label{stop_loss}
 \end{figure}
 
 \paragraph{}
-Nous remarquons dans l'exemple qu'il n'y a pas de grande perte et qu'une perte est souvent suivie d'une période plate. L'application d'un \textit{stop loss}
+Nous remarquons dans l'exemple \ref{stop_loss} qu'il n'y a pas de grande perte et qu'une perte est souvent suivie d'une période plate. L'application d'un \textit{stop loss}
 peut diminuer les pertes et surtout il empêche des comportements humains problématiques. En effet, il arrive qu'une personne prenne une position, que
 cette dernière commence à lui faire perdre de l'argent, mais qu'il la garde ouverte en espérant que les choses vont changer et s'améliorer. Le \textit{stop loss}
-automatise et empêche ce biais cognitif. Néanmoins cela peut causer d'autres soucis. Lorsqu'une grande baisse survient, le cour descend,
+automatise et empêche ce biais cognitif. Néanmoins, cela peut causer d'autres problèmes. Lorsqu'une grande baisse survient, le cour descend,
 déclenchant le \textit{stop loss}, ce qui va revenir à fermer la position et si de nombreux algorithmes réagissent comme cela, le cour va 
 continuer de descendre à cause de la vente simultanée de nombreuses positions créant ainsi un cercle vicieux.
 
@@ -1545,13 +1550,13 @@ Dans le cadre de notre algorithme, le pourcentage de perte à ne pas dépasser e
 $$loss < x * 0.0001$$
 Les pertes doivent être plus faibles que $x$ points de bases. Il faut optimiser $x$, car si sa valeur est trop grande, il n'aura aucun effet sur le profit
 cumulé. Dans le cas contraire, il deviendra presque impossible de faire du profit, car à la moindre perte, le système va bloquer une position qui aurait pu
-engendrer des gains à terme, de plus cela va encourager le système à changer dès que le \textit{stop loss} est déclenché entraînant ainsi une augmentation des
+engendrer des gains à terme. De plus cela va encourager le système à changer dès que le \textit{stop loss} est déclenché entraînant ainsi une augmentation des
 coûts de transactions.
 
 \subsubsection{Implémentation \textit{Layer 2}}
 \paragraph{}
 L'implémentation du seuil est simple à mettre en place. Le \textit{layer 1} nous renvoie un \texttt{Double}, et il suffit de comparer la valeur avec notre
-$y$. Afin de gérer les méta-paramètres ensemble, nous avons créé un objet \texttt{Parameters} qui contient $\delta,\rho,\eta,x,y$. Le pseudo-code
+$y$. Afin de gérer les méta-paramètres, nous avons créé un objet \texttt{Parameters} qui contient $\delta,\rho,\eta,x,y$. Le pseudo-code
 du seuil ressemble à :
 
 \begin{lstlisting}
@@ -1599,18 +1604,18 @@ cumulé. À partir de cela, voici à quoi ressemble l'implémentation :
 Dans la première partie, nous vérifions que la position est la même. Si ce n'est pas le cas, nous avons juste besoin de mettre à jour la nouvelle
 position et le profit cumulé maximum. Sinon, il convient de vérifier.
 
-Si le profit cumulé a augmenté, nous mettons à jours. Et dans le cas contraire, nous vérifions et appliquons le seuil avec $x * 10^{-4}$.
-À l'instar, du seuil, nous avons choisi de renvoyer un signal neutre, pour les mêmes raisons mathématiques qu'énoncées plus haut.
+Si le profit cumulé a augmenté, nous mettons à jour. Et dans le cas contraire, nous vérifions et appliquons le seuil avec $x * 10^{-4}$.
+À l'instar du seuil, nous avons choisi de renvoyer un signal neutre, pour les mêmes raisons mathématiques qu'énoncées précédemment.
 
 \subsubsection{Algorithme \textit{Layer 3}}
 \paragraph{}
-Cette dernière couche a pour but d'optimiser les méta-paramètres présents dans les couches inférieures. Cela empêche de devoir recourir à une intervention
+Cette dernière couche a pour but d'optimiser les méta-paramètres présents dans les couches inférieures. Cela empêche le recours d'une intervention
 humaine pour trouver les meilleures valeurs possibles. C'est une solution assez courante dans le domaine du \textit{machine learning}\cite{automated_hyperparamters}. Cette méthode est
 souvent opposée à celle de la \textit{grid search} \cite{grid_vs_random}:
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.75]{images/grid_vs_random}
-\caption{Comparaison entre la méthode d'optimisation \textit{grid search} et celle de \textit{random search}}
+\caption{Comparaison entre la méthode d'optimisation \textit{grid search} et celle de \textit{random search}.}
 \end{figure}
 
 En moyenne, les maximaux locaux sont mieux explorés avec la méthode de recherche aléatoire. Pour mettre en place cet algorithme, il faut définir une
@@ -1624,21 +1629,21 @@ Les fonctions qui rentrent en compte sont les suivantes :
 Où $\bar{R} := \frac{P_N}{N}$ est le profit moyen avec $N$ le nombre d'éléments, $\nu$ l'aversion au risque et $a$ est une constante.
 Dans la formule $\Sigma$, intuitivement on comprend que l'on veut un maximum de $R_i > 0$ et un minimum de $R_i < 0$, ce qui implique que la valeur
 optimale de cette formule vaut $0$. Ceci est confirmé dans la deuxième formule $U$. En effet, on va soustraire $\nu \Sigma$, donc si $\Sigma$ vaut $0$,
-on maximise la fonction de coût. De plus $\bar{R}$ est défini comme le profit moyen, plus il sera grand, plus $U$ sera grand.
+on maximise la fonction de coût. De plus, $\bar{R}$ est défini comme le profit moyen plus il sera grand plus $U$ sera grand.
 
 La direction optimale à suivre est celle qui va maximiser les profits positifs tout en minimisant les profits négatifs, ce qui est intuitif.
 L'article mentionne d'autres raisons qui appuient ce choix \cite{fx_trading}:
 \begin{enumerate}
- \item Les stratégies avec un grand risque et de nombreux \textit{returns} négatifs sont pénalisés dans la définition de $\Sigma$.
+ \item Les stratégies avec un grand risque et de nombreux \textit{returns} négatifs sont pénalisées dans la définition de $\Sigma$.
  \item Le fait de construire $\Sigma$ comme un ratio permet d'obtenir des résultats similaires même si le volume augmente. Par exemple, pour une même
- stratégie qui serait stable, si l'on calcule avec 1'000 ou avec 1'000'000, le ratio serait similaire\footnote{De part notre hypothèse d'une stratégie stable}.
+ stratégie qui serait stable, si l'on calcule avec 1'000 ou avec 1'000'000, le ratio serait similaire\footnote{De part, notre hypothèse d'une stratégie stable.}.
 \end{enumerate}
 
 Le but étant de maximiser $U$, la fonction de coût devient :
 $$\max\limits_{\delta, \eta, \rho, x, y} U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$$
 
 Avec, pour rappel, $\delta$ le coût de transaction, $\eta$ le paramètre d'adaptation, $\rho$ le paramètre d'apprentissage, $x$ le \textit{stop trailling
-loss} et $y$ le seuil. Malheureusement, cette fonction est trop complexe pour être optimisé de manière analytique. Il faut recourir à des heuristiques.
+loss} et $y$ le seuil. Malheureusement, cette fonction est trop complexe pour être optimisée de manière analytique. Il faut recourir à des heuristiques.
 L'article en propose une qui s'exprime sous cette forme :
 $$\max\limits_{\delta} \max\limits_{\eta} \max\limits_{\rho} \max\limits_{x} \max\limits_{y} U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$$
 
@@ -1661,7 +1666,7 @@ l'optimisation :
 \end{enumerate}
 
 Une fois que les cinq paramètres ont été optimisés, nous pouvons mettre à jour les nouveaux paramètres et reprendre l'entraînement du \textit{Layer 1}.
-Les paramètres ont initialement une valeur aléatoire $\in [0,1]$ car nous n'avons aucune indication sur leur valeur optimale. Nous avons donc choisi d'utiliser une distribution gaussienne :
+Les paramètres ont initialement une valeur aléatoire $\in [0,1]$ car nous n'avons aucune indication sur une valeur initiale à priori. Nous avons donc choisi d'utiliser une distribution gaussienne :
 $$\mathcal{N}(\mu,\sigma)$$
 
 Où, $\mu$ est égale à la valeur initiale du paramètre et $\sigma = 1$. Ce sont des valeurs arbitraires. Nous estimons que chercher des valeurs avec une déviation
@@ -1671,12 +1676,12 @@ standard de 1 permet d'explorer l'espace tout en évitant d'avoir des changement
 \paragraph{}
 Dans l'implémentation, les paramètres sont réunis dans une classe et c'est cette classe qui dispose des méthodes pour optimiser et mettre à 
 jour les valeurs. De plus, par le caractère décorrélé des calculs pour les 15 tirages aléatoires, nous avons construit cela avec des \textit{Thread}. Cela
-permet d'avoir de meilleur performance, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
+permet d'avoir de meilleures performances, car avec un \textit{Pool} gérant les cœurs disponibles, on lance un \textit{Thread} par valeur, pour un 
 paramètre donné, et il suffit juste de synchroniser le moment
-où les \textit{Thread} auront terminé et de prendre le meilleur résultat. De part le peu de synchronisation nécessaire, cela ne crée pas de perte de
+où les \textit{Thread} auront terminé et de prendre le meilleur résultat. De part, le peu de synchronisation nécessaire, cela ne crée pas de perte de
 performance. Il est donc possible de gagner un facteur $fac$ plus ou moins équivalent au nombre de cœurs engagés dans le calcul.
 
-Afin de donner une idée du gain, utilisons des valeurs fictives. Soit le calcul pour un jeu de valeur $t$ qui vaut $1$, la comparaison afin de trouver la meilleur valeur $comp$ vaut $0.5$.
+Afin de donner une idée du gain, utilisons des valeurs fictives. Soit le calcul pour un jeu de valeurs $t$ qui vaut $1$, la comparaison afin de trouver la meilleur valeur $comp$ vaut $0.5$.
 Pour $m$ paramètres et $n$ tirages, cela donne dans notre cas $m=5$ et $n=15$:
 $$m n (t + comp) = 5 * 15 * (1 + 0.5) = 112.5$$
 
@@ -1691,23 +1696,25 @@ Durant l'implémentation, nous nous sommes trouvés confrontés à plusieurs pro
 
 \paragraph{}
 Le principal problème, qui nous empêche d'obtenir des résultats, est que les poids du réseau de neurones divergent durant la descente du gradient.
-Au bout de quelques centaines d'itérations, les poids croissent rapidement et deviennent tous \texttt{NaN}. Voici deux exemples de \textit{runs} afin de
-montrer le comportement des poids :
+Au bout de quelques centaines d'itérations, les poids croissent rapidement et deviennent tous \texttt{NaN}. Les figures \ref{run_1}, \ref{run_2} sont deux exemples de \textit{runs} subissant ce phénomène.
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.40]{images/run_1}
 \caption{Exemple de la divergence des valeurs des poids pour une \textit{run} standard de l'algorithme, où l'axe des abscisses représente l'itération et
 l'axe des ordonnées la valeur.}
+\label{run_1}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{images/run_2}
 \caption{Autre exemple de la divergence des valeurs des poids pour une \textit{run} standard de l'algorithme.}
+\label{run_2}
 \end{figure}
 
 Ce phénomène peut avoir pour cause un \textit{learning rate}\footnote{Dans notre cas, il s'agît de $\rho$.} trop grand. En effet, si ce dernier a une
-valeur trop importante, à chaque itération la valeur risque de croître et donc de diverger. Une solution intuitive consisterait à diminuer le taux afin
+valeur trop importante, à chaque itération les poids risquent de croître et donc de diverger. Une solution intuitive consisterait à diminuer le taux afin
 d'éviter cela. Nous avons donc tenté cette méthode qui s'est révélée être infructueuse. Pour toutes les valeurs testées, pour la plupart comprises
 dans $ [10^{-5},10^{-2}]$, l'algorithme avait deux comportements\footnote{Les valeurs sont indicatives mais cela peut varier.}:
 \begin{itemize}
@@ -1738,7 +1745,7 @@ En essayant d'autres outils afin de voir si le problème persiste, nous nous som
 neurones\cite{keras}, cette divergence existait également. Donc pour des données similaires, avec un algorithme d'optimisation similaire mais un réseau de neurones
 différent et une fonction de coût différente, nous arrivons au même problème.
 Nous sommes donc parti de l'hypothèse que le problème se trouvait dans la méthode d'optimisation, soit la descente du gradient. En changeant de méthode
-dans la bibliothèque, nous avons obtenu des résultats\footnote{i.e: Les valeurs des poids ne divergeaient plus.} plutôt bon.
+dans la bibliothèque, nous avons obtenu des résultats\footnote{i.e: Les valeurs des poids ne divergeaient plus.} relativement bon.
 
 Les algorithmes ayant données satisfactions sont \cite{keras}:
 \begin{itemize}
@@ -1754,7 +1761,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   descente du gradient et surtout, ils ont pour point commun d'avoir un taux d'apprentissage variable.
   
   En effet, dans la descente du gradient, le taux d'apprentissage est fixé pour une \textit{run} donnée, ce qui nous a posé les problèmes expliqués précédemment.
-  Pour ces algorithmes, le taux d'apprentissage est modifié à chaque itération d'une \textit{run} permettant plus de flexibilité, un apprentissage plus 
+  Pour ces algorithmes, le taux d'apprentissage est modifié à chaque itération permettant ainsi plus de flexibilité, un apprentissage plus 
   rapide et de diminuer le risque de divergence.
   \begin{itemize}
    \item Pour le RMSProp, il faut diviser le taux d'apprentissage par la moyenne des magnitudes des précédents gradients pour chaque poids \cite{rmsprop}.
@@ -1794,7 +1801,7 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
    \item $y$ le seuil.
   \end{itemize}
 
-  Comme mentionné précédemment, l'optimisation de $\rho$ perd de son intérêt de par l'utilisation de l'algorithme RMSProp conjointement à la descente du
+  Comme mentionné précédemment, l'optimisation de $\rho$ perd de son intérêt à cause de l'utilisation de l'algorithme RMSProp conjointement à la descente du
   gradient. De plus, il paraît étonnant d'optimiser le coût de transaction $\delta$. Cette valeur ne dépend pas d'un processus d'optimisation, il est
   étrange de vouloir la modifier.
   
@@ -1803,18 +1810,18 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   loss} sont trop élevés ne laissant aucun signal être accepté, et dans le second cas, les valeurs sont également trop grande, car qui provoque des erreurs
   de calculs en chaîne entraînant des poids divergeant malgré l'algorithme du RMSProp.
   
-  Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt que d'utiliser un tirage aléatoire. Pour $t>0$ cependant, il
+  Pour palier ce problème pour $t=0$, nous avons fixé les valeurs initiales plutôt qu'utiliser un tirage aléatoire. Cependant pour $t>0$, il
   faut modifier la déviation standard. Cette dernière, si la valeur est trop grande, risque de faire diverger les résultats de l'optimum.
   Les nouvelles valeurs des paramètres sont calculées de manière aléatoire suivant une distribution gaussienne:
   $$x_{t+1} = \mathcal{N}(\mu, \sigma)$$
   où $\mu = x_t$ et $\sigma$ est initialisé à $\mu/10 + \epsilon$ afin d'éviter des sauts trop rapides. Cela permet d'explorer l'espace sans risquer de
   sortir de la zone d'attraction de l'optimum.
  
- Nous soupçonnons le fait que les paramètres $\eta$ et $\delta$ ont un impact trop grand dans le calcul de $A_t$ et $B_t$ ce qui pouvait entraîner les
- problèmes de poids. Pour éviter cela, nous avons fixé une valeur très faible, de l'ordre de $10^{-3}$, ce qui fait disparaître le problème.
+ Nous soupçonnons les paramètres $\eta$ et $\delta$ d'avoir un impact trop important dans le calcul de $A_t$ et $B_t$ ce qui peut entraîner les
+ problèmes de poids. Afin de éviter cela, nous avons fixé une valeur très faible, de l'ordre de $10^{-3}$, ce qui résout le problème.
  De plus, malgré l'optimisation, les meilleurs résultats en moyenne sont obtenus avec les valeurs initiales pour $x$ et $y$. Ces paramètres, lorsque 
- $x$ devient grand et $y$ petit n'ont que peu d'influence sur la fonction de coût et donc il est compliqué de trouver de meilleures valeurs.
- De plus, nous ne connaissons pas le domaine dans lequel chercher les solutions ce qui handicape grandement la recherche. Si la déviation standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats\footnote{i.e: Un profit cumulé pouvant atteindre des valeurs aberrante comme des pertes de l'ordre de 100 unités.} et si elle est trop petite, nous restons dans
+ $x$ devient grand et $y$ petit n'ont que peu d'influence sur la fonction de coût, il est donc difficile de trouver de meilleures valeurs.
+ De plus, nous ne connaissons pas l'intervalle dans lequel chercher les solutions ce qui handicape grandement la recherche. Si la déviation standard est trop importante cela fait diverger les valeurs et nous obtenons de très mauvais résultats\footnote{i.e: Un profit cumulé pouvant atteindre des valeurs aberrantes comme des pertes de l'ordre de 100 unités.} et si elle est trop petite, nous restons dans
  la zone d'attraction de la moyenne ce qui retire tout l'intérêt de l'optimisation.
  Nous n'avons pas de solution pour cette partie et il conviendrait d'en chercher une dans des recherches futures.
  
@@ -1851,14 +1858,14 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
  \end{figure}
  
  \paragraph{}
- Les graphiques \ref{sharpe ratio eta=0.0001}, \ref{sharpe ratio eta=0.0005} et \ref{sharpe ratio eta=0.01} nous montrent que si $\eta$ est trop grand, il y a d'énormes variations dans le \textit{Sharpe ratio} en plus de ne pas voir d'optimisation
- du dite ratio. Cette amplitude a un effet directe sur les poids, ce qui entraînera une divergence des poids. Si le \textit{Sharpe ratio} est trop grand
- l'ajout du gradient sera trop important et le risque de \texttt{NaN} sera important.
+ Les graphiques \ref{sharpe ratio eta=0.0001}, \ref{sharpe ratio eta=0.0005} et \ref{sharpe ratio eta=0.01} nous montrent que si $\eta$ est trop grand, des variations significatives dans le \textit{Sharpe ratio} sont constatées, de plus, l'optimisation du dit ratio n'est pas visible. Cette amplitude a un effet direct sur les poids, ce qui entraînera une divergence ceux-ci. Si le \textit{Sharpe ratio} est trop grand
+ l'ajout du gradient sera trop important et le risque d'obtenir des \texttt{NaN} accru.
  
- On remarque également que si la valeur est faible,i.e: $< 10^{-3}$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
+ On remarque également que si la valeur est faible, i.e: $< 10^{-3}$ alors l'algorithme tente d'optimiser correctement l'équation. Plus la valeur sera faible,
  plus la courbe sera lissée.
  
- Dans le premier graphique, nous apercevons difficilement les valeurs finales pour une boucle d'optimisation, voici d'autres exemples \ref{sharpe ratio eta=0.001 zoomé}, \ref{sharpe ratio eta=0.001 zoomé 2} avec un zoom afin de mieux discerner les valeurs
+ Dans le premier graphique, nous distinguons difficilement les valeurs finales pour une boucle d'optimisation, voici d'autres exemples \ref{sharpe ratio eta=0.001 zoomé}, \ref{sharpe ratio eta=0.001 zoomé 2} avec un zoom afin de mieux discerner les valeurs.
+ 
  \begin{figure}[H]
  	\centering
  	\includegraphics[scale=0.35]{res/Sharpe_ratio_evolution_big}
@@ -1873,9 +1880,9 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   	\label{sharpe ratio eta=0.001 zoomé 2}
  \end{figure} 
  
- Nous soulevons également le fait que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'un lancer à un autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
+ Nous relevons également que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'une \textit{run} à une autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
  
-Durant nos expérimentations, nous avons cherché à voir si une corrélation existait entre la valeur du \textit{Sharpe ratio} final après l'entraînement et les gains générés lors de la phase de test. Les graphiques \ref{exemple st positif}, \ref{exemple st negatif} montrent qu'il existe en effet une corrélation plus ou moins forte entre ces deux éléments. Cela nous a conduit à réviser l'algorithme afin d'y ajouter une sorte de filtrage. De manière empirique nous avons trouvé la fonction de décision suivante :
+Durant nos expérimentations, nous avons cherché si une corrélation existait entre la valeur du \textit{Sharpe ratio} finale après l'entraînement et les gains générés lors de la phase de test. Les graphiques \ref{exemple st positif}, \ref{exemple st negatif} montrent qu'il existe en effet une corrélation plus ou moins importante entre ces deux éléments. Cela nous a conduit à réviser l'algorithme afin d'y ajouter un type de filtrage. De manière empirique nous avons trouvé la fonction de décision suivante :
 
 \begin{displaymath}
 f(\widehat{S}_i):
@@ -1890,7 +1897,7 @@ false & \text{otherwise} \\
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/Exemple_St_positif}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} positif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{2000 premiers points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} positif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. }
 	\label{exemple st positif}
@@ -1899,18 +1906,18 @@ false & \text{otherwise} \\
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/Exemple_St_negatif}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} négatif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{2000 premiers points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} négatif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. }
 	\label{exemple st negatif}
 \end{sidewaysfigure}
 
-En appliquant la fonction de filtrage, nous obtenons des résultats quelques peu meilleurs. Le \textit{p\&l} maximum ne varie que peu mais le filtrage permet de vraiment limiter les pertes. Nous diminuons certes nos opportunités, car nous effectuons moins d'opérations, mais également le risque, par le filtrage du \textit{Sharpe ratio} d'entraînement découlant de la corrélation entre ce dernier et les résultats possibles de l'algorithme durant la phase de test \ref{exemple sans filtrage}, \ref{exemple avec filtrage}. 
+En appliquant la fonction de filtrage, nous obtenons des résultats légèrement meilleurs. Le \textit{p\&l} maximum ne varie que peu mais le filtrage permet de vraiment limiter les pertes. Nous diminuons certes nos opportunités, car nous effectuons moins d'opérations, mais également le risque, par le filtrage du \textit{Sharpe ratio} d'entraînement découlant de la corrélation entre ce dernier et les résultats possibles de l'algorithme durant la phase de test \ref{exemple sans filtrage}, \ref{exemple avec filtrage}. 
 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/exemple_avec_filtrage}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. Le filtrage par \textit{Sharpe ratio} est effectué.}
 	\label{exemple avec filtrage}
@@ -1919,7 +1926,7 @@ En appliquant la fonction de filtrage, nous obtenons des résultats quelques peu
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/exemple_sans_filtrage}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. Le filtrage par \textit{Sharpe ratio} n'y est pas effectué.}
 	\label{exemple sans filtrage}
@@ -1973,12 +1980,12 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  
 \subsubsection{Résultats}
  \paragraph{}
- Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EURUSD de Janvier 2000 à Janvier 2002. La granularité des données est d'une mesure toutes les minutes.
+ Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EUR/USD de Janvier 2000 à Janvier 2002. La granularité des données est d'une mesure toutes les minutes.
  
  \begin{sidewaysfigure}
  	\centering
  	\includegraphics[scale=0.5]{res/eursud_2000-2001}
- 	\caption[Blup]{Cours EUR/USD entre le 01.01.2000 et le 01.01.2002, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+ 	\caption[Blup]{Cours EUR/USD entre le 01.06.2000 et le 31.09.2001, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
  		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
  		\footnotemark$, x = 0.005, y=0.0001$.}
  	\label{eurusd 2000 2001 1M}
@@ -1993,12 +2000,13 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
 	\label{eurusd 2000 2001 1M article}
 \end{figure}
 
- D'après la figure \ref{eurusd 2000 2001 1M}, notre version de l'algorithme est bien moins performante que celle présentée dans l'article \ref{eurusd 2000 2001 1M article}. Il y est mentionné un profit de l'ordre de 26\% par an ainsi que des pertes de 8\% environ. Nous sommes loin de ce genre de chiffres. Cela peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
+\paragraph{}
+ D'après la figure \ref{eurusd 2000 2001 1M}, notre version de l'algorithme est bien moins performante que celle présentée dans l'article \ref{eurusd 2000 2001 1M article}. Il y est mentionné un profit de l'ordre de 26\% par an ainsi que des pertes de 8\% environ. Nous sommes loin de ces chiffres. Cette différence peut provenir de certaines subtilités non mentionnées dans l'article qui influencent grandement le résultat.
  
  \paragraph{}
- Malheureusement l'approche scientifique de l'article est bancale. En effet, les résultats présentés ne sont basés que sur un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". Pour pallier cela, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
+ Malheureusement, l'approche scientifique de l'article est bancale. En effet, les résultats présentés ne sont basés que sur un unique jeu de données et sur une seule période. Il n'est donc pas évident d'analyser si les résultats proviennent de la qualité intrinsèque de l'algorithme ou du fait qu'il s'agisse "d'une bonne période". De plus, il est mentionné dans l'article qu'après avoir expérimenté sur d'autres périodes\footnote{Les autres périodes choisies ne sont pas mentionnées.} les résultats étaient décevants \cite{fx_trading}. Pour pallier ce manque de rigueur, nous avons approfondi les mesures en prenant d'autres périodes, d'autres paires de monnaies ainsi que des fenêtres d'apprentissages différentes.
  
- Dans un premier temps, voici des tests sur le même cours, soit l'EUR/USD, mais sur l'année 2004.
+ Dans un premier temps, voici des tests sur le même cours, soit EUR/USD, mais sur l'année 2004.
  Les graphiques présentent trois éléments :
  \begin{enumerate}
   \item Le cours de change afin de visualiser la tendance.
@@ -2010,7 +2018,7 @@ Dans un premier temps, la figure \ref{eurusd 2004 2005} montre les résultats ob
  \begin{sidewaysfigure}
 \centering
 \includegraphics[scale=0.5]{res/eurusd_2004-2005}
-\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+\caption{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
 paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 \label{eurusd 2004 2005}
 \end{sidewaysfigure}
@@ -2018,7 +2026,7 @@ paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delt
 \clearpage
 
 \paragraph{}
-Il peut y avoir, entre différentes \textit{runs}, des différences significatives. Nous allons prendre un exemple simple afin d'expliquer l'origine du problème.
+Il peut y avoir, entre plusieurs \textit{runs}, des différences significatives. Nous allons prendre un exemple simple afin d'expliquer l'origine du problème.
 
 De part l'initialisation aléatoire, pour trois poids, nous avons :
 \begin{itemize}
@@ -2032,15 +2040,15 @@ Pour des \textit{returns} valant $r_1=0.3,r_2=-0.1,r_3=-0.4$. Nous avons pour $s
 	\item Pour la \textit{run} 2, $0.1 * 0.3 + 0.1 * -0.1 + 0.5 * -0.4 = -0.18$.
 \end{itemize}
 
-Ce que nous voulons montrer par cet exemple simple, c'est que pour de mêmes données, soit nos $r_i$, les différences des $w_i$ peuvent entraîner des changements en terme de décision et donc de profit.
+Le point soulevé par ce simple exemple, est que pour de mêmes données, soit nos $r_i$, les différences des $w_i$ peuvent entraîner des changements en terme de décision et donc de profit.
 
 De plus, la méthode d'optimisation ne garantit pas de trouver le minimum global. Il est donc fortement possible que les directions d'optimisations ne soient pas pareilles conduisant ainsi à des situations similaires. Afin de trouver des résultats identiques d'une fois à l'autre, il faut fixer l'aléatoire de la classe \textit{Random}.
  
 
 \paragraph{}
-Afin de voir comment se comportent nos algorithmes sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse est que sur la longueur il risque d'y avoir des pertes. En effet en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
+Afin d'étudier le comportement de notre algorithme sur la durée, nous allons expérimenter avec des paires de monnaies différentes ainsi que sur des périodes de plusieurs années. Cela nous fournira des indications sur la confiance qu'il est possible d'avoir. Notre hypothèse suppose que sur la longueur il risque d'y avoir des pertes. En effet, en se basant sur les mesures plus courtes effectuées précédemment, nous avons soulevé le fait que les gains sont locaux mais ne suffisent pas à compenser les mauvais résultats globaux.
 
-Dans un premier temps, voici une représentation sous forme de tableau afin d'extraire des informations statistiques sur les résultats. Chacune des tables \ref{table usd jpy 2006 2010}, \ref{table eur usd 2006 2010}, \ref{table gbp usd 2006 2010} montre un ensemble de mesures statistiques pour une paire de monnaies donnée.
+Dans un premier temps, voici une représentation sous forme de tableau afin d'extraire des informations statistiques sur les résultats. Chacun des tableaux \ref{table usd jpy 2006 2010}, \ref{table eur usd 2006 2010}, \ref{table gbp usd 2006 2010} montre un ensemble de mesures statistiques pour une paire de monnaies donnée.
 
 \begin{table}[h!]
 	\centering
@@ -2140,19 +2148,19 @@ Le premier élément intéressant concerne la variance. Cette dernière atteint 
 
 De plus, notre hypothèse initiale est vérifiée par la moyenne des p\&l. Cette dernière diminue au fil des années, conséquence de la faiblesse du programme sur de longue période.
 
-Concernant les autres mesures, il est difficile d'en apprendre quelque chose excepté le fait que le programme perd de l'argent et que l'année 2008 est la pire de ce point de vue.
+Concernant les autres mesures, il est difficile d'en apprendre quelque chose excepté que le programme perd de l'argent et l'année 2008 est la pire.
 
-Il est intéressant de remarquer que le p\&l maximal de l'année $n+1$ est toujours supérieur au p\&l minimal de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
+Il est également intéressant de note que le p\&l maximal de l'année $n+1$ est toujours supérieur au p\&l minimal de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
 
 \paragraph{}
 Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres. Afin de pouvoir effectuer une comparaison, nous allons garder le cours EUR/USD et modifier seulement certaines valeurs de l'algorithme qui pourraient avoir une influence significative sur ce dernier.
 
-La première idée porte sur le fait de modifier le nombre d'élément accordés pour l'apprentissage et pour le test. Une fenêtre trop grande ou petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation risque de ne pas converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction. Nous avons donc évalué le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela a une grande influence.
+La première idée porte sur la modification du nombre d'éléments accordés pour l'apprentissage et pour le test. Une fenêtre trop grande ou petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation risque de ne pas converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction ou simplement un sur-apprentissage. Nous avons donc évalué le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela avait une grande influence.
 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_1000-250}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $1000$ éléments d'entraînement, $250$ de test, une optimisation des
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $1000$ éléments d'entraînement, $250$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 	\label{eurusd 2004 2005 1M 1000 250}
 \end{sidewaysfigure}
@@ -2160,7 +2168,7 @@ La première idée porte sur le fait de modifier le nombre d'élément accordés
 \begin{sidewaysfigure}
 		\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_4000-1000}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 	\label{eurusd 2004 2005 1M 4000-1000}
 \end{sidewaysfigure}
@@ -2174,7 +2182,7 @@ La seconde piste porte sur le type de données. Nous avons, par défaut, repris 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005-days}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
+	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Les données ont une fréquence journalières.}
 	\label{eurusd 2004 2005 days}
 \end{sidewaysfigure}
@@ -2188,34 +2196,33 @@ La seconde piste porte sur le type de données. Nous avons, par défaut, repris 
 \end{sidewaysfigure}
 \clearpage
 
-Nous observons la différence de granularité sur le taux de change en lui-même qui n'est plus le même que lors des graphiques précédents. Concernant les performances, il n'y a pas d'amélioration significatives malgré des données moins volatiles.
-\todo[inline]{ajouter du blabla}
+Nous observons la différence de granularité sur le taux de change en lui-même qui n'est plus le même que lors des graphiques précédents. Concernant les performances, il n'y a pas d'amélioration significatives malgré des données moins volatiles. Cela semble signifier que la granularité des données, tout comme la taille de la fenêtre, n'est que peu responsable des mauvais résultats obtenus. Ceci reste une hypothèse car il serait compliqué de le prouver formellement, l'algorithme étant dépendant de trop de paramètres différents. Il semble néanmoins que l'élément le plus impactant dans l'amélioration de la performance soit le processus d'optimisation.
 
 \subsubsection{Données}
 
 \paragraph{}
 Bien que le projet ne porte pas sur les données en tant que telles, il est extrêmement important d'avoir des données consistantes. Il se peut que les informations reçues soient incomplètes, aient des erreurs ou des valeurs incohérentes voir impossibles ou portent sur des jours où le \textit{trading} n'est pas effectué comme les jours fériés ainsi que les weekends.
 
-Ce sont des éléments à prendre en compte lorsqu'il faudra choisir la source de données et plus tard les utiliser. L'information n'est pas gratuite et elle nécessite un traitement. Ce dernier peut être effectué en amont par la source fournissant ou par la personne voulant utiliser les données.
+Ce sont des éléments à prendre en compte lorsqu'il faudra choisir la source de données et plus tard l'utiliser. L'information n'est pas gratuite et elle nécessite un traitement. Ce dernier peut être effectué en amont par la source fournissant ou par la personne voulant utiliser les données.
 
-Dans le cadre de ce projet, nous avons favorisé les sources fournissant des valeurs consistantes afin de nous concentrer sur l'implémentation de l'algorithme :
+Dans le cadre de ce projet, nous avons favorisé les sources fournissant des valeurs consistantes afin de nous concentrer sur l'implémentation de l'algorithme, à savoir:
 \begin{itemize}
-	\item La première est le site : \url{https://www.dukascopy.com/}. Ce dernier propose des options intéressantes comme la possibilité de supprimer les données sur les weekends et jours fériés ou de choisir une granularité aussi fine que la minute. Malheureusement les données ne portent que jusqu'en 2004 et il a donc fallu trouver une nouvelle source.
+	\item La première est le site : \url{https://www.dukascopy.com/}. Ce dernier propose des options intéressantes comme la possibilité de supprimer les données sur les weekends et jours fériés ou de choisir une granularité aussi fine que la minute. Malheureusement, les données ne portent que jusqu'en 2004 et il a donc fallu trouver une nouvelle source.
 	\item Il s'agît de \url{http://ratedata.gaincapital.com/}. Il n'y a aucune options mais les données sont consistantes et donc peuvent être utilisées sans traitement au préalable.
 \end{itemize}
 
-Des données inconsistantes peuvent avoir des effets importants sur l'algorithme. En effet s'il manque des jours ou si des valeurs sont incorrects cela peut fausser l'apprentissage et conduire à des résultats inférieurs à ceux obtenus avec une information correctement traitée.
+Des données inconsistantes peuvent avoir des effets importants sur l'algorithme. En effet, s'il manque des jours ou si des valeurs sont incorrectes cela peut fausser l'apprentissage et conduire à des résultats inférieurs à ceux obtenus avec une information correctement traitée.
 
 \subsubsection{Performances}
 \paragraph{}
-Le but final est de construire un programme capable d'apprendre et d'effectuer des opérations sur le marché des changes de manière automatique. Il convient de s'intéresser à la performance. En effet, même dans le cas où un algorithme serait capable de trouver la bonne direction à 100\%, si cette opération était trop lente cela ne servirait à rien. Nous allons donc réaliser plusieurs mesures dans le but de découvrir les périodes possible de \textit{trading}.
+Le but final est de construire un programme capable d'apprendre et d'effectuer des opérations sur le marché des changes de manière automatique. La performance est donc un aspect important. En effet, même dans le cas où un algorithme serait capable de trouver la bonne direction à 100\%, si cette opération était trop lente, le programme serait inutile. Nous allons donc réaliser plusieurs mesures dans le but de découvrir les périodes possible de \textit{trading}.
 
 \paragraph{}
-Sachant qu'une étape de \textit{backtesting} consiste à apprendre avec 2000 éléments et de prédire les 500 éléments suivants, pour 100 itérations, le programme prend en moyenne 11s\footnote{La moyenne porte sur 100 essais différents afin d'avoir un résultat stable.}.
+Sachant qu'une étape de \textit{backtesting} consiste à apprendre avec 2000 éléments et de prédire les 500 valeurs suivants, pour 100 itérations, le programme prend en moyenne 11s\footnote{La moyenne porte sur 100 essais différents afin d'avoir un résultat stable.}.
 
-D'après cette mesure,  nous pouvons d'utiliser ce programme pour du \textit{trading} de l'ordre de la minute. Qu'en est-t-il d'un temps plus court ?
+D'après cette mesure, nous pouvons utiliser ce programme pour du \textit{trading} de l'ordre de la minute. Qu'en est-t-il d'un temps plus court ?
 
-Avec des mesures plus précises sur les sous-parties du programme, nous obtenons, pour 1000 entraînements avec 2000 éléments, 0.12s en moyenne. On peut considérer que la partie de test est négligeable, car le calcul, à partir des poids est très simple. Ceci est confirmé par le fait qu'il a été impossible d'obtenir un temps avec la fonction \lstinline|System.currentTimeMillis()|, l'exécution est donc souvent plus courte qu'une milliseconde.
+Avec des mesures plus précises sur les sous-parties du programme, nous obtenons, pour 1000 entraînements avec 2000 éléments, 0.12s en moyenne. On peut considérer que la partie de test est négligeable, car le calcul, à partir des poids est très simple. Ceci est confirmé par l'impossibilité d'obtenir un temps avec la fonction \lstinline|System.currentTimeMillis()|, l'exécution est souvent plus courte qu'une milliseconde.
 Nous pouvons donc envisager de faire des opérations chaque seconde.
 
 \paragraph{}
@@ -2227,13 +2234,13 @@ Pour les mêmes paramètres que précédemment, nous avons :
 	\item La mise à jour des paramètres\footnote{La mise à jour s'effectue une fois toute les 200 étapes durant une étape d'entraînement.} prend $220\mu$s.
 \end{itemize}
 
-Il apparaît que l'optimisation des paramètres est l'étape la plus coûteuse. Si l'on réduit le nombre d'étapes nécessaires à 2 afin d'obtenir un cas extrême, le temps devient $2139\mu$s. Cela représente un facteur 10.
+Il apparaît que l'optimisation des paramètres est l'étape la plus coûteuse. Si l'on réduit le nombre d'étapes nécessaires à 2 afin d'obtenir un cas extrême, le temps augmente à $2139\mu$s. Cela représente un facteur 10.
 
-Il est donc possible en utilisant des valeurs adéquates pour les paramètres, d'utiliser ce logiciel avec une granularité d'une seconde.
+Il est donc possible en utilisant les valeurs adéquates, d'utiliser ce logiciel avec une granularité d'une seconde.
 
-Ces performances sont le résultat de plusieurs améliorations algorithmiques. En effet, lors des premières versions, le code réalisait les itérations initiales rapidement puis le temps augmentait. Cela peut sembler étonnant surtout pour du code tournant sur une JVM, qui optimise le bytecode mieux qu'un programmeur. Le soucis venait de la quantité d'information stocké. Initialement, les informations utiles aux calculs, comme le \textit{return}, le \textit{p\&l} précédent et autres étaient stockés dans un vecteur, qui au fil des itérations croissait. La conséquence fut que le vecteur devant plus lourd en mémoire, prenait également plus de temps à être manipulé, augmentant ainsi le temps global.
+Ces performances sont le résultat de plusieurs améliorations algorithmiques. En effet, lors des premières versions, le code réalisait les itérations initiales rapidement puis le temps augmentait. Cela peut sembler étonnant surtout pour du code tournant sur une JVM, qui optimise le bytecode mieux qu'un programmeur. Le soucis venait de la quantité d'information stockée. Initialement, les informations utiles aux calculs, comme le \textit{return}, le \textit{p\&l} précédent et autres étaient stockés dans un vecteur, qui au fil des itérations croissait. La conséquence fut que le vecteur devant plus lourd en mémoire, prenait également plus de temps à être manipulé, augmentant ainsi le temps global.
 
-Afin de corriger cela, nous n'avons gardé que le minimum d'informations utiles, ce qui correspondaient souvent à certains nombres de l'itérations $n-1$. La mise à jour de ces valeurs se fait donc à chacun fin de boucle rendant le temps de calcul linéaire au nombre d'étapes de \textit{backtesting}.
+Afin de corriger cela, nous n'avons gardé que le minimum d'informations utiles, ce qui correspondaient souvent à de simples nombres provenant de l'itérations $n-1$. La mise à jour de ces valeurs se fait donc à chacun fin de boucle rendant le temps de calcul linéaire au nombre d'étapes de \textit{backtesting}.
  
 \subsection{Conclusion}
 \paragraph{}
@@ -2243,22 +2250,22 @@ d'amélioration.
 L'implémentation a été compliquée à cause du manque d'information dans l'article. L'algorithme n'y est que très peu décrit et, mis à part certaines 
 équations, il n'y a aucun pseudo-code pour le comprendre. Il s'agît juste de descriptions vagues sur le fonctionnement et l'idée du programme. À partir de
 cela, nous avons dû grandement interpréter et nous baser sur d'autres recherches théoriques afin de combler les manques. Il nous a fallu faire des compromis
-afin de faire fonctionner le programme, ce qui explique les divergences rencontrées avec l'idée initiale.
+afin de faire fonctionner le programme, ce qui explique les divergences rencontrées avec l'idée initiale, tant en termes d'équations que de performances.
 
-Ces divergences peuvent être prises comme des améliorations. En effet, l'implémentation initiale ne marchait pas et c'est grâce à ces idées que nous avons
+Ces divergences peuvent être prises comme des améliorations. En effet, l'interprétation initiale de l'article ne marchait pas et c'est grâce à ces idées que nous avons
 réussi à obtenir des résultats. Nous pensons principalement aux variantes de la descente du gradient qui ont permises de diminuer les risques de
 \texttt{NaN}.
 
 \paragraph{}
-En terme de résultats, contrairement à l'article, nous avons effectué nos mesures sur plusieurs cours à des périodes différentes. Un des gros problèmes
-provient des différences entre deux \textit{runs}. Il est compliqué de dire si l'algorithme est performant ou non, car cela varie énormément. De plus,
+En terme de résultats, contrairement à l'article, nous avons effectué nos mesures sur plusieurs cours à des périodes différentes. Un des principaux problèmes
+provient des différences entre deux \textit{runs}. Il est compliqué de dire si l'algorithme est performant ou non, car cela peut varier énormément. De plus,
 l'optimisation et la recherche de solutions sont ardues à cause de ce phénomène. Il nous est impossible de dire après un bon profit si cela est du à la
 chance ou non, et réciproquement avec les mauvais résultats.
 
 On peut noter que malgré cela, l'algorithme trouve toujours le moyen de faire des profits indépendamment de la tendance ou des résultats précédant, ce
 qui est une satisfaction. En effet, ce phénomène implique qu'il y a effectivement apprentissage et que le réseau est capables sous certaines conditions
 de réussir à produire et interpréter un signal correctement. Afin
-d'améliorer le programme, il faudrait comprendre ce qui provoquer ces profits locaux et le généraliser afin d'obtenir un profit cumulé global croissant, ce qui
+d'améliorer le programme, il faudrait comprendre ce qui provoque ces profits locaux et le généraliser afin d'obtenir un profit cumulé global croissant, ce qui
 n'est pas forcément le cas actuellement. En comprenant, le phénomène local de ce gain, on pourrait changer l'approche de l'algorithme et en accroître les
 performances.
 
@@ -2269,7 +2276,7 @@ empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous 
 algorithme. Cela revient donc à tester plusieurs valeurs en espérant qu'une fonctionnera.
 
 \paragraph{}
-Concernant la question de recherche, nous n'avons pas été capable de faire fonctionner l'idée originale. Cependant nous avons pu saisir les raisons ou 
+Concernant la question de recherche, nous n'avons pas été capable de faire fonctionner l'idée originale. Cependant, nous avons pu saisir les raisons ou 
 éléments qui empêchaient son fonctionnement. Nous avons ensuite proposer des améliorations reposant sur ces constations. Ces dernières ont permis 
 d'améliorer les performances de l'algorithme tout en reposant sur des bases mathématiques solides.
 
@@ -2285,14 +2292,14 @@ Pour les méta-paramètres, il a plusieurs points à soulever. Il faudrait dans 
 une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de méta-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
 RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance global.
 
-En utilisant, une version alternative de la descente du gradient, comme le RMSProp, le Adagrad ou le Adadelta, nous pourrions éviter certain soucis
-inhérent à la descente du gradient. Cette dernière est une méthode ancienne et toutes celles proposées sont des améliorations qui tendent à pallier les
+En utilisant, une version alternative de la descente du gradient, comme le RMSProp, le Adagrad ou le Adadelta, nous pourrions éviter certains problèmes
+inhérents à la descente du gradient. Cette dernière est une méthode ancienne et toutes celles proposées sont des améliorations qui tendent à pallier les
 problèmes de la descente du gradient. De plus, cela pourrait avoir des effets bénéfiques sur l'ensemble du programme en diminuant le nombre de paramètres
 et donc la complexité interne de l'algorithme, sans faire de concession en terme de performances.
 
-La construction d'un réseau de neurones n'est pas une science exacte. Cependant, le fait d'ajouter une ou plusieurs couches permettrait d'augmenter la 
+La construction d'un réseau de neurones n'est pas une science exacte. Cependant, ajouter une ou plusieurs couches permettrait d'augmenter la 
 vitesse d'apprentissage de ce dernier et de diminuer les erreurs. En sacrifiant du temps de calcul, car un réseau de neurones à plusieurs couches est plus
-lent qu'un autre à une seule couche, on pourrait deviner la direction plus aisément. De plus avec les gains de vitesse des propositions précédentes, les
+lent qu'un autre à une seule couche, on pourrait deviner la direction plus aisément. De plus, avec les gains de vitesse des propositions précédentes, les
 performances resteront bonnes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
