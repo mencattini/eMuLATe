@@ -1,0 +1,165 @@
+ \documentclass{beamer}
+
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{default}
+  \usepackage{lmodern}
+  \usepackage{color}
+  \usepackage{listings}
+  \usepackage{xcolor}
+  \usepackage{caption}
+  
+  \DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+\definecolor{vert}{rgb}{0.2,0.65,0}
+
+  \usetheme{Copenhagen}
+    \definecolor{vert}{rgb}{0.2,0.65,0}
+    
+    \setbeamertemplate{headline}
+{%
+  \leavevmode%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{section in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsectionhead\hfil}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{subsection in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsubsectionhead\hfil}
+  \end{beamercolorbox}%
+}
+
+\setbeamertemplate{navigation symbols}{} 
+
+  \title{Soutenance Projet de Master}
+  \author{Romain Mencattini}
+  \institute{Université de Genève}
+  \date{\today}
+  
+    \AtBeginSection[]
+  {
+    \begin{frame}
+    \frametitle{Sommaire}
+    \tableofcontents[currentsection, hideothersubsections, pausesubsections]
+    \end{frame} 
+  }
+
+\begin{document}
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %%% Page de Garde %%%%
+  %%%%%%%%%%%%%%%%%%%%%%
+  \begin{frame}
+  \titlepage
+  \end{frame}
+
+	\section{Introduction} % => ~ 2 + 6
+	
+	\begin{frame}
+		\frametitle{Notions de finance}
+		\begin{itemize}
+			\item Définition FOREX (p.4)
+			\item Principaux acteurs financiers (p.6)
+			\item La règle des trois unités (p.6)
+			\item Les outils possibles (spot, futur, option, p.6-7)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Notions de \textit{Machine learning}}
+		\begin{itemize}
+			\item Définition du ML (p.7)
+			\item Notions ensembles d'entraînement, de test,...
+			\item Apprentissage supervisé et non supervisé
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Motivations}
+		Aucun cross forex-machine learning (même si existe en action)
+	\end{frame}
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Algorithme et Implémentation}
+	
+	\begin{frame}
+		\frametitle{Théorie \textit{Layer 1}}
+		\begin{itemize}
+			\item Équations layer 1
+			\item Cela calcul un signal
+			\item Prend en compte les $n$ derniers returns, la précédente réponse et d'autres paramètres
+			\item Optimisation par descente du gradient (montrer équations)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Théorie \textit{Layer 2}}
+		\begin{itemize}
+			\item Couche stop loss
+			\item Expliquer le principe
+			\item Montrer l'effet sur la courbe
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Théorie \textit{Layer 3}}
+		\begin{itemize}
+			\item Optimisation des meta-paramètres (faire parallèle avec le cours de choppard)
+			\item Montrer équations
+			\item Expliquer le principe et les choix de l'article
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Implémentation}
+		Principalement des choix sur ce qui n'était pas expliqué
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Problèmes}
+		\begin{enumerate}
+			\item Weights -> NaN
+			\item Problème d'efficacité d'apprentissage
+			\item Optimisation des meta-paramètres
+			\item Vitesse général
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Solutions}
+		\begin{enumerate}
+			\item RMSProp, AdaGrad, Adadelta
+			\item utilisation du sharpe ratio
+			\item recherche aléatoire normale centrée + diminution de certain paramètres recherchés
+			\item Parallèlisme, éviter les listes etc.
+		\end{enumerate}
+	\end{frame}
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Résultats}
+	
+	\begin{frame}
+		\frametitle{Exemples de résultats}
+		Exemple de 2000-2001, 2004-2006, 2006-2010 (EUR/USD)s
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Vitesse d'exécution}
+		Petit benchmark
+	\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Conclusion}
+	
+	\begin{frame}
+		\frametitle{Pistes}
+		Reprendre les pistes de mon rapport ou bien partir sur des méthodes structurelles (cf François Chollet).
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Conclusion}
+		Fonctionne localement mais pas globalement, nous sommes arrivés à qqch qui fonctionne à paritr de "rien", cela donne des pistes.
+	\end{frame}
+	
+
+\end{document}

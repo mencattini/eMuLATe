@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Algorithme et Impl\IeC {\'e}mentation}{6}{0}{2}
+\beamer@sectionintoc {3}{R\IeC {\'e}sultats}{13}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{16}{0}{4}
