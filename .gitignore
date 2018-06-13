@@ -7,6 +7,14 @@ RomainMencattini*.log
 RomainMencattini*.out
 RomainMencattini*.toc
 RomainMencattini*.tex.backup
+Soutenance.aux
+Soutenance.bbl
+Soutenance.blg
+Soutenance.dvi
+Soutenance.log
+Soutenance.out
+Soutenance.toc
+Soutenance.tex.backup
 *.synctex.gz
 dontFollow/
 2006-2010
