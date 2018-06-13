@@ -57,56 +57,91 @@
 	
 	\begin{frame}
 		\frametitle{Notions de finance}
+		Définition du FOREX\footnote{Source : \url{https://www.investopedia.com/terms/f/forex.asp}}: 
+		\begin{quote}
+			Forex (FX) is the market in which currencies are traded. The forex market is the largest, most liquid market in the world, with average traded values that can be trillions of dollars per day. It includes all of the currencies in the world.
+		\end{quote}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Notions de finance}
+	Propriétés du marché :
 		\begin{itemize}
-			\item Définition FOREX (p.4)
-			\item Principaux acteurs financiers (p.6)
-			\item La règle des trois unités (p.6)
-			\item Les outils possibles (spot, futur, option, p.6-7)
-		\end{itemize}
+			\item Acteurs : les banques commerciales, les entreprises, les institutions financières non-bancaires et les ménages.
+			\item Respecte la règle des trois unités.
+			\item Outils possibles : \textit{spot},\textit{futur} et \textit{option}.
+	\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Notions de \textit{Machine learning}}
-		\begin{itemize}
-			\item Définition du ML (p.7)
-			\item Notions ensembles d'entraînement, de test,...
-			\item Apprentissage supervisé et non supervisé
-		\end{itemize}
+		Définition formelle du \textit{Machine learning}\footnote{Source : "\textit{Machine learning}" by Tom M. Mitchell}:
+		\begin{quote}
+			A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.
+		\end{quote}
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Notions de \textit{Machine learning}}
+		Notions importantes :
+		\begin{itemize}
+			\item Données d'entraînement et de test.
+			\item Apprentissage supervisé.
+			\item Apprentissage non-supervisé.
+		\end{itemize}
+	\end{frame}
+
+
+	\begin{frame}
 		\frametitle{Motivations}
-		Aucun cross forex-machine learning (même si existe en action)
+		Principales motivations :
+		\begin{itemize}
+			\item Peu de recherche sur le \textit{machine learning} appliqué au FOREX.
+			\item Prendre en main et améliorer une technique existante.
+		\end{itemize}
 	\end{frame}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Algorithme et Implémentation}
 	
 	\begin{frame}
+		\frametitle{Introduction}
+		\begin{figure}
+			\includegraphics[scale=0.3]{images/exemple_nn_projet}
+			\caption[]{Image provenant de l'article "\textit{An automated FX trading system using adaptive reinforcement learning}" de M.A.H. Dempster, V. Leemans }
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Théorie \textit{Layer 1}}
+		Éléments de la \textit{Layer 1}:
 		\begin{itemize}
-			\item Équations layer 1
-			\item Cela calcul un signal
-			\item Prend en compte les $n$ derniers returns, la précédente réponse et d'autres paramètres
-			\item Optimisation par descente du gradient (montrer équations)
+			\item Le calcul du signal : $$F_t = sign(\sum_{i=0}^{M} w_{i,t}r_{t-i} + w_{M + 1,t}F_{t-1} + v_t)$$
+			\item L'optimisation s'effectue par descente du gradient. Le but est d'optimiser une estimation du \textit{Sharpe ratio} : $$\widehat{S}(t):= \frac{A_t}{B_t}$$ Où $A_t := A_{t-1} + \eta (R_t -A_{t-1})$ et $B_t := B_{t-1} + \eta (R_t^2 -B_{t-1})$
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Théorie \textit{Layer 2}}
+		La \textit{Layer 2} est composée de:
 		\begin{itemize}
-			\item Couche stop loss
-			\item Expliquer le principe
-			\item Montrer l'effet sur la courbe
+			\item \textit{stop loss}.
+			\item seuillage.
 		\end{itemize}
+		\begin{figure}
+			\includegraphics[scale=0.4]{images/stop_loss}
+			\caption{Effet de la deuxième couche sur un profit cumulé de 3000 points.}
+		\end{figure}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Théorie \textit{Layer 3}}
+		Éléments de la \textit{Layer 3} :
 		\begin{itemize}
-			\item Optimisation des meta-paramètres (faire parallèle avec le cours de choppard)
-			\item Montrer équations
-			\item Expliquer le principe et les choix de l'article
+			\item Les fonctions de coûts sont définies comme : $$\Sigma := \frac{\sum_{i=0}^N (R_i)^2 I(R_i < 0)}{\sum_{i=0}^N (R_i)^2 I(R_i > 0)}$$
+			$$ U(\overline{R},\Sigma,\upsilon) := a\cdot(1-\upsilon)\cdot \overline{R} - \upsilon \cdot \Sigma$$ avec $\overline{R} := \frac{P_N}{N}$, $\upsilon$ l'aversion au risque et $a$ une constante.
+			\item L'optimisation est donnée par : $$\max_{\delta, \eta, \rho, x, y} U(\overline{R};\Sigma: \delta, \eta, \rho, x, y; \upsilon)$$
+			\item Afin de rendre le calcul possible, cette formule est préférée : $$\max\limits_{\delta} \max\limits_{\eta} \max\limits_{\rho} \max\limits_{x} \max\limits_{y} U(\bar{R};\Sigma : \delta, \eta, \rho, x, y; \nu)$$
 		\end{itemize}
 	\end{frame}
 
@@ -117,30 +152,88 @@
 
 	\begin{frame}
 		\frametitle{Problèmes}
+		Les problèmes rencontrés sont :
 		\begin{enumerate}
-			\item Weights -> NaN
-			\item Problème d'efficacité d'apprentissage
-			\item Optimisation des meta-paramètres
-			\item Vitesse général
+			\item Les poids ($w_i$) tendent vers l'infini.
+			\item L'apprentissage est globalement inefficace.
+			\item L'optimisation des méta-paramètres est bancale.
+			\item Le programme ralenti au fil de l'exécution.
 		\end{enumerate}
 	\end{frame}
 
 	\begin{frame}
+	\frametitle{Solutions}
+		Problème :
+		\begin{quote}
+			Les poids ($w_i$) tendent vers l'infini.
+		\end{quote}
+	
+		Solution :
+		\begin{quote}
+			En changeant la descente du gradient par RMSProp : $$E[g^2]_t = 0.9 E[g^2]_{t-1} + 0.1 g^2_t$$ avec $$\theta_{t+1} = \theta_t + \frac{\rho}{\sqrt{E[g^2]_t + \epsilon}} g_t$$Cela permet d'éviter la divergence.
+		\end{quote}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Solutions}
-		\begin{enumerate}
-			\item RMSProp, AdaGrad, Adadelta
-			\item utilisation du sharpe ratio
-			\item recherche aléatoire normale centrée + diminution de certain paramètres recherchés
-			\item Parallèlisme, éviter les listes etc.
-		\end{enumerate}
+		Problème :
+		\begin{quote}
+			 L'apprentissage est globalement inefficace.
+		\end{quote}
+		
+		Solution :
+		\begin{quote}
+			Par l'utilisation du \textit{Sharpe ratio} comme filtre, on diminue les périodes risquées et les pertes.
+		\end{quote}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Solutions}
+		Problème :
+		\begin{quote}
+			L'optimisation des méta-paramètres est bancale.
+		\end{quote}
+		
+		Solution :
+		\begin{quote}
+			Fixer les valeurs initiales des méta-paramètres et effectuer une recherche aléatoire normale autour de ces dernières améliorent significativement l'optimisation.
+		\end{quote}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Solutions}
+		Problème :
+		\begin{quote}
+			Le programme ralenti au fil de l'exécution.
+		\end{quote}
+		
+		Solution :
+		\begin{quote}
+			En évitant de stocker des éléments sur plusieurs itérations lorsque ce n'est pas nécessaire et en utilisant le parallélisme cela résous le problème.
+		\end{quote}
 	\end{frame}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Résultats}
-	
+
 	\begin{frame}
-		\frametitle{Exemples de résultats}
-		Exemple de 2000-2001, 2004-2006, 2006-2010 (EUR/USD)s
+		\begin{figure}
+			\includegraphics[scale=0.275]{res/eursud_2000-2001}
+			\caption{Rajouter légende}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}
+		\begin{figure}
+			\includegraphics[scale=0.275]{res/eurusd_2004-2005}				\caption{Rajouter légende}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}
+		\begin{figure}
+			\includegraphics[scale=0.275]{res/eursud_2006-2010}
+			\caption{Rajouter légende}
+		\end{figure}
 	\end{frame}
 
 	\begin{frame}
@@ -153,12 +246,23 @@
 	
 	\begin{frame}
 		\frametitle{Pistes}
-		Reprendre les pistes de mon rapport ou bien partir sur des méthodes structurelles (cf François Chollet).
+		Pistes envisageables :
+		\begin{itemize}
+			\item Ajouter des couches cachées au réseau de neurones.
+			\item Améliorer l'optimisation des méta-paramètres.
+			\item Implémenter une version alternative de la descente du gradient.
+			\item Passer à des méthodes structurelles.
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Conclusion}
-		Fonctionne localement mais pas globalement, nous sommes arrivés à qqch qui fonctionne à paritr de "rien", cela donne des pistes.
+		En conclusion :
+		\begin{itemize}
+			\item Fonctionne localement mais pas globalement.
+			\item Le projet est dans un état fonctionnel à partir d'un article incomplet.
+			\item Cela fournit des pistes de recherches.
+		\end{itemize}
 	\end{frame}
 	
 
