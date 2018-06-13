@@ -1483,7 +1483,7 @@ La descente du gradient est très sensible au \textit{learning rate}\footnote{$\
 tendre vers l'infini. C'est un phénomène qui peut arriver dans des domaines et des projets différents\cite{no_more_pesky_learning_rate}. Une solution possible pour pallier ce problème 
 consiste à appliquer un facteur $f < 1$ afin d'empêcher les poids de croître trop rapidement et de tendre vers l'infini.
 La technique du gradient consiste à :
-$$w_{t+1} = w_{t} + \rho dw_{t}$$
+$$w_{t+1} = w_{t} + \rho \delta w_{t}$$
 À cause l'addition, $w$ peut devenir arbitrairement grand\footnote{Dans le pire des cas, la croissance est exponentielle en doublant à chaque itération.}. Pour limiter cela, si les poids dépassent un certain seuil, nous multiplions les composantes problématiques de $w_{t+1}$ par $f$, ce qui aura pour conséquence de réduire leur valeur.
 
 
