@@ -8,6 +8,8 @@
   \usepackage{listings}
   \usepackage{xcolor}
   \usepackage{caption}
+  \usepackage{caption}
+  \captionsetup[figure]{font=scriptsize, labelfont=scriptsize}
   
   \DeclareCaptionFont{white}{\color{white}}
 \DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
@@ -69,7 +71,7 @@
 		\begin{itemize}
 			\item Acteurs : les banques commerciales, les entreprises, les institutions financières non-bancaires et les ménages.
 			\item Respecte la règle des trois unités.
-			\item Outils possibles : \textit{spot},\textit{futur} et \textit{option}.
+			\item Outils possibles : \textit{spot}, \textit{futur} et \textit{option}.
 	\end{itemize}
 	\end{frame}
 
@@ -147,7 +149,12 @@
 
 	\begin{frame}
 		\frametitle{Implémentation}
-		Principalement des choix sur ce qui n'était pas expliqué
+		Différences avec la théorie :
+		\begin{itemize}
+			\item Fixer les valeurs initiales.
+			\item Attribuer une valeur lorsqu'une fonction n'est pas définie.
+			\item Compléter les manques.
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
@@ -219,26 +226,43 @@
 	\begin{frame}
 		\begin{figure}
 			\includegraphics[scale=0.275]{res/eursud_2000-2001}
-			\caption{Rajouter légende}
+			\caption[Blup]{Cours EUR/USD entre le 01.06.2000 et le 31.09.2001, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec $|w| = 20$, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 		\end{figure}
 	\end{frame}
 
 	\begin{frame}
 		\begin{figure}
-			\includegraphics[scale=0.275]{res/eurusd_2004-2005}				\caption{Rajouter légende}
+			\includegraphics[scale=0.275]{res/eurusd_2004-2005}				\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec $|w| = 20$, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 		\end{figure}
 	\end{frame}
 
 	\begin{frame}
 		\begin{figure}
 			\includegraphics[scale=0.275]{res/eursud_2006-2010}
-			\caption{Rajouter légende}
+			\caption[Blup]{Cours EUR/USD de 2006 à 2010 et le \textit{p\&l} résultant des prédictions de l'algorithme. Avec $|w| = 20$, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 		\end{figure}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Vitesse d'exécution}
-		Petit benchmark
+		Temps d'exécution des différentes parties du programme :
+		\begin{table}
+			\centering
+			\begin{tabular}{|l|c|}
+				\hline
+				 & Temps ($\mu s$)\\
+				\hline
+				Calcul $F_t$ & 25.5\\
+				\hline
+				Descente du gradient & 83\\
+				\hline
+				Optimisation des paramètres (après 200 itérations) & 220 \\
+				\hline
+				Optimisation des paramètres (après 2 itérations) & 2139 \\
+				\hline
+			\end{tabular}
+		\caption{Temps d'exécution pour une étape de \textit{backtesting}, avec 2000 éléments d'entraînement et 500 de test, en moyenne sur 1000 runs.}
+		\end{table}
 	\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
