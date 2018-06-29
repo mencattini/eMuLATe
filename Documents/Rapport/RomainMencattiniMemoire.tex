@@ -98,7 +98,7 @@
 
 \geometry{hmargin=3cm}
 
-\title{Projet de Master}
+\title{Apprentissage automatique dans le cadre du \textit{FOREX}}
 \author{Romain Mencattini}
 \date{\today}
 
@@ -1195,7 +1195,7 @@ dans le calcul. Pour le \textit{approxSGD} et le \textit{approxWarmSGD}, le taux
 dire que la fenêtre était trop grande et, pire encore, ajoutait du bruit rendant le calcul moins précis.
 
 D'un point de vue calculatoire, il est possible de diminuer la taille de la fenêtre et
-donc gagner en vitesse tout en gardant, voir en augmentant, la qualité des résultats.
+donc de gagner en vitesse tout en gardant, voir en augmentant, la qualité des résultats.
 
 
 \begin{table}[H]
@@ -1216,7 +1216,7 @@ donc gagner en vitesse tout en gardant, voir en augmentant, la qualité des rés
 \caption[]{Tableau de résultats\footnote{} pour les différentes versions de \textit{SGD}.}
 \end{table}
 
-\footnotetext{Source des résultats: \cite{descente_du_gradient_stochastique}}
+\footnotetext{Source des résultats: \cite{descente_du_gradient_stochastique}.}
 
 \paragraph{}
 Nous constatons qu'il n'y a pas de différence pour le \textit{plainSGD} entre les deux tailles de fenêtres. On
@@ -1880,7 +1880,9 @@ Les algorithmes ayant données satisfactions sont \cite{keras}:
   	\label{sharpe ratio eta=0.001 zoomé 2}
  \end{figure} 
  
- Nous relevons également que le \textit{Sharpe ratio} pour des paramètres de bases identiques peut différé d'une \textit{run} à une autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
+ Nous relevons également que le \textit{Sharpe ratio}, pour des paramètres de bases identiques, peut différé d'une \textit{run} à une autre. C'est une conséquence de la corrélation entre le calcul du ratio et la valeur des $w_i$.
+ 
+ Une amélioration possible serait d'effectuer cette boucle d'optimisation plusieurs fois afin d'améliorer la qualité de \textit{Sharpe raito}, dans la littérature ceci est nommé \textit{epochs}. Malheureusement ce changement n'améliore pas les résultats, dans le meilleur des cas, voir les dégrade si le nombre d'\textit{epochs} est trop important. L'algorithme n'étant pas stable et cela peut influencer au fil des itérations d'optimisation pour finir par avoir un effet néfaste.
  
 Durant nos expérimentations, nous avons cherché si une corrélation existait entre la valeur du \textit{Sharpe ratio} finale après l'entraînement et les gains générés lors de la phase de test. Les graphiques \ref{exemple st positif}, \ref{exemple st negatif} montrent qu'il existe en effet une corrélation plus ou moins importante entre ces deux éléments. Cela nous a conduit à réviser l'algorithme afin d'y ajouter un type de filtrage. De manière empirique nous avons trouvé la fonction de décision suivante :
 
@@ -1897,7 +1899,7 @@ false & \text{otherwise} \\
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/Exemple_St_positif}
-	\caption[Blup]{2000 premiers points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} positif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{2000 points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} positif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. }
 	\label{exemple st positif}
@@ -1906,7 +1908,7 @@ false & \text{otherwise} \\
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/Exemple_St_negatif}
-	\caption[Blup]{2000 premiers points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} négatif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
+	\caption[Blup]{2000 points du cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le \textit{Sharpe ratio} négatif obtenu par l'algorithme durant l'entraînement et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
 		\footnotemark$, x = 0.005, y=0.0001$. }
 	\label{exemple st negatif}
@@ -1926,9 +1928,7 @@ En appliquant la fonction de filtrage, nous obtenons des résultats légèrement
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/exemple_sans_filtrage}
-	\caption[Blup]{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal prédit par l'algorithme et le \textit{p\&l} obtenu grâce aux prédictions. Avec comme paramètres $|w| = 20$, $2000$ éléments d'entraînement, $2000$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
-		\footnotemark$, x = 0.005, y=0.0001$. Le filtrage par \textit{Sharpe ratio} n'y est pas effectué.}
+	\caption[Blup]{Les mêmes paramètres et valeurs que la figure \ref{exemple avec filtrage} sans que le filtrage par \textit{Sharpe ratio} y soit effectué.}
 	\label{exemple sans filtrage}
 \end{sidewaysfigure}
 \clearpage
@@ -1977,15 +1977,37 @@ Afin de donner une vision d'ensemble, voici un pseudo-code résumant le schéma 
  
  return pnl
   \end{lstlisting}
- 
+
+
+\subsubsection{Données}
+
+\paragraph{}
+Bien que le projet ne porte pas sur les données en tant que telles, il est extrêmement important d'avoir des données consistantes. Il se peut que les informations reçues soient incomplètes, aient des erreurs ou des valeurs incohérentes voir impossibles ou portent sur des jours où le \textit{trading} n'est pas effectué comme les jours fériés ainsi que les weekends.
+
+Ce sont des éléments à prendre en compte lorsqu'il faudra choisir la source de données et plus tard l'utiliser. L'information n'est pas gratuite et elle nécessite un traitement. Ce dernier peut être effectué en amont par la source fournissant ou par la personne voulant utiliser les données.
+
+Dans le cadre de ce projet, nous avons favorisé les sources fournissant des valeurs consistantes afin de nous concentrer sur l'implémentation de l'algorithme, à savoir:
+\begin{itemize}
+	\item La première est le site : \url{https://www.dukascopy.com/}. Ce dernier propose des options intéressantes comme la possibilité de supprimer les données sur les weekends et jours fériés ou de choisir une granularité aussi fine que la minute. Malheureusement, les données ne portent que jusqu'en 2004 et il a donc fallu trouver une nouvelle source.
+	\item Il s'agît de \url{http://ratedata.gaincapital.com/}. Il n'y a aucune options mais les données sont consistantes et donc peuvent être utilisées sans traitement au préalable.
+\end{itemize}
+
+Afin de vérifier que les données récupérées n'étaient pas problématique nous avons effectuer deux tests assez simple :
+\begin{itemize}
+	\item Compter le nombre d'éléments et le comparer au nombre approximatif attendu. Par exemple, en ayant $430000$ éléments à la minute, cela correspond à environ 297 jours. Sachant qu'il y a, si l'on retire les weekend et jours fériés, environ 295 jours ouvrables\footnote{Sans prendre en compte les subtilités du décalage horaire.}, c'est cohérent avec les valeurs récupérées.
+	\item Vérifier qu'il n'y a pas de donnée incohérente en terme de valeur. Par exemple sur le cours EUR/USD, l'intervalle de valeurs est de $[0,3]$ en prenant large, nous avons donc testé afin de nous assurer qu'il n'y avait pas d'élément qui excédait ces bornes.
+\end{itemize}
+
+Des données inconsistantes peuvent avoir des effets importants sur l'algorithme. En effet, s'il manque des jours ou si des valeurs sont incorrectes cela peut fausser l'apprentissage et conduire à des résultats inférieurs à ceux obtenus avec une information correctement traitée.
+
 \subsubsection{Résultats}
  \paragraph{}
- Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EUR/USD de Janvier 2000 à Janvier 2002. La granularité des données est d'une mesure toutes les minutes.
+ Afin de faciliter la comparaison avec l'article sur lequel est basé notre projet, nous allons utiliser les mêmes données. À savoir le cours EUR/USD de janvier 2000 à janvier 2002. La granularité des données est d'une mesure toutes les minutes.
  
  \begin{sidewaysfigure}
  	\centering
  	\includegraphics[scale=0.5]{res/eursud_2000-2001}
- 	\caption[Blup]{Cours EUR/USD entre le 01.06.2000 et le 31.09.2001, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
+ 	\caption[Blup]{Cours EUR/USD entre le 01.06.2000 et le 31.09.2001, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ses prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
  		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01$
  		\footnotemark$, x = 0.005, y=0.0001$.}
  	\label{eurusd 2000 2001 1M}
@@ -2115,6 +2137,7 @@ Dans un premier temps, voici une représentation sous forme de tableau afin d'ex
 		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
 	\label{table gbp usd 2006 2010}
 \end{table}
+\newpage
 
 \begin{sidewaysfigure}
 	\centering
@@ -2152,24 +2175,23 @@ Concernant les autres mesures, il est difficile d'en apprendre quelque chose exc
 
 Il est également intéressant de note que le p\&l maximal de l'année $n+1$ est toujours supérieur au p\&l minimal de l'année $n$. Cela démontre que malgré la faible capacité de l'algorithme de générer du profit sur le long terme, il reste capable de gagner durant des périodes de temps locales. La piste qui consiste à tenter de généraliser ces gains locaux s'en trouve renforcée.
 
+\subsubsubsection{Exploration des paramètres}
 \paragraph{}
-Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres. Afin de pouvoir effectuer une comparaison, nous allons garder le cours EUR/USD et modifier seulement certaines valeurs de l'algorithme qui pourraient avoir une influence significative sur ce dernier.
+Les graphiques suivants proviennent d'une volonté d'analyser les résultats lorsque l'on fait varier certains paramètres. Afin de pouvoir effectuer une comparaison, nous allons garder le cours EUR/USD et modifier seulement certaines valeurs de l'algorithme qui pourraient avoir une influence significative sur ce dernier. Certains paramètres sont communs à tous les graphiques, nous allons les énoncer ici afin de ne mentionner dans les légendes que les éléments pertinents. La forme sera toujours la même avec le cours EUR/USD durant une certaine période\footnote{La période sera spécifiée comme axe des $x$ dans les graphiques.}, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ses prédictions avec $|w| = 20$, une optimisation des paramètres toutes les 200 itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005$ et $y=0.0001$.
 
 La première idée porte sur la modification du nombre d'éléments accordés pour l'apprentissage et pour le test. Une fenêtre trop grande ou petite peut avoir un effet négatif sur les résultats. En effet, si la fenêtre contient trop peu de valeurs alors l'optimisation risque de ne pas converger vers un optimum, qu'il soit local ou global. Dans le cas où l'algorithme disposerait de trop d'éléments, le temps augmenterait et surtout, il est possible que cela introduise du bruit dirigeant l'optimisation dans une mauvaise direction ou simplement un sur-apprentissage. Nous avons donc évalué le \textit{p\&l} pour deux autres tailles de fenêtre afin de déterminer si cela avait une grande influence.
 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_1000-250}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $1000$ éléments d'entraînement, $250$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\caption{Une période d'entraînement de $1000$ éléments puis $250$ de test. Fréquence des données à la minute.}
 	\label{eurusd 2004 2005 1M 1000 250}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 		\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005_size_4000-1000}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 31.10.2004, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $4000$ éléments d'entraînement, $1000$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$.}
+	\caption{Une période d'entraînement de $1000$ éléments puis $250$ de test. Fréquence des données à la minute.}
 	\label{eurusd 2004 2005 1M 4000-1000}
 \end{sidewaysfigure}
 \clearpage
@@ -2182,39 +2204,25 @@ La seconde piste porte sur le type de données. Nous avons, par défaut, repris 
 \begin{sidewaysfigure}
 	\centering
 	\includegraphics[scale=0.5]{res/eursud_2004-2005-days}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2006, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $200$ éléments d'entraînement, $50$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Les données ont une fréquence journalières.}
+	\caption{Une période d'entraînement de $200$ éléments et $50$ de test. Fréquence des données journalière.}
 	\label{eurusd 2004 2005 days}
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure}
 	\centering
 		\includegraphics[scale=0.5]{res/eursud_2004-2005-hours}
-	\caption{Cours EUR/USD entre le 01.01.2004 et le 01.01.2005, le signal d'achat prédit par l'algorithme ainsi que le \textit{p\&l} résultant de ces prédictions. Avec pour paramètres $|w| = 20$, $2000$ éléments d'entraînement, $500$ de test, une optimisation des
-		paramètres toutes les $200$ itérations durant la phase d'apprentissage, $\delta = 0.001, \eta=0.001,\rho=0.01, x = 0.005, y=0.0001$. Les données ont une fréquence d'une heure.}
+	\caption{Une période d'entraînement de $200$ éléments et $50$ de test. Fréquence des données à l'heure.}
 	\label{eurusd 2004 2005 hours}
 \end{sidewaysfigure}
 \clearpage
 
 Nous observons la différence de granularité sur le taux de change en lui-même qui n'est plus le même que lors des graphiques précédents. Concernant les performances, il n'y a pas d'amélioration significatives malgré des données moins volatiles. Cela semble signifier que la granularité des données, tout comme la taille de la fenêtre, n'est que peu responsable des mauvais résultats obtenus. Ceci reste une hypothèse car il serait compliqué de le prouver formellement, l'algorithme étant dépendant de trop de paramètres différents. Il semble néanmoins que l'élément le plus impactant dans l'amélioration de la performance soit le processus d'optimisation.
 
-\subsubsection{Données}
-
-\paragraph{}
-Bien que le projet ne porte pas sur les données en tant que telles, il est extrêmement important d'avoir des données consistantes. Il se peut que les informations reçues soient incomplètes, aient des erreurs ou des valeurs incohérentes voir impossibles ou portent sur des jours où le \textit{trading} n'est pas effectué comme les jours fériés ainsi que les weekends.
-
-Ce sont des éléments à prendre en compte lorsqu'il faudra choisir la source de données et plus tard l'utiliser. L'information n'est pas gratuite et elle nécessite un traitement. Ce dernier peut être effectué en amont par la source fournissant ou par la personne voulant utiliser les données.
-
-Dans le cadre de ce projet, nous avons favorisé les sources fournissant des valeurs consistantes afin de nous concentrer sur l'implémentation de l'algorithme, à savoir:
-\begin{itemize}
-	\item La première est le site : \url{https://www.dukascopy.com/}. Ce dernier propose des options intéressantes comme la possibilité de supprimer les données sur les weekends et jours fériés ou de choisir une granularité aussi fine que la minute. Malheureusement, les données ne portent que jusqu'en 2004 et il a donc fallu trouver une nouvelle source.
-	\item Il s'agît de \url{http://ratedata.gaincapital.com/}. Il n'y a aucune options mais les données sont consistantes et donc peuvent être utilisées sans traitement au préalable.
-\end{itemize}
-
-Des données inconsistantes peuvent avoir des effets importants sur l'algorithme. En effet, s'il manque des jours ou si des valeurs sont incorrectes cela peut fausser l'apprentissage et conduire à des résultats inférieurs à ceux obtenus avec une information correctement traitée.
 
 \subsubsection{Performances}
 \paragraph{}
+Le code du logiciel est disponible sous Github à cette adresse : \url{https://github.com/mencattini/eMuLATe}. Le choix du langage s'est porté sur Kotlin afin d'avoir une facilité de développement proche d'un langage de \textit{scripting} tout en gardant la compatibilité et les avantages de la JVM. Tout les tests et les \textit{benchmarks} ont été réalisés sur Lenovo ThinkPad T420S avec un Intel Core i5.
+
 Le but final est de construire un programme capable d'apprendre et d'effectuer des opérations sur le marché des changes de manière automatique. La performance est donc un aspect important. En effet, même dans le cas où un algorithme serait capable de trouver la bonne direction à 100\%, si cette opération était trop lente, le programme serait inutile. Nous allons donc réaliser plusieurs mesures dans le but de découvrir les périodes possible de \textit{trading}.
 
 \paragraph{}
@@ -2269,9 +2277,9 @@ d'améliorer le programme, il faudrait comprendre ce qui provoque ces profits lo
 n'est pas forcément le cas actuellement. En comprenant, le phénomène local de ce gain, on pourrait changer l'approche de l'algorithme et en accroître les
 performances.
 
-En fixant les méta-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}}, le \textit{stop trailing loss} est moins visible
+En fixant les méta-paramètres\footnote{À cause du problème soulevé dans la section \textit{Layer 3}.}, le \textit{stop trailing loss} est moins visible
 que sur d'autres exemples. Ce qui nous permet de mentionner un problème récurrent dans ce projet : de part le manque d'information, les valeurs initiales
-de tout les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{NaN}. Le caractère
+de tous les paramètres sont extrêmement difficiles à trouver. La moindre petite variation peut aboutir à un crash ou à un profit \texttt{NaN}. Le caractère
 empirique du domaine de l'optimisation et du \textit{machine learning}, ne nous permet pas d'avoir des valeurs standards fonctionnant avec n'importe quel
 algorithme. Cela revient donc à tester plusieurs valeurs en espérant qu'une fonctionnera.
 
@@ -2288,9 +2296,9 @@ Concernant les pistes pour des recherches futures, nous en voyons plusieurs :
  \item Proposer un réseau multi-couche.
 \end{itemize}
 
-Pour les méta-paramètres, il a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
+Pour les méta-paramètres, il y a plusieurs points à soulever. Il faudrait dans un premier temps trouver les domaines des valeurs afin de permettre
 une recherche de l'optimum plus aisée. De plus, si nous pouvions réduire le nombre de méta-paramètres, comme nous l'avons fait pour $\rho$ avec l'algorithme
-RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance global.
+RMSProp, cela permettrait d'améliorer la vitesse tout en proposant des méthodes d'optimisation plus précises et donc d'augmenter la performance globale.
 
 En utilisant, une version alternative de la descente du gradient, comme le RMSProp, le Adagrad ou le Adadelta, nous pourrions éviter certains problèmes
 inhérents à la descente du gradient. Cette dernière est une méthode ancienne et toutes celles proposées sont des améliorations qui tendent à pallier les
@@ -2298,7 +2306,7 @@ problèmes de la descente du gradient. De plus, cela pourrait avoir des effets b
 et donc la complexité interne de l'algorithme, sans faire de concession en terme de performances.
 
 La construction d'un réseau de neurones n'est pas une science exacte. Cependant, ajouter une ou plusieurs couches permettrait d'augmenter la 
-vitesse d'apprentissage de ce dernier et de diminuer les erreurs. En sacrifiant du temps de calcul, car un réseau de neurones à plusieurs couches est plus
+vitesse de convergence, diminuer le nombre de données nécessaire et réduire le taux d'erreur. En sacrifiant du temps de calcul, car un réseau de neurones à plusieurs couches est plus
 lent qu'un autre à une seule couche, on pourrait deviner la direction plus aisément. De plus, avec les gains de vitesse des propositions précédentes, les
 performances resteront bonnes.
 
